@@ -1,0 +1,124 @@
+{
+  "date": "2026-10-30",
+  "selection": "All primary-58 repositories with completed bounded integrations recorded in ENCBound-restart as of this date",
+  "targets": [
+    {
+      "repository": "conflow-dev/ConFlow",
+      "primary_repo_id": "816884279",
+      "revision": "fd1904271e127980c1c2a7a813a1c506266f7372",
+      "recipe": "apps/conflow",
+      "scope": "Eight forward/backward encoding, activation and gradient ECALLs",
+      "record": "evidence/2026-10-21-conflow.md",
+      "status": "completed bounded SDK SIM integration; dated record, not a fresh packaging run"
+    },
+    {
+      "repository": "cloud-security-research/sgx-kms",
+      "primary_repo_id": "109753849",
+      "revision": "1c9d2d2df117845166196a1c3f6f2fb1b998e2c9",
+      "recipe": "apps/sgx-kms",
+      "scope": "Selected current-session crypto/C16 workflow",
+      "record": "evidence/2026-10-23-sgx-kms-c16-session.md",
+      "status": "completed bounded SDK SIM integration; dated record, not a fresh packaging run"
+    },
+    {
+      "repository": "YeeZTech/YeeZ-Privacy-Computing",
+      "primary_repo_id": "350192996",
+      "revision": "d6eadeca03d04848ea462ab2602f155219b6d3c3",
+      "recipe": "apps/yeez",
+      "scope": "Original selected analyzer and default key manager, raw/sealed/empty",
+      "record": "evidence/2026-10-24-yeez-integration.md",
+      "status": "completed bounded SDK SIM integration; dated record, not a fresh packaging run"
+    },
+    {
+      "repository": "yerzhan7/SGX_SQLite",
+      "primary_repo_id": "98040718",
+      "revision": "c470f0a6afcbb2461a94faa6045df47450c3354b",
+      "recipe": "apps/sqlite-sgx",
+      "scope": "Serial Unix-VFS temp-file workflow and C03 boundary control",
+      "record": "evidence/2026-10-26-sqlite-c03.md",
+      "status": "completed bounded SDK SIM integration; dated record, not a fresh packaging run"
+    },
+    {
+      "repository": "dburihabwa/sgx-fs",
+      "primary_repo_id": "152254778",
+      "revision": "50c89eca582ad9b2fa28c19cac30d2b0b1da08b3",
+      "recipe": "apps/sgx-fs",
+      "scope": "Selected filesystem operations and F2 cross-file disclosure control",
+      "record": "evidence/2026-10-21-sgx-fs-f2.md",
+      "status": "completed bounded SDK SIM integration; dated record, not a fresh packaging run"
+    },
+    {
+      "repository": "asonnino/sgx-wallet",
+      "primary_repo_id": "130604487",
+      "revision": "8d15df13e1e37b95d233b3911b5e21ba32a8b962",
+      "recipe": "apps/sgx-wallet",
+      "scope": "Original public wallet ECALLs and repeated serial sessions",
+      "record": "evidence/2026-10-21-first10-integrations.md",
+      "status": "completed bounded SDK SIM integration; dated record, not a fresh packaging run"
+    },
+    {
+      "repository": "H-W-Huang/FedServing",
+      "primary_repo_id": "282158312",
+      "revision": "da49236c4ae18cf3c9cdde5d8df6fd7505d442c0",
+      "recipe": "apps/fedserving",
+      "scope": "Bounded six-model, 16-query L2 combiner",
+      "record": "evidence/2026-10-21-first10-integrations.md",
+      "status": "completed bounded SDK SIM integration; dated record, not a fresh packaging run"
+    },
+    {
+      "repository": "ibalajiarun/go-consensus",
+      "primary_repo_id": "492526437",
+      "revision": "3a733ffd036a5b66d578f9002fca76ede40f8d47",
+      "recipe": "apps/go-consensus-usig",
+      "scope": "Serial enclave USIG component; Go/distributed workflows excluded",
+      "record": "evidence/2026-10-21-go-consensus-usig.md",
+      "status": "completed bounded SDK SIM integration; dated record, not a fresh packaging run"
+    },
+    {
+      "repository": "mfriedl/sk-sgx",
+      "primary_repo_id": "232633027",
+      "revision": "7368dfb3b95092e13c54191c93a79be668db24ef",
+      "recipe": "apps/sk-sgx",
+      "scope": "Complete non-debug ten-unit enclave closure and provider oracle",
+      "record": "evidence/2026-10-21-sk-sgx.md",
+      "status": "completed bounded SDK SIM integration; dated record, not a fresh packaging run"
+    },
+    {
+      "repository": "SabaEskandarian/ObliDB",
+      "primary_repo_id": "91601272",
+      "revision": "6de5ba15eb27b4ddc86481e2eb8db549159344ea",
+      "recipe": "apps/oblidb",
+      "scope": "Four selected linear-scan block operations; SQL/ORAM excluded",
+      "record": "evidence/2026-10-23-oblidb-user-check.md",
+      "status": "completed bounded SDK SIM integration; dated record, not a fresh packaging run"
+    },
+    {
+      "repository": "thanghoang/POSUP",
+      "primary_repo_id": "146943752",
+      "revision": "9a6e181763535fd927bca1749cd804e5d77f2f73",
+      "recipe": "apps/posup-trustfl",
+      "scope": "ecall_getPathID and ecall_setFileIDs plus test observation",
+      "record": "evidence/2026-10-23-posup-trustfl.md",
+      "status": "completed bounded SDK SIM integration; dated record, not a fresh packaging run"
+    },
+    {
+      "repository": "zeyu-zh/TrustFL",
+      "primary_repo_id": "246057012",
+      "revision": "9e05a7e160bbf4fa1e7a426767f69158ea89b22d",
+      "recipe": "apps/posup-trustfl",
+      "scope": "ecall_init and complete 60000-record ecall_data_preprocess loop",
+      "record": "evidence/2026-10-23-posup-trustfl.md",
+      "status": "completed bounded SDK SIM integration; dated record, not a fresh packaging run"
+    },
+    {
+      "repository": "crustio/crust-sworker",
+      "primary_repo_id": "221365296",
+      "revision": "a109e0a60a4ea256d884fde192b06b025e8bd6b1",
+      "recipe": "apps/crust-selected",
+      "scope": "Incomplete-transfer ecall_safe_store2 with recorded serial/terminal adaptations",
+      "record": "evidence/2026-10-23-crust-selected-integration.md",
+      "status": "completed bounded SDK SIM integration; dated record, not a fresh packaging run"
+    }
+  ],
+  "limits": "Completion refers to the selected ECALL/library closure only. Original records define profile/configuration and limits; no full deployment, hardware or performance claim."
+}

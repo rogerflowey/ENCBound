@@ -1,0 +1,82 @@
+{
+  "revision": "d6eadeca03d04848ea462ab2602f155219b6d3c3",
+  "fflib_revision": "313273a3c744c539b712256f281ec1dd8ae376a1",
+  "units": {
+    "hpda_functor": {
+      "root": "source",
+      "path": "hpda/src/engine/functor.cpp",
+      "sha256": "d4a0234eb22868d724bf18c410971254dc0d54f4130876166250b6d6807bc007"
+    },
+    "hpda_engine": {
+      "root": "source",
+      "path": "hpda/src/engine/engine.cpp",
+      "sha256": "fee5aea1479b77b4b58457275b310c4c5732e6d3306804d132ac09369c0f396b"
+    },
+    "logger": {
+      "root": "source",
+      "path": "ypc/stbox/src/tsgx/log.cpp",
+      "sha256": "b689cae054dae5bf15196e42925152bdaaebeecaed9c11b05f57ca340187b8e5"
+    },
+    "stx_status": {
+      "root": "source",
+      "path": "ypc/stbox/src/stx_status.cpp",
+      "sha256": "d321cd0b4ca4ff407411c25a3201b3c0a92599c3277898ccaf8b37f5adb529ae"
+    },
+    "stx_exception": {
+      "root": "source",
+      "path": "ypc/stbox/src/exception.cpp",
+      "sha256": "aaeaf8607d4af1b870c013d2960c8be0d5ad3ee4702b8b7f6f4bfc87308f22f1"
+    },
+    "eth_hash": {
+      "root": "source",
+      "path": "ypc/core/src/corecommon/crypto/eth_hash.cpp",
+      "sha256": "6754103ddd7aa9fc35f678c5836dfda48870fe66ca08eb70c7f565af6045e905"
+    },
+    "keccak": {
+      "root": "source",
+      "path": "ypc/stbox/src/keccak/keccak.c",
+      "sha256": "c6d8e43c737a7c8d56e37fdc4778771a5228be60c16eb430e9005145ac66e211"
+    },
+    "dh_session": {
+      "root": "source",
+      "path": "ypc/stbox/src/tsgx/channel/dh_session.cpp",
+      "sha256": "cad990fd2a7f2728c6597bf9c9440c3a316d058509d71db9b473c5267ac15956"
+    },
+    "dh_initiator": {
+      "root": "source",
+      "path": "ypc/stbox/src/tsgx/channel/dh_session_initiator.cpp",
+      "sha256": "fca5f8548afe36147c82b214f2bb6e11008779af5205771bd00d16ec11d59afb"
+    },
+    "fflib_archive": {
+      "root": "source",
+      "path": "vendor/fflib/src/net/common/archive.cpp",
+      "sha256": "73b12ac9078fe3cf0ae6c71f03398bb2dc6840735b98c8756d4636a84e179dc6"
+    },
+    "crypto_secp": {
+      "root": "source",
+      "path": "ypc/core/src/core_t/crypto/stdeth/secp256k1.cpp",
+      "sha256": "c391ccdefc84a09c54ca090eaf6d7fe9778703ae071a1085029c65da22a95cce"
+    },
+    "crypto_gcm": {
+      "root": "source",
+      "path": "ypc/core/src/core_t/crypto/stdeth/rijndael128GCM.cpp",
+      "sha256": "52d773f166e9438289cb3aa38d33f54a647c266fa3e8f0610f6821ef9445da58"
+    },
+    "crypto_ecdh": {
+      "root": "source",
+      "path": "ypc/core/src/core_t/crypto/stdeth/secp256k1_ecdh_sgx128.cpp",
+      "sha256": "e581e8e4255e49159b21e79ccf11cb2470b756f336c5cdf70f287252e43ae048"
+    },
+    "secp_library": {
+      "root": "source",
+      "path": "ypc/stbox/src/tsgx/secp256k1/secp256k1.c",
+      "sha256": "e5d3cc4437bcc289f1eb9afe7ebdd30f66056568b566799adcc7a13abc7edbf5"
+    },
+    "wide_memory": {
+      "root": "artifact",
+      "path": "apps/libcxx/wide_memory.cpp",
+      "sha256": "068d311a222b2fbd7a8e8729997327c794a39884b03170b75d034e87a523ec6b"
+    }
+  },
+  "integer_to_string_sha256": "7e20f9a3925e16797c1de85455433beb29fbe0ada68f1456c6683e9e5cd7e5b8"
+}

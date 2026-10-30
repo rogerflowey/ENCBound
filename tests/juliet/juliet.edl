@@ -1,0 +1,12 @@
+/* Diagnostic-only scalar interface. No application pointers cross the bridge. */
+enclave {
+    include "stdint.h"
+    /* SDK runtime services only; none are admitted to application calls. */
+    from "sgx_tstdc.edl" import *;
+    trusted {
+        public int juliet_run(uint32_t case_id, uint32_t bad);
+    };
+    untrusted {
+        void juliet_observe(uint32_t kind, uint64_t value);
+    };
+};

@@ -1,0 +1,19 @@
+enclave {
+    trusted {
+        public int errno_case(int action, int initial, int value, int result,
+                              [out,count=8] int *observed);
+        public int errno_read();
+        public int errno_write(int value);
+        public uintptr_t errno_pointer();
+        public int errno_access([user_check] int *pointer, int write);
+        /* Test-only trusted SDK-state observations, not application services. */
+        public uintptr_t errno_sdk_address();
+        public int errno_sdk_read();
+    };
+    untrusted {
+        int errno_exchange(int value, int result, [in,out,count=2] int *words) propagate_errno;
+        void errno_void(int value) propagate_errno;
+        void errno_naked() propagate_errno;
+        int errno_plain(int value, int result);
+    };
+};

@@ -1,0 +1,77 @@
+{
+  "revision": "624469628023f75fe320e431aaea038e23018d80",
+  "files": {
+    "LICENSE.TXT": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/LICENSE.TXT",
+      "sha256": "d110d0b221b92267e6d29a9d0a9b4140b59fed0a1fc3184152b0b20cd9f2df0c"
+    },
+    "SingleSource/Benchmarks/Shootout/hash.c": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Shootout/hash.c",
+      "sha256": "dc66ba7e1671bdd4c4c510a51feff8e8da72edccfc2d4463743f117326d1733b"
+    },
+    "SingleSource/Benchmarks/Shootout/simple_hash.h": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Shootout/simple_hash.h",
+      "sha256": "a3ac304c71b02b4e3b012965811a5f6e76023bcc8706f6c5c17ae3c4dc652e44"
+    },
+    "SingleSource/Benchmarks/Shootout/lists.c": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Shootout/lists.c",
+      "sha256": "801a4396f41b7cf8d35ee3e9f761e4bca02674af24d3cd0879973fa6f9a21f0a"
+    },
+    "SingleSource/Benchmarks/Shootout/heapsort.c": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Shootout/heapsort.c",
+      "sha256": "ab2810d9868668a4d652eb380da68cb15d78c4c5b7325c99963e18b336959490"
+    },
+    "SingleSource/Benchmarks/Shootout/hash.reference_output": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Shootout/hash.reference_output",
+      "sha256": "4caafd6142d86142c84809c8e9f8097b2dc8f40298bf13bfadf4fdc0550ddbd4"
+    },
+    "SingleSource/Benchmarks/Shootout/lists.reference_output": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Shootout/lists.reference_output",
+      "sha256": "34fea7dcb1d5cf72e9ec86b866519f5fff70a21e4944295e96337eaed2188c62"
+    },
+    "SingleSource/Benchmarks/Shootout/heapsort.reference_output": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Shootout/heapsort.reference_output",
+      "sha256": "1f5c27da20625772aa41c0e09fbc796b66d6cf920b090404df0766b3ec9dfd39"
+    },
+    "SingleSource/Benchmarks/Shootout/CMakeLists.txt": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Shootout/CMakeLists.txt",
+      "sha256": "19e1f9dbe72d679b6b450bbba45df029c380ac2812831690465a77ff6dadb193"
+    },
+    "SingleSource/Benchmarks/Polybench/LICENSE": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Polybench/LICENSE",
+      "sha256": "051cd26bce2f040209767780e375fb048efb14eb97001b24259f532f54917a4f"
+    },
+    "SingleSource/Benchmarks/Polybench/utilities/polybench.h": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Polybench/utilities/polybench.h",
+      "sha256": "a1c8a13f06722886a70648e6be2016420e684251687345d19b2c60aa87e5e276"
+    },
+    "SingleSource/Benchmarks/Polybench/utilities/polybench.c": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Polybench/utilities/polybench.c",
+      "sha256": "5de1de319495831bdb589a1ae8c2bfaf336f55c5549ab428c83d9d5905177f58"
+    },
+    "SingleSource/Benchmarks/Polybench/linear-algebra/kernels/atax/atax.c": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Polybench/linear-algebra/kernels/atax/atax.c",
+      "sha256": "cb33977d2d03c1df35622e9a2806842d0287a0710cb2c8339b601fcc7493f41b"
+    },
+    "SingleSource/Benchmarks/Polybench/linear-algebra/kernels/atax/atax.h": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Polybench/linear-algebra/kernels/atax/atax.h",
+      "sha256": "b896f0a5fab49f4d52b1fb2ea7bcd7c4afabecb20bfee0deea271ec05b033761"
+    },
+    "SingleSource/Benchmarks/Polybench/linear-algebra/blas/gemm/gemm.c": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Polybench/linear-algebra/blas/gemm/gemm.c",
+      "sha256": "fa8692e619f6f5d5092856845df2a1c91c10ced8c66eb42263f12c5a2909c9b4"
+    },
+    "SingleSource/Benchmarks/Polybench/linear-algebra/blas/gemm/gemm.h": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Polybench/linear-algebra/blas/gemm/gemm.h",
+      "sha256": "69147d88e4d87e4e5e0be1fdfa0e766863072bc23aa73739a9d3fc378304ba52"
+    },
+    "SingleSource/Benchmarks/Polybench/stencils/jacobi-2d/jacobi-2d.c": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Polybench/stencils/jacobi-2d/jacobi-2d.c",
+      "sha256": "24a99667e83363adc5d2d713fc43fe5b546a4e22d20311a7ace23e23d9a5142a"
+    },
+    "SingleSource/Benchmarks/Polybench/stencils/jacobi-2d/jacobi-2d.h": {
+      "url": "https://raw.githubusercontent.com/llvm/llvm-test-suite/624469628023f75fe320e431aaea038e23018d80/SingleSource/Benchmarks/Polybench/stencils/jacobi-2d/jacobi-2d.h",
+      "sha256": "6ccf8928f16646cbf2f90a509c8d01a231063a08a76a670b7802b3b979f61770"
+    }
+  }
+}

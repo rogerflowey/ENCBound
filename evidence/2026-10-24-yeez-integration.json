@@ -1,0 +1,146 @@
+{
+  "date": "2026-10-24",
+  "scope": "original YeeZ multi-person first-match analyzer and default key manager; normal raw/sealed/empty; native SDK SIM only",
+  "rows": [
+    {
+      "profile": "BASELINE",
+      "high": false,
+      "base": "0x40000000",
+      "keymgr_base": "0x80000000",
+      "unsigned": {
+        "analyzer": "7d207048ec21a5f4a0189e1fd5e3ab223b6ede81791699ae16eafa5dec4f8220",
+        "keymgr": "c6a6e021e8b8be571f27549e774dec2ea21fdf5feef9ed359e233bfe7209e7a2"
+      },
+      "signed": {
+        "analyzer": "c50acb8dc1541204b633526576b5ee00a18acbebe6e1d467e285d5a9b95e3734",
+        "keymgr": "0403987110c7d4ba856ee2053384d7a9cdedd21c80a7342ee5b35396b756099f"
+      },
+      "host": "build/yeez/full-integration/BASELINE/low/host",
+      "host_sha256": "7a5884d90becc0fca7b8a95dffd5bca2fdf58c6aa027f99deaea00f6fc5709eb",
+      "scenarios": {
+        "raw": 28,
+        "sealed": 28,
+        "empty": 0
+      },
+      "calls": 47,
+      "checks": 350,
+      "handshakes": 3,
+      "key_requests": 5,
+      "batches": 3,
+      "result": "pass",
+      "result_record": "build/yeez/full-integration/BASELINE/low/results.json",
+      "output": [
+        "YEEZ scenario=raw pass result_bytes=28",
+        "YEEZ scenario=sealed pass result_bytes=28",
+        "YEEZ scenario=empty pass result_bytes=0",
+        "YEEZ ORIGINAL ANALYZER SDK SIM PASS calls=47 checks=350 handshakes=3 key_requests=5 batches=3"
+      ]
+    },
+    {
+      "profile": "RADIX_ONLY",
+      "high": false,
+      "base": "0x40000000",
+      "keymgr_base": "0x80000000",
+      "unsigned": {
+        "analyzer": "8f1a1f77104e1175dbdd4e82888d1fa314b15abb035b2b311c31c2564dad17a8",
+        "keymgr": "d205ea131df69fd96912b1cf1972d37eaad3afe6d6de7e970ce7d870b7c9eb30"
+      },
+      "signed": {
+        "analyzer": "05598bb4142240c60ea72f5e48154e830b1073078c5f0aadc9b4eb28c1c05c4c",
+        "keymgr": "94db612bde2fd23b222e9ed041a1a9c73272b5f5f874635c543211283748d32a"
+      },
+      "host": "build/yeez/full-integration/RADIX_ONLY/low/host",
+      "host_sha256": "8452690a1b7041198543300c213413b736fd92ea7dd5f0dabcda881be90e6bcf",
+      "scenarios": {
+        "raw": 28,
+        "sealed": 28,
+        "empty": 0
+      },
+      "calls": 47,
+      "checks": 350,
+      "handshakes": 3,
+      "key_requests": 5,
+      "batches": 3,
+      "result": "pass",
+      "result_record": "build/yeez/full-integration/RADIX_ONLY/low/results.json",
+      "output": [
+        "YEEZ scenario=raw pass result_bytes=28",
+        "YEEZ scenario=sealed pass result_bytes=28",
+        "YEEZ scenario=empty pass result_bytes=0",
+        "YEEZ ORIGINAL ANALYZER SDK SIM PASS calls=47 checks=350 handshakes=3 key_requests=5 batches=3"
+      ]
+    },
+    {
+      "profile": "MAC27",
+      "high": false,
+      "base": "0x40000000",
+      "keymgr_base": "0x80000000",
+      "unsigned": {
+        "analyzer": "9271da61fc9f15947e37f5e4c8b9a3081fe0bce2d1dc70cb9b680be4ae109c0b",
+        "keymgr": "9f3e9449cc7db3b7a4ffe6829567cb0fb85fe392ba6584757047ea5aedf906d5"
+      },
+      "signed": {
+        "analyzer": "1876e061c6bed7b4d32b72293f0b842c912cc6a22edbe5c78c197c0c3fea9149",
+        "keymgr": "cde3c091d63d7295235713676c8f6a2a16cba504942db9dae1e8cef179ccefb7"
+      },
+      "host": "build/yeez/full-integration/MAC27/low/host",
+      "host_sha256": "7ebc434ab42aebd6455d2465131db21dda4484c7143f1d0d4a19689536bc695f",
+      "scenarios": {
+        "raw": 28,
+        "sealed": 28,
+        "empty": 0
+      },
+      "calls": 47,
+      "checks": 350,
+      "handshakes": 3,
+      "key_requests": 5,
+      "batches": 3,
+      "result": "pass",
+      "result_record": "build/yeez/full-integration/MAC27/low/results.json",
+      "output": [
+        "YEEZ scenario=raw pass result_bytes=28",
+        "YEEZ scenario=sealed pass result_bytes=28",
+        "YEEZ scenario=empty pass result_bytes=0",
+        "YEEZ ORIGINAL ANALYZER SDK SIM PASS calls=47 checks=350 handshakes=3 key_requests=5 batches=3"
+      ]
+    },
+    {
+      "profile": "MAC27",
+      "high": true,
+      "base": "0x140000000",
+      "keymgr_base": "0x180000000",
+      "unsigned": {
+        "analyzer": "9271da61fc9f15947e37f5e4c8b9a3081fe0bce2d1dc70cb9b680be4ae109c0b",
+        "keymgr": "9f3e9449cc7db3b7a4ffe6829567cb0fb85fe392ba6584757047ea5aedf906d5"
+      },
+      "signed": {
+        "analyzer": "8a0b2c99db5159b9d012e0fc321138721e899400e1fbd52c8da855d3e0144046",
+        "keymgr": "4a522afcc3ea3d6685684ed349e681a032a1f5312c7cfcb06e4cd9c729d8fbf6"
+      },
+      "host": "build/yeez/full-integration/MAC27/high/host",
+      "host_sha256": "7ebc434ab42aebd6455d2465131db21dda4484c7143f1d0d4a19689536bc695f",
+      "scenarios": {
+        "raw": 28,
+        "sealed": 28,
+        "empty": 0
+      },
+      "calls": 47,
+      "checks": 350,
+      "handshakes": 3,
+      "key_requests": 5,
+      "batches": 3,
+      "result": "pass",
+      "result_record": "build/yeez/full-integration/MAC27/high/results.json",
+      "output": [
+        "YEEZ scenario=raw pass result_bytes=28",
+        "YEEZ scenario=sealed pass result_bytes=28",
+        "YEEZ scenario=empty pass result_bytes=0",
+        "YEEZ ORIGINAL ANALYZER SDK SIM PASS calls=47 checks=350 handshakes=3 key_requests=5 batches=3"
+      ]
+    }
+  ],
+  "hostile_controls": [
+    "evidence/2026-10-24-yeez-c13-c14-hostile.json",
+    "evidence/2026-10-24-yeez-c15-hostile.json"
+  ]
+}

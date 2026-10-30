@@ -1,0 +1,8 @@
+enclave {
+ from "sgx_tstdc.edl" import *;
+ trusted {
+  public int step(int action);
+  public int inspect();
+ };
+ untrusted { void startup_notify(); };
+};

@@ -1,0 +1,24 @@
+enclave {
+    from "sgx_tstdc.edl" import *;
+    include "api.h"
+    trusted {
+        public int layout_checks(); /* test-only trusted diagnostic */
+        public int user_check_service([user_check] char **host, uintptr_t expected, int action);
+        public int format_service([in,string] char *format, Options options,
+            [in,string] char *text, [in,count=count] uint32_t *values, size_t count,
+            [out,size=1] bool *ok, [in,out,size=capacity] char *output, size_t capacity,
+            int mode);
+        public int record_service(uint64_t a, uint64_t b, uint64_t c,
+            uint64_t d, uint64_t e, uint64_t f, Options small,
+            FormatRecord first, FormatRecord second, [out] uint64_t *output);
+    };
+    untrusted {
+        uintptr_t user_check_observe([user_check] char **pointer, uintptr_t expected,
+            int action, Options options, [in,out,size=8] char *copied);
+        int format_observe([in,out,size=8] char *prefix,
+                           [in,count=count] uint32_t *values, size_t count);
+        int record_observe(uint64_t a, uint64_t b, uint64_t c,
+            uint64_t d, uint64_t e, uint64_t f, Options small,
+            FormatRecord first, FormatRecord second);
+    };
+};

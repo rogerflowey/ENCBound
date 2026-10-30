@@ -1,0 +1,13 @@
+enclave {
+    include "sgx_key_exchange.h"
+    from "sgx_tkey_exchange.edl" import *;
+    from "sgx_tstdc.edl" import *;
+    trusted {
+        public sgx_status_t session_start([in] sgx_ec256_public_t *key,
+            [out] sgx_ra_context_t *context, [out] sgx_target_info_t *target);
+        public sgx_status_t session_key(sgx_ra_context_t context, sgx_ra_key_type_t type,
+            [out] sgx_ra_key_128_t *key);
+        public sgx_status_t session_close(sgx_ra_context_t context);
+        public uint32_t session_count();
+    };
+};

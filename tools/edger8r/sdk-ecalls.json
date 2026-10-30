@@ -1,0 +1,15 @@
+{
+  "sgx_tkey_exchange.edl": {
+    "origin": "Intel SGX SDK 2.26, SDK-owned remote-attestation ECALLs",
+    "license": "Intel BSD-3-Clause; original EDL and SDK archive retained unchanged",
+    "sha256": "4979fd015c36e18744bbfdebdc652153bbaf3bdc81d037bff0a67d3aa83677be",
+    "symbols": [
+      "sgx_ra_get_ga",
+      "sgx_ra_proc_msg2_trusted",
+      "sgx_ra_get_msg3_trusted"
+    ],
+    "archive": "libsgx_tkey_exchange.a",
+    "archive_sha256": "92b7e61d9e8ea4119609682434d377a8ba86bfafce5e277dd756ae9ac4c69843",
+    "member": "tkey_exchange.o"
+  }
+}

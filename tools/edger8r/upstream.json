@@ -1,0 +1,16 @@
+{
+  "origin": "/home/roger/project/TEE/ENCBound/.local/sgxbounds/intel-sgx-simulation-2.26/sdk/edger8r/linux",
+  "version": "Intel SGX SDK 2.26",
+  "license": "Intel BSD-3-Clause notices retained in each source file",
+  "source_hashes": {
+    "Ast.ml": "d1c36a84698d845734ca3680a9310a5344f120b24cd252f412e66f5134be7d2d",
+    "CodeGen.ml": "a30c2b84180383fe221382404e2481b65df4a9caed3ddb119c9ddbfa3264ad73",
+    "Edger8r.ml": "52d98ed4f7495e3c775411e99efa5fec5cd8eee45774a5df744b16432c32b6a3",
+    "Lexer.mll": "6d75bbc2eaf5ca5a0b9353c2f48604aa69758f700d6d1635e90154e3020017cb",
+    "Parser.mly": "0693c888909c012294d2de742a65375052516b6d8da62a531680010a0e4d330f",
+    "Plugin.ml": "2a42aecde45c3384b549afbe4665d8ecc082c323964789c5e7e02cb0dd7528c9",
+    "Preprocessor.ml": "6b8bcb4167d2b8eb97c2930f0674c1a559ea3585d45afcbfea3aadf57f9d8635",
+    "SimpleStack.ml": "9aca7c4677a0743b1b097251a0b581bdf110cd6fa9131634a0624dd794050d45",
+    "Util.ml": "b0493277454accfbb323b87db3b5c0815d2b396d4a951662e79e02b4e6b9ef85"
+  }
+}

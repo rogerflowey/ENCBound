@@ -1,0 +1,15 @@
+{
+  "repository": "https://github.com/SabaEskandarian/ObliDB",
+  "revision": "6de5ba15eb27b4ddc86481e2eb8db549159344ea",
+  "license": "BSD-3-Clause",
+  "files": {
+    "LICENSE": "cc1c41084949ed6f0090cd1dd4fc314f95807d329a2c605182dff3b0fc700683",
+    "isv_enclave/definitions.h": "cfd01ec66a4be86a9ebacc181b26551d77e164bf695914f603ea43293d880eec",
+    "isv_enclave/definitions.cpp": "4921be402ef6a7519ba8f3da81d77190595bda7538d925a22a11cb9c3d891311",
+    "isv_enclave/isv_enclave.h": "03b809cb94c6b1bb6a8baf2bd658fa1f68df58a2ad5304f29566135f9635dc4e",
+    "isv_enclave/enclave_data_structures.cpp": "3cb05eda0fa24a280656ce87adeab71b7fd56082f21ecc3ac8e63f57d5b71a6c",
+    "isv_enclave/enclave_tests.cpp": "012e0a979dbb80cd300dbce93bbc84ea72eab29f7c9a41b68fde189488ab544a",
+    "isv_enclave/isv_enclave.cpp": "c63802896a87efe6a8f0f9a97134a4a462e30c91705aa43d2f68c2d12bc4cf5c",
+    "isv_enclave/isv_enclave.edl": "31609243cef3a4f399fe6fd5e1a46c6abda5df1cc4e6769d20f66b0461abeeea"
+  }
+}

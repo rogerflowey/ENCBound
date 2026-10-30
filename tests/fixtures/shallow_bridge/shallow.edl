@@ -1,0 +1,15 @@
+enclave {
+ include "types.h"
+ trusted {
+  public void *exercise([in,out,size=bytes] Flexible *f, size_t bytes,
+    [in,out,count=1] Shallow *s, [in,out,count=2] char **pointers,
+    [in,out,size=4] Opaque *opaque, [user_check,isptr] IntPtr cookie,
+    [user_check,isary] IntArray array, int action);
+ };
+ untrusted {
+  void *exchange([in,out,size=bytes] Flexible *f, size_t bytes,
+    [in,out,count=1] Shallow *s, [in,out,count=2] char **pointers,
+    [in,out,size=4] Opaque *opaque, [user_check,isptr] IntPtr cookie,
+    [user_check,isary] IntArray array, int action);
+ };
+};

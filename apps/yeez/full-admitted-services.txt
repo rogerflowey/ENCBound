@@ -1,0 +1,9 @@
+yeez_report_copy = encbound_yeez_report_copy
+yeez_dh_gen1 = encbound_yeez_dh_gen1
+yeez_dh_proc2 = encbound_yeez_dh_proc2
+kms_seal = encbound_kms_seal
+kms_unseal = encbound_kms_unseal
+kms_sealed_size = encbound_kms_sealed_size
+kms_text_len = encbound_kms_text_len
+kms_aad_len = encbound_kms_aad_len
+kms_create_report = encbound_kms_create_report

@@ -1,0 +1,5 @@
+startup_work
+startup_heap_bits
+startup_global_bits
+step
+stack_sum

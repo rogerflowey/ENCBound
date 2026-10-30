@@ -1,0 +1,630 @@
+{
+  "date": "2026-10-23",
+  "observed_at": "2026-10-23T09:18:33.020749+00:00",
+  "application": "cloud-security-research/sgx-kms selected C16 service",
+  "pin": "1c9d2d2df117845166196a1c3f6f2fb1b998e2c9",
+  "scope": "SDK SIM hostile pointer control at the unchanged C16 key use; no hardware, secret extraction, full deployment or arbitrary-address claim",
+  "unchanged_c16_body_sha256": "2a1d517a10db55bf246a55e2ced0d78fede38519ec72e542b131b482bcdd1a6e",
+  "finding": {
+    "edl": "isv_enclave/isv_enclave.edl:81 [in] void **c_p_net_ctxt",
+    "sink": [
+      "source/isv_enclave.cpp:665 sp_db = (sp_db_item_t *)*c_p_net_ctxt",
+      "source/isv_enclave.cpp:669 server_put_secret_data(..., (uint8_t *)&sp_db->sk_key, ...)"
+    ],
+    "primitive": "the host chooses the raw sp_db_item_t pointer; the unchanged body takes &sp_db->sk_key and uses it as the GCM key for both outgoing C16 payloads",
+    "benign": "a host sp_db_item_t with a known key is accepted in every profile; both outgoing ciphertexts decrypt under that key",
+    "protected": "RADIX_ONLY/MAC27 reject the raw protected-global or trusted-RA-key range in encbound_kms_encrypt with ENCBOUND_ERR_POLICY (code=3) before the SDK reads it"
+  },
+  "ra_layout": {
+    "expected": "1088 496 512 528",
+    "observed": "1088 496 512 528",
+    "log": "build/sgx-kms/c16-protection/layout-run.log",
+    "log_sha256": "05d68eae8a73c4d2705ba08592412c3ac4236565f439d1477ad1df75f1dc5bfa"
+  },
+  "rows": [
+    {
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "signed": "build/sgx-kms/session-c16-2026-10-23/BASELINE-0x40000000/enclave.signed.so",
+      "signed_sha256": "36b409301edbd5e96f3d047e50352be6bf7a8cb580b97a4f4942271acabbc8d3",
+      "host": "build/sgx-kms/c16-protection/BASELINE-0x40000000/c16-control-host",
+      "host_sha256": "60428ca4b3ff41a5f2836d237fb0a417d9c59d5237081ec573e7d9476567853f",
+      "targets": {
+        "app": {
+          "symbol": "g_secret",
+          "section": ".encbound.appbss",
+          "address": "0x40279964"
+        },
+        "trusted": {
+          "symbol": "_ZL7g_ra_db",
+          "vector_section": ".bss",
+          "vector_address": "0x4027a070",
+          "item_key_offset": 512
+        }
+      },
+      "commands": [
+        {
+          "command": [
+            "gcc",
+            "-g",
+            "-O2",
+            "-Wno-deprecated-declarations",
+            "-I/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/BASELINE-0x40000000/generated",
+            "-I/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source",
+            "-I/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/include",
+            "/home/roger/project/TEE/ENCBound-restart/apps/sgx-kms/c16_control_host.c",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/BASELINE-0x40000000/generated/enclave_u.c",
+            "-o",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/BASELINE-0x40000000/c16-control-host",
+            "-L/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-Wl,-rpath-link,/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-lsgx_urts_sim",
+            "-lpthread",
+            "-lcrypto"
+          ],
+          "returncode": 0,
+          "log": "build/sgx-kms/c16-protection/BASELINE-0x40000000-host-build.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "functional": {
+        "command": [
+          "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/BASELINE-0x40000000/host",
+          "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/BASELINE-0x40000000/enclave.signed.so"
+        ],
+        "returncode": 0,
+        "log": "build/sgx-kms/c16-protection/BASELINE-0x40000000/functional.log",
+        "log_sha256": "a3a121f1011d4e6a64f4c596715495393cc8d1ecbd386298668c9bf8c82a734e"
+      },
+      "modes": {
+        "control": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/BASELINE-0x40000000/c16-control-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/BASELINE-0x40000000/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/sgx-kms/c16-protection/BASELINE-0x40000000/BASELINE-0x40000000-control.log",
+          "log_sha256": "86e02a3a33a0a75fe181089871cc9a682723c210a2f589a61e006f19facc9b6a",
+          "result": {
+            "mode": "control",
+            "status": 0,
+            "source": "host",
+            "target": "0x7ffc54aaafe0",
+            "key": "0x7ffc54aab080",
+            "nonce_verified": true,
+            "server_key_ciphertext": "decrypted"
+          }
+        },
+        "cd-app": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/BASELINE-0x40000000/c16-control-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/BASELINE-0x40000000/enclave.signed.so",
+            "cd-app"
+          ],
+          "returncode": 0,
+          "log": "build/sgx-kms/c16-protection/BASELINE-0x40000000/BASELINE-0x40000000-cd-app.log",
+          "log_sha256": "f916c7ca5dc3916344f8beacc8bd554a9841f398fe17810beb8fc55d4d8ee9da",
+          "result": {
+            "mode": "cd-app",
+            "status": 0,
+            "source": "g_secret",
+            "target": "0x402798c4",
+            "key": "0x40279964",
+            "nonce_verified": true,
+            "server_key_ciphertext": "decrypted"
+          }
+        },
+        "cd-trusted": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/BASELINE-0x40000000/c16-control-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/BASELINE-0x40000000/enclave.signed.so",
+            "cd-trusted"
+          ],
+          "returncode": 0,
+          "log": "build/sgx-kms/c16-protection/BASELINE-0x40000000/BASELINE-0x40000000-cd-trusted.log",
+          "log_sha256": "d7fec3d2b075b209cd4e659ac868a685fde29ed8abc736eb77262d173a989973",
+          "result": {
+            "mode": "cd-trusted",
+            "status": 0,
+            "source": "ra_db.sk_key",
+            "target": "0x4027b1e0",
+            "key": "0x4027b280",
+            "nonce_verified": true,
+            "server_key_ciphertext": "decrypted"
+          }
+        }
+      }
+    },
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "signed": "build/sgx-kms/session-c16-2026-10-23/RADIX_ONLY-0x40000000/enclave.signed.so",
+      "signed_sha256": "9dee3a83b4af26f24b9ca1010fc04dd1a86d5e8630a26c8452bf051b80c12fc6",
+      "host": "build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000/c16-control-host",
+      "host_sha256": "73cc05b9b19d53003afc4f2d4fa4dafa4e52d735dca28a78045639ac85d2b5f8",
+      "targets": {
+        "app": {
+          "symbol": "g_secret",
+          "section": ".encbound.globalbss",
+          "address": "0x40287018"
+        },
+        "trusted": {
+          "symbol": "_ZL7g_ra_db",
+          "vector_section": ".bss",
+          "vector_address": "0x40289450",
+          "item_key_offset": 512
+        }
+      },
+      "commands": [
+        {
+          "command": [
+            "gcc",
+            "-g",
+            "-O2",
+            "-Wno-deprecated-declarations",
+            "-I/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/RADIX_ONLY-0x40000000/generated",
+            "-I/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source",
+            "-I/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/include",
+            "/home/roger/project/TEE/ENCBound-restart/apps/sgx-kms/c16_control_host.c",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/RADIX_ONLY-0x40000000/generated/enclave_u.c",
+            "-o",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000/c16-control-host",
+            "-L/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-Wl,-rpath-link,/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-lsgx_urts_sim",
+            "-lpthread",
+            "-lcrypto"
+          ],
+          "returncode": 0,
+          "log": "build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000-host-build.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "functional": {
+        "command": [
+          "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/RADIX_ONLY-0x40000000/host",
+          "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/RADIX_ONLY-0x40000000/enclave.signed.so"
+        ],
+        "returncode": 0,
+        "log": "build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000/functional.log",
+        "log_sha256": "a3a121f1011d4e6a64f4c596715495393cc8d1ecbd386298668c9bf8c82a734e"
+      },
+      "modes": {
+        "control": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000/c16-control-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/RADIX_ONLY-0x40000000/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000/RADIX_ONLY-0x40000000-control.log",
+          "log_sha256": "cef6f29830151f2f34251c920dc7ad9244bf7ca2bb944e4fefa538aa9f578a45",
+          "result": {
+            "mode": "control",
+            "status": 0,
+            "source": "host",
+            "target": "0x7fffdcb42ef0",
+            "key": "0x7fffdcb42f90",
+            "nonce_verified": true,
+            "server_key_ciphertext": "decrypted"
+          }
+        },
+        "cd-app": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000/c16-control-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/RADIX_ONLY-0x40000000/enclave.signed.so",
+            "cd-app"
+          ],
+          "returncode": -4,
+          "log": "build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000/RADIX_ONLY-0x40000000-cd-app.log",
+          "log_sha256": "6e327c023b50dc15cf303e958c96f634aecd7e95c63e6e8222899f3768da0482",
+          "result": {
+            "mode": "cd-app",
+            "stage": "target",
+            "source": "g_secret",
+            "target": "0x40286f78",
+            "key": "0x40287018"
+          }
+        },
+        "cd-trusted": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000/c16-control-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/RADIX_ONLY-0x40000000/enclave.signed.so",
+            "cd-trusted"
+          ],
+          "returncode": -4,
+          "log": "build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000/RADIX_ONLY-0x40000000-cd-trusted.log",
+          "log_sha256": "454618bcfa34b8b04d6937ff5842feb1e3fd723bd26f2485da77297f7f2f6f8e",
+          "result": {
+            "mode": "cd-trusted",
+            "stage": "target",
+            "source": "ra_db.sk_key",
+            "target": "0x4028ae70",
+            "key": "0x4028af10"
+          }
+        }
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "signed": "build/sgx-kms/session-c16-2026-10-23/MAC27-0x40000000/enclave.signed.so",
+      "signed_sha256": "03a81bf5947ee14c42903bf256377ed8c048f4d95fc06a33115559fa66ef12a8",
+      "host": "build/sgx-kms/c16-protection/MAC27-0x40000000/c16-control-host",
+      "host_sha256": "ec4e1c6c1b064fc4c384353d1b5d27ca12982fa99d6918a2d01d6847fb45779e",
+      "targets": {
+        "app": {
+          "symbol": "g_secret",
+          "section": ".encbound.globalbss",
+          "address": "0x40287018"
+        },
+        "trusted": {
+          "symbol": "_ZL7g_ra_db",
+          "vector_section": ".bss",
+          "vector_address": "0x40289450",
+          "item_key_offset": 512
+        }
+      },
+      "commands": [
+        {
+          "command": [
+            "gcc",
+            "-g",
+            "-O2",
+            "-Wno-deprecated-declarations",
+            "-I/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x40000000/generated",
+            "-I/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source",
+            "-I/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/include",
+            "/home/roger/project/TEE/ENCBound-restart/apps/sgx-kms/c16_control_host.c",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x40000000/generated/enclave_u.c",
+            "-o",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/MAC27-0x40000000/c16-control-host",
+            "-L/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-Wl,-rpath-link,/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-lsgx_urts_sim",
+            "-lpthread",
+            "-lcrypto"
+          ],
+          "returncode": 0,
+          "log": "build/sgx-kms/c16-protection/MAC27-0x40000000-host-build.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "functional": {
+        "command": [
+          "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x40000000/host",
+          "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x40000000/enclave.signed.so"
+        ],
+        "returncode": 0,
+        "log": "build/sgx-kms/c16-protection/MAC27-0x40000000/functional.log",
+        "log_sha256": "a3a121f1011d4e6a64f4c596715495393cc8d1ecbd386298668c9bf8c82a734e"
+      },
+      "modes": {
+        "control": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/MAC27-0x40000000/c16-control-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x40000000/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/sgx-kms/c16-protection/MAC27-0x40000000/MAC27-0x40000000-control.log",
+          "log_sha256": "bde2c124059a864ac839a494b5c5bb162fae545baceff2bf362a16d3f42e13f1",
+          "result": {
+            "mode": "control",
+            "status": 0,
+            "source": "host",
+            "target": "0x7ffcf8e246e0",
+            "key": "0x7ffcf8e24780",
+            "nonce_verified": true,
+            "server_key_ciphertext": "decrypted"
+          }
+        },
+        "cd-app": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/MAC27-0x40000000/c16-control-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x40000000/enclave.signed.so",
+            "cd-app"
+          ],
+          "returncode": -4,
+          "log": "build/sgx-kms/c16-protection/MAC27-0x40000000/MAC27-0x40000000-cd-app.log",
+          "log_sha256": "6e327c023b50dc15cf303e958c96f634aecd7e95c63e6e8222899f3768da0482",
+          "result": {
+            "mode": "cd-app",
+            "stage": "target",
+            "source": "g_secret",
+            "target": "0x40286f78",
+            "key": "0x40287018"
+          }
+        },
+        "cd-trusted": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/MAC27-0x40000000/c16-control-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x40000000/enclave.signed.so",
+            "cd-trusted"
+          ],
+          "returncode": -4,
+          "log": "build/sgx-kms/c16-protection/MAC27-0x40000000/MAC27-0x40000000-cd-trusted.log",
+          "log_sha256": "454618bcfa34b8b04d6937ff5842feb1e3fd723bd26f2485da77297f7f2f6f8e",
+          "result": {
+            "mode": "cd-trusted",
+            "stage": "target",
+            "source": "ra_db.sk_key",
+            "target": "0x4028ae70",
+            "key": "0x4028af10"
+          }
+        }
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "signed": "build/sgx-kms/session-c16-2026-10-23/MAC27-0x140000000/enclave.signed.so",
+      "signed_sha256": "85c9982f1dd9703c879c1467051500c241f184e79fa0857c9918e03035c2891e",
+      "host": "build/sgx-kms/c16-protection/MAC27-0x140000000/c16-control-host",
+      "host_sha256": "2270190a109e3c36815206b065df8848e17a3c21c884a995355dedc2a1219f6e",
+      "targets": {
+        "app": {
+          "symbol": "g_secret",
+          "section": ".encbound.globalbss",
+          "address": "0x140287018"
+        },
+        "trusted": {
+          "symbol": "_ZL7g_ra_db",
+          "vector_section": ".bss",
+          "vector_address": "0x140289450",
+          "item_key_offset": 512
+        }
+      },
+      "commands": [
+        {
+          "command": [
+            "gcc",
+            "-g",
+            "-O2",
+            "-Wno-deprecated-declarations",
+            "-I/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x140000000/generated",
+            "-I/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source",
+            "-I/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/include",
+            "/home/roger/project/TEE/ENCBound-restart/apps/sgx-kms/c16_control_host.c",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x140000000/generated/enclave_u.c",
+            "-o",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/MAC27-0x140000000/c16-control-host",
+            "-L/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-Wl,-rpath-link,/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-lsgx_urts_sim",
+            "-lpthread",
+            "-lcrypto"
+          ],
+          "returncode": 0,
+          "log": "build/sgx-kms/c16-protection/MAC27-0x140000000-host-build.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "functional": {
+        "command": [
+          "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x140000000/host",
+          "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x140000000/enclave.signed.so"
+        ],
+        "returncode": 0,
+        "log": "build/sgx-kms/c16-protection/MAC27-0x140000000/functional.log",
+        "log_sha256": "a3a121f1011d4e6a64f4c596715495393cc8d1ecbd386298668c9bf8c82a734e"
+      },
+      "modes": {
+        "control": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/MAC27-0x140000000/c16-control-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x140000000/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/sgx-kms/c16-protection/MAC27-0x140000000/MAC27-0x140000000-control.log",
+          "log_sha256": "cc7630fab9a6412f90ba1b6a286cf9399636f6be48cb9b5828728c36a4eb8885",
+          "result": {
+            "mode": "control",
+            "status": 0,
+            "source": "host",
+            "target": "0x7ffd644c89a0",
+            "key": "0x7ffd644c8a40",
+            "nonce_verified": true,
+            "server_key_ciphertext": "decrypted"
+          }
+        },
+        "cd-app": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/MAC27-0x140000000/c16-control-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x140000000/enclave.signed.so",
+            "cd-app"
+          ],
+          "returncode": -4,
+          "log": "build/sgx-kms/c16-protection/MAC27-0x140000000/MAC27-0x140000000-cd-app.log",
+          "log_sha256": "2c4b499014407dcd97de69be98faede9151f92709ed4b4a5281180c2dc105dac",
+          "result": {
+            "mode": "cd-app",
+            "stage": "target",
+            "source": "g_secret",
+            "target": "0x140286f78",
+            "key": "0x140287018"
+          }
+        },
+        "cd-trusted": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/c16-protection/MAC27-0x140000000/c16-control-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x140000000/enclave.signed.so",
+            "cd-trusted"
+          ],
+          "returncode": -4,
+          "log": "build/sgx-kms/c16-protection/MAC27-0x140000000/MAC27-0x140000000-cd-trusted.log",
+          "log_sha256": "4e1cacece206b1b535360ccba6f09019fb49621dfaa5759a27c4408c3fdbedca",
+          "result": {
+            "mode": "cd-trusted",
+            "stage": "target",
+            "source": "ra_db.sk_key",
+            "target": "0x14028ae70",
+            "key": "0x14028af10"
+          }
+        }
+      }
+    }
+  ],
+  "gdb_attribution": [
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "mode": "cd-app",
+      "target": "0x40286f78",
+      "resolved_key": "0x40287018",
+      "abort_code": 3,
+      "enforcing_check": "encbound_kms_encrypt span(key,16)",
+      "source_line": "source/isv_enclave.cpp:669",
+      "script": "build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000/RADIX_ONLY-0x40000000-cd-app-gdb.gdb",
+      "log": "build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000/RADIX_ONLY-0x40000000-cd-app-gdb.log",
+      "log_sha256": "abed71a9f7078c8cdd3af3c03dbc809d0be860c0febceb1e54601d01feb27315",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x000000004000af4c in encbound_require (capability=<optimized out>, width=width@entry=16, kind=kind@entry=1) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#3  encbound_kms_encrypt (key=<optimized out>, src=0x20000000005980b0 <error: Cannot access memory at address 0x20000000005980b0>, n=16, dst=0x4800000001000691 <error: Cannot access memory at address 0x4800000001000691>, iv=0x2000000000599780 <error: Cannot access memory at address 0x2000000000599780>, ivn=<optimized out>, aad=0x0, an=0, tag=0x4800000001000681) at /home/roger/project/TEE/ENCBound-restart/apps/sgx-kms/adapters.c:87",
+        "#4  0x0000000040019aee in server_put_secret_data (sealed_sk=0x5000000001001000 <error: Cannot access memory at address 0x5000000001001000>, sealed_len=<optimized out>, plain_ra_key=0x40287018 <g_secret> \"\", plain_ra_key_len=<optimized out>, ra_key_enc_sk=0x4800000001000691 <error: Cannot access memory at address 0x4800000001000691>, iv=<optimized out>, mac=0x4800000001000681 <error: Cannot access memory at address 0x4800000001000681>) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source/isv_enclave.cpp:521",
+        "#5  0x000000004001ae0f in ecall_proc_ma (s_msg4_body=<optimized out>, s_msg4_body_len=<optimized out>, s_p_ctxt=<optimized out>, c_msg3_p_quote=<optimized out>, c_msg3_p_quote_len=<optimized out>, c_p_net_ctxt=<optimized out>, sealed_mk=0x5000000001000800 <error: Cannot access memory at address 0x5000000001000800>, sealed_mk_len=<optimized out>, mk_sk=0x2000000001000410 <error: Cannot access memory at address 0x2000000001000410>, mk_sk_len=16, iv=0x2000000001000420 <error: Cannot access memory at address 0x2000000001000420>, mac=0x2000000001000430 <error: Cannot access memory at address 0x2000000001000430>, policy=0, attribute=0x0, attribute_len=0, iv1=0x2000000001000440 <error: Cannot access memory at address 0x2000000001000440>, mac1=0x2000000001000450 <error: Cannot access memory at address 0x2000000001000450>, c_msg4_body=0x4800000001000600, c_msg4_body_len=401, project_id=0x0, project_id_len=0) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source/isv_enclave.cpp:669",
+        "#6  0x0000000040008ed2 in sgx_ecall_proc_ma (pms=0x7fffffffc400) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/RADIX_ONLY-0x40000000/generated/enclave_t.c:2690"
+      ]
+    },
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "mode": "cd-trusted",
+      "target": "0x4028ae70",
+      "resolved_key": "0x4028af10",
+      "abort_code": 3,
+      "enforcing_check": "encbound_kms_encrypt span(key,16)",
+      "source_line": "source/isv_enclave.cpp:669",
+      "script": "build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000/RADIX_ONLY-0x40000000-cd-trusted-gdb.gdb",
+      "log": "build/sgx-kms/c16-protection/RADIX_ONLY-0x40000000/RADIX_ONLY-0x40000000-cd-trusted-gdb.log",
+      "log_sha256": "7191deb2be7ce549de5dc56bda9b631e88604d812270ffb736d801c4d7be3d1e",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x000000004000af4c in encbound_require (capability=<optimized out>, width=width@entry=16, kind=kind@entry=1) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#3  encbound_kms_encrypt (key=<optimized out>, src=0x20000000005980b0 <error: Cannot access memory at address 0x20000000005980b0>, n=16, dst=0x4800000001000691 <error: Cannot access memory at address 0x4800000001000691>, iv=0x2000000000599780 <error: Cannot access memory at address 0x2000000000599780>, ivn=<optimized out>, aad=0x0, an=0, tag=0x4800000001000681) at /home/roger/project/TEE/ENCBound-restart/apps/sgx-kms/adapters.c:87",
+        "#4  0x0000000040019aee in server_put_secret_data (sealed_sk=0x5000000001001000 <error: Cannot access memory at address 0x5000000001001000>, sealed_len=<optimized out>, plain_ra_key=0x4028af10 \"x\\3171\\250\\265\\275\\262q\\204\\242\\305do}\\310Z\\3175\\333\\305\\006\\267i?Fg\\264\\245E\\301V+\\260\\300\u022d\\004\\333\u018b\\026qC\\346\\277\u071b\\362\\337t\\373Kt\u062b\\223H2n[\\232\\235\\203\u0108\\302\\370l;\\225\\301\\2102\\363\\252\\346Vo\\221\\236\\a\", plain_ra_key_len=<optimized out>, ra_key_enc_sk=0x4800000001000691 <error: Cannot access memory at address 0x4800000001000691>, iv=<optimized out>, mac=0x4800000001000681 <error: Cannot access memory at address 0x4800000001000681>) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source/isv_enclave.cpp:521",
+        "#5  0x000000004001ae0f in ecall_proc_ma (s_msg4_body=<optimized out>, s_msg4_body_len=<optimized out>, s_p_ctxt=<optimized out>, c_msg3_p_quote=<optimized out>, c_msg3_p_quote_len=<optimized out>, c_p_net_ctxt=<optimized out>, sealed_mk=0x5000000001000800 <error: Cannot access memory at address 0x5000000001000800>, sealed_mk_len=<optimized out>, mk_sk=0x2000000001000410 <error: Cannot access memory at address 0x2000000001000410>, mk_sk_len=16, iv=0x2000000001000420 <error: Cannot access memory at address 0x2000000001000420>, mac=0x2000000001000430 <error: Cannot access memory at address 0x2000000001000430>, policy=0, attribute=0x0, attribute_len=0, iv1=0x2000000001000440 <error: Cannot access memory at address 0x2000000001000440>, mac1=0x2000000001000450 <error: Cannot access memory at address 0x2000000001000450>, c_msg4_body=0x4800000001000600, c_msg4_body_len=401, project_id=0x0, project_id_len=0) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source/isv_enclave.cpp:669",
+        "#6  0x0000000040008ed2 in sgx_ecall_proc_ma (pms=0x7fffffffc400) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/RADIX_ONLY-0x40000000/generated/enclave_t.c:2690"
+      ]
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "mode": "cd-app",
+      "target": "0x40286f78",
+      "resolved_key": "0x40287018",
+      "abort_code": 3,
+      "enforcing_check": "encbound_kms_encrypt span(key,16)",
+      "source_line": "source/isv_enclave.cpp:669",
+      "script": "build/sgx-kms/c16-protection/MAC27-0x40000000/MAC27-0x40000000-cd-app-gdb.gdb",
+      "log": "build/sgx-kms/c16-protection/MAC27-0x40000000/MAC27-0x40000000-cd-app-gdb.log",
+      "log_sha256": "dbb629807f53840291fa9db17e6fe83dd17ea5469bed54fc2898c6711a5b1796",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x000000004000b23c in encbound_require (capability=<optimized out>, width=width@entry=16, kind=kind@entry=1) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#3  encbound_kms_encrypt (key=<optimized out>, src=0x27e8d053005980b0 <error: Cannot access memory at address 0x27e8d053005980b0>, n=16, dst=0x4e63c1ad01000691 <error: Cannot access memory at address 0x4e63c1ad01000691>, iv=0x2768aa7500599780 <error: Cannot access memory at address 0x2768aa7500599780>, ivn=<optimized out>, aad=0x0, an=0, tag=0x4e63c1ad01000681) at /home/roger/project/TEE/ENCBound-restart/apps/sgx-kms/adapters.c:87",
+        "#4  0x0000000040019e2e in server_put_secret_data (sealed_sk=0x57acccf001001000 <error: Cannot access memory at address 0x57acccf001001000>, sealed_len=<optimized out>, plain_ra_key=0x40287018 <g_secret> \"\", plain_ra_key_len=<optimized out>, ra_key_enc_sk=0x4e63c1ad01000691 <error: Cannot access memory at address 0x4e63c1ad01000691>, iv=<optimized out>, mac=0x4e63c1ad01000681 <error: Cannot access memory at address 0x4e63c1ad01000681>) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source/isv_enclave.cpp:521",
+        "#5  0x000000004001b14f in ecall_proc_ma (s_msg4_body=<optimized out>, s_msg4_body_len=<optimized out>, s_p_ctxt=<optimized out>, c_msg3_p_quote=<optimized out>, c_msg3_p_quote_len=<optimized out>, c_p_net_ctxt=<optimized out>, sealed_mk=0x52312e2e01000800 <error: Cannot access memory at address 0x52312e2e01000800>, sealed_mk_len=<optimized out>, mk_sk=0x2485439401000410 <error: Cannot access memory at address 0x2485439401000410>, mk_sk_len=16, iv=0x2381fd3b01000420 <error: Cannot access memory at address 0x2381fd3b01000420>, mac=0x236aa21401000430 <error: Cannot access memory at address 0x236aa21401000430>, policy=0, attribute=0x0, attribute_len=0, iv1=0x24f387c101000440 <error: Cannot access memory at address 0x24f387c101000440>, mac1=0x23f2d0e801000450 <error: Cannot access memory at address 0x23f2d0e801000450>, c_msg4_body=0x4e63c1ad01000600, c_msg4_body_len=401, project_id=0x0, project_id_len=0) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source/isv_enclave.cpp:669",
+        "#6  0x0000000040008ed2 in sgx_ecall_proc_ma (pms=0x7fffffffc420) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x40000000/generated/enclave_t.c:2690"
+      ]
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "mode": "cd-trusted",
+      "target": "0x4028ae70",
+      "resolved_key": "0x4028af10",
+      "abort_code": 3,
+      "enforcing_check": "encbound_kms_encrypt span(key,16)",
+      "source_line": "source/isv_enclave.cpp:669",
+      "script": "build/sgx-kms/c16-protection/MAC27-0x40000000/MAC27-0x40000000-cd-trusted-gdb.gdb",
+      "log": "build/sgx-kms/c16-protection/MAC27-0x40000000/MAC27-0x40000000-cd-trusted-gdb.log",
+      "log_sha256": "d54852dba3d7ada4b8b6a4afe869ca16abd68c4d468093e4496b0f7fbfeeac99",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x000000004000b23c in encbound_require (capability=<optimized out>, width=width@entry=16, kind=kind@entry=1) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#3  encbound_kms_encrypt (key=<optimized out>, src=0x2744796e005980b0 <error: Cannot access memory at address 0x2744796e005980b0>, n=16, dst=0x4ab1ed8101000691 <error: Cannot access memory at address 0x4ab1ed8101000691>, iv=0x21f8aefe00599780 <error: Cannot access memory at address 0x21f8aefe00599780>, ivn=<optimized out>, aad=0x0, an=0, tag=0x4ab1ed8101000681) at /home/roger/project/TEE/ENCBound-restart/apps/sgx-kms/adapters.c:87",
+        "#4  0x0000000040019e2e in server_put_secret_data (sealed_sk=0x56f9680d01001000 <error: Cannot access memory at address 0x56f9680d01001000>, sealed_len=<optimized out>, plain_ra_key=0x4028af10 \"\\325;\\31620RYpD-\\320\\325\\3628\\361y\\257\\vE\\237)2\\037\\370~\u0515\\373r\\220\\214I^O\\336\u01c3\\243O\\322\\361\\2369\\300\\344\\256\\354t\\tk\\266e\\275b\\325L\\356\\016#\\n\u028e\\263\\323Q\\353\\320\u05be\\353dJ\\226\\017\\256\\330`\\224\\2151\\a\", plain_ra_key_len=<optimized out>, ra_key_enc_sk=0x4ab1ed8101000691 <error: Cannot access memory at address 0x4ab1ed8101000691>, iv=<optimized out>, mac=0x4ab1ed8101000681 <error: Cannot access memory at address 0x4ab1ed8101000681>) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source/isv_enclave.cpp:521",
+        "#5  0x000000004001b14f in ecall_proc_ma (s_msg4_body=<optimized out>, s_msg4_body_len=<optimized out>, s_p_ctxt=<optimized out>, c_msg3_p_quote=<optimized out>, c_msg3_p_quote_len=<optimized out>, c_p_net_ctxt=<optimized out>, sealed_mk=0x547e6d8d01000800 <error: Cannot access memory at address 0x547e6d8d01000800>, sealed_mk_len=<optimized out>, mk_sk=0x26da8dcd01000410 <error: Cannot access memory at address 0x26da8dcd01000410>, mk_sk_len=16, iv=0x23bba5dd01000420 <error: Cannot access memory at address 0x23bba5dd01000420>, mac=0x2332006601000430 <error: Cannot access memory at address 0x2332006601000430>, policy=0, attribute=0x0, attribute_len=0, iv1=0x2689a29c01000440 <error: Cannot access memory at address 0x2689a29c01000440>, mac1=0x24c9c0d501000450 <error: Cannot access memory at address 0x24c9c0d501000450>, c_msg4_body=0x4ab1ed8101000600, c_msg4_body_len=401, project_id=0x0, project_id_len=0) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source/isv_enclave.cpp:669",
+        "#6  0x0000000040008ed2 in sgx_ecall_proc_ma (pms=0x7fffffffc410) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x40000000/generated/enclave_t.c:2690"
+      ]
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "mode": "cd-app",
+      "target": "0x140286f78",
+      "resolved_key": "0x140287018",
+      "abort_code": 3,
+      "enforcing_check": "encbound_kms_encrypt span(key,16)",
+      "source_line": "source/isv_enclave.cpp:669",
+      "script": "build/sgx-kms/c16-protection/MAC27-0x140000000/MAC27-0x140000000-cd-app-gdb.gdb",
+      "log": "build/sgx-kms/c16-protection/MAC27-0x140000000/MAC27-0x140000000-cd-app-gdb.log",
+      "log_sha256": "d193ebf0921ad39e8ccbe76ec0be1b9d911a53e2bc44345ac2309a8498a6c819",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x000000014000b23c in encbound_require (capability=<optimized out>, width=width@entry=16, kind=kind@entry=1) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#3  encbound_kms_encrypt (key=<optimized out>, src=0x2013f3fb005980b0 <error: Cannot access memory at address 0x2013f3fb005980b0>, n=16, dst=0x49af84a901000691 <error: Cannot access memory at address 0x49af84a901000691>, iv=0x230ab7dd00599780 <error: Cannot access memory at address 0x230ab7dd00599780>, ivn=<optimized out>, aad=0x0, an=0, tag=0x49af84a901000681) at /home/roger/project/TEE/ENCBound-restart/apps/sgx-kms/adapters.c:87",
+        "#4  0x0000000140019e2e in server_put_secret_data (sealed_sk=0x553942e501001000 <error: Cannot access memory at address 0x553942e501001000>, sealed_len=<optimized out>, plain_ra_key=0x140287018 <g_secret> \"\", plain_ra_key_len=<optimized out>, ra_key_enc_sk=0x49af84a901000691 <error: Cannot access memory at address 0x49af84a901000691>, iv=<optimized out>, mac=0x49af84a901000681 <error: Cannot access memory at address 0x49af84a901000681>) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source/isv_enclave.cpp:521",
+        "#5  0x000000014001b14f in ecall_proc_ma (s_msg4_body=<optimized out>, s_msg4_body_len=<optimized out>, s_p_ctxt=<optimized out>, c_msg3_p_quote=<optimized out>, c_msg3_p_quote_len=<optimized out>, c_p_net_ctxt=<optimized out>, sealed_mk=0x53825df101000800 <error: Cannot access memory at address 0x53825df101000800>, sealed_mk_len=<optimized out>, mk_sk=0x27ff159001000410 <error: Cannot access memory at address 0x27ff159001000410>, mk_sk_len=16, iv=0x256bf63501000420 <error: Cannot access memory at address 0x256bf63501000420>, mac=0x2721f30401000430 <error: Cannot access memory at address 0x2721f30401000430>, policy=0, attribute=0x0, attribute_len=0, iv1=0x263ea4af01000440 <error: Cannot access memory at address 0x263ea4af01000440>, mac1=0x23fc6b3401000450 <error: Cannot access memory at address 0x23fc6b3401000450>, c_msg4_body=0x49af84a901000600, c_msg4_body_len=401, project_id=0x0, project_id_len=0) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source/isv_enclave.cpp:669",
+        "#6  0x0000000140008ed2 in sgx_ecall_proc_ma (pms=0x7fffffffc410) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x140000000/generated/enclave_t.c:2690"
+      ]
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "mode": "cd-trusted",
+      "target": "0x14028ae70",
+      "resolved_key": "0x14028af10",
+      "abort_code": 3,
+      "enforcing_check": "encbound_kms_encrypt span(key,16)",
+      "source_line": "source/isv_enclave.cpp:669",
+      "script": "build/sgx-kms/c16-protection/MAC27-0x140000000/MAC27-0x140000000-cd-trusted-gdb.gdb",
+      "log": "build/sgx-kms/c16-protection/MAC27-0x140000000/MAC27-0x140000000-cd-trusted-gdb.log",
+      "log_sha256": "ee5f31b5a5d51119433c0460b8435d8c1e8bff6ead6480e83b71b46aef3dbe00",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x000000014000b23c in encbound_require (capability=<optimized out>, width=width@entry=16, kind=kind@entry=1) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#3  encbound_kms_encrypt (key=<optimized out>, src=0x26c00e12005980b0 <error: Cannot access memory at address 0x26c00e12005980b0>, n=16, dst=0x4fd6966801000691 <error: Cannot access memory at address 0x4fd6966801000691>, iv=0x231872e100599780 <error: Cannot access memory at address 0x231872e100599780>, ivn=<optimized out>, aad=0x0, an=0, tag=0x4fd6966801000681) at /home/roger/project/TEE/ENCBound-restart/apps/sgx-kms/adapters.c:87",
+        "#4  0x0000000140019e2e in server_put_secret_data (sealed_sk=0x5331f61c01001000 <error: Cannot access memory at address 0x5331f61c01001000>, sealed_len=<optimized out>, plain_ra_key=0x14028af10 \"\\004'\\n1\\352\\006\\235j=\\272\\253[|u\\345\\006\\025\\024\\311\\343o-s\\242\\265\\214\\033\u0418\\216\\240]\\t\\217\\251o\\016\\364)\\276\\251\\a-\\370\\241C1\\177(\\305\\323\\a\\314\\006\\276\\372o\\251F\\377h\\277V6\\337\\315\\026\\313\\366\\025.\\303}\\273,\\243\\036\\360\\241\\036\\a\", plain_ra_key_len=<optimized out>, ra_key_enc_sk=0x4fd6966801000691 <error: Cannot access memory at address 0x4fd6966801000691>, iv=<optimized out>, mac=0x4fd6966801000681 <error: Cannot access memory at address 0x4fd6966801000681>) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source/isv_enclave.cpp:521",
+        "#5  0x000000014001b14f in ecall_proc_ma (s_msg4_body=<optimized out>, s_msg4_body_len=<optimized out>, s_p_ctxt=<optimized out>, c_msg3_p_quote=<optimized out>, c_msg3_p_quote_len=<optimized out>, c_p_net_ctxt=<optimized out>, sealed_mk=0x5013e57201000800 <error: Cannot access memory at address 0x5013e57201000800>, sealed_mk_len=<optimized out>, mk_sk=0x250f571401000410 <error: Cannot access memory at address 0x250f571401000410>, mk_sk_len=16, iv=0x207150f901000420 <error: Cannot access memory at address 0x207150f901000420>, mac=0x2590baf001000430 <error: Cannot access memory at address 0x2590baf001000430>, policy=0, attribute=0x0, attribute_len=0, iv1=0x2596d4bb01000440 <error: Cannot access memory at address 0x2596d4bb01000440>, mac1=0x2238a10c01000450 <error: Cannot access memory at address 0x2238a10c01000450>, c_msg4_body=0x4fd6966801000600, c_msg4_body_len=401, project_id=0x0, project_id_len=0) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/source/isv_enclave.cpp:669",
+        "#6  0x0000000140008ed2 in sgx_ecall_proc_ma (pms=0x7fffffffc410) at /home/roger/project/TEE/ENCBound-restart/build/sgx-kms/session-c16-2026-10-23/MAC27-0x140000000/generated/enclave_t.c:2690"
+      ]
+    }
+  ],
+  "inputs": {
+    "apps/sgx-kms/c16_control_host.c": "b775d471dda7efe4c1efe0acf2d105e71d7865965a0dcf4d0a1da32a01564549",
+    "apps/sgx-kms/c16_protection.py": "b6485b6591aade9cc6f1ad6314bd6d885e5e548fbc91836972525c78dc2e4904",
+    "apps/sgx-kms/c16_layout.c": "21ff5b3f08710180aef030eb00c6d27cebe424bde1375797310da62702d63005",
+    "apps/sgx-kms/adapters.c": "b09479f60e3eb8aea1644047bec2b98dd88667d66bb828b65c72c7110188daa8"
+  },
+  "notes": [
+    "The valid current-session RA/message-2 and message-4 GCM prefix is reused unchanged; only c_p_net_ctxt names a different key.",
+    "cd-app targets the image own zero-initialized g_secret global; cd-trusted targets the pinned SDK RA item sk_key, whose value is the peer-derived session SK.",
+    "The host finds symbols in the image .symtab and reads the simulated process mapped g_ra_db vector; this is a test premise, not a production address leak.",
+    "The functional 103-ECALL benign host still passes in all four configurations, including six successful C16 calls."
+  ],
+  "limits": [
+    "SDK SIM only; no SGX hardware isolation.",
+    "No arbitrary-address sweep, general secret extraction or code execution is claimed.",
+    "The hostile target is one 16-byte key range per mode; both protected profiles reject the unchanged raw pointer.",
+    "Full original-host message-3/quote/IAS, PSE, Barbican, hardware, cleanup/exhaustion and performance remain unestablished."
+  ]
+}

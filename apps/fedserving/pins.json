@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/H-W-Huang/FedServing",
+  "revision": "da49236c4ae18cf3c9cdde5d8df6fd7505d442c0",
+  "files": {
+    "combiner_sgx/Enclave/Enclave.cpp": "e535dc011017b5298b9f5fc735b089572780984c36ec9e3933a8fdca8fac7dcc",
+    "combiner_sgx/Enclave/Enclave.edl": "ab473672950d9bae87940c8da739d79650eb4d035e0f5041520752c2e28ba513",
+    "combiner_sgx/aggregator.h": "be741355219bebba37533f7ca55cef04ea5af99b0c9f023f8f14135bda825914",
+    "README.md": "16d1793793ea36d80d5f8f6125f2c44f954775a560e146dcba04ec6a0c77e6d9"
+  }
+}

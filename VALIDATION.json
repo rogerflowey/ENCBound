@@ -1,0 +1,528 @@
+{
+  "date": "2026-10-30",
+  "kind": "fresh artifact selection-update validation",
+  "execution_root": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/ENCBound-paper",
+  "final_destination": "/home/roger/project/TEE/ENCBound-paper",
+  "checks": [
+    {
+      "name": "build-tools",
+      "status": "pass",
+      "command": "make -j2 all",
+      "execution_class": "build",
+      "scope": "LLVM pass and current Intel generator",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/build-tools.log",
+      "log_sha256": "2fbd3453c2d7827b4f216768f21db00e4af103348dfcfbf72f6e61aba69cc7c3",
+      "output_excerpt": [
+        "Alert ocaml_deprecated_auto_include: ",
+        "OCaml's lib directory layout changed in 5.0. The unix subdirectory has been",
+        "automatically added to the search path, but you should add -I +unix to the",
+        "command-line to silence this alert (e.g. by adding unix to the list of",
+        "libraries in your dune file, or adding use_unix to your _tags file for",
+        "ocamlbuild, or using -package unix for ocamlfind).",
+        "cp /home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/ENCBound-paper/build/edger8r/_build/Edger8r.native /home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/ENCBound-paper/build/edger8r/sgx_edger8r",
+        "make[1]: Leaving directory '/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/ENCBound-paper/tools/edger8r'"
+      ]
+    },
+    {
+      "name": "core",
+      "status": "pass",
+      "command": "make test",
+      "execution_class": "native/compiler",
+      "scope": "Runtime, allocator, adapters, current native bridge, compiler and SDK-pin checks",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/core.log",
+      "log_sha256": "17368fbf0415eb42636a777afb6c09aee0230524eb99ffb580564f51b8948da6",
+      "output_excerpt": [
+        "make[1]: Leaving directory '/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/ENCBound-paper/pass'",
+        "python3 tests/sdk_pins_test.py",
+        "sdk-pins regression: pinned: PASS",
+        "sdk-pins regression: substituted: PASS",
+        "sdk-pins regression: same_name_bad_first: PASS",
+        "sdk-pins regression: same_name_bad_last: PASS",
+        "sdk-pins regression: missing: PASS",
+        "sdk-pins regression: relative: PASS"
+      ]
+    },
+    {
+      "name": "juliet-oracle",
+      "status": "pass",
+      "command": "make juliet-test",
+      "execution_class": "native test harness",
+      "scope": "Nine output/attribution oracle regression tests",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/juliet-oracle.log",
+      "log_sha256": "4d4b1bdc203f92ad22355c451a7f14b4b151ab6d632f43582586dae718022361",
+      "output_excerpt": [
+        "python3 tests/juliet/oracle_test.py",
+        ".........",
+        "----------------------------------------------------------------------",
+        "Ran 9 tests in 0.121s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "name": "juliet",
+      "status": "pass",
+      "command": "python3 tools/juliet.py --archive <pinned local archive> --output build/juliet/update-validation",
+      "execution_class": "SDK SIM / GDB attribution",
+      "scope": "Fresh 129 matched cases, 774 execution rows, frontend/codegen O0; outcome counts equal the original dated summary",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/juliet.log",
+      "log_sha256": "3b17f5f95c6929f95ced096f75d9273f617f0be1019bcf01018790dabc95c73e",
+      "output_excerpt": [
+        "      \"matched\": 129",
+        "    },",
+        "    \"MAC27\": {",
+        "      \"matched\": 129",
+        "    }",
+        "  },",
+        "  \"note\": \"Rough execution outcomes, not a bug-prevention rate. Bad-path reachability/slot geometry not exhaustively attributed.\"",
+        "}"
+      ],
+      "result": {
+        "mode": "SDK_SIM",
+        "candidate_cases": 286,
+        "selected": 152,
+        "matched_build_cases": 129,
+        "outcomes": {
+          "BASELINE": {
+            "good": {
+              "returned": 129
+            },
+            "bad": {
+              "unattributed_signal": 53,
+              "returned": 76
+            }
+          },
+          "RADIX_ONLY": {
+            "good": {
+              "returned": 129
+            },
+            "bad": {
+              "returned": 45,
+              "timeout": 1,
+              "attributed_check_rejection": 82,
+              "unattributed_signal": 1
+            }
+          },
+          "MAC27": {
+            "good": {
+              "returned": 129
+            },
+            "bad": {
+              "returned": 21,
+              "attributed_check_rejection": 108
+            }
+          }
+        },
+        "good_output_comparison": {
+          "RADIX_ONLY": {
+            "matched": 129
+          },
+          "MAC27": {
+            "matched": 129
+          }
+        },
+        "note": "Rough execution outcomes, not a bug-prevention rate. Bad-path reachability/slot geometry not exhaustively attributed."
+      }
+    },
+    {
+      "name": "sk-native",
+      "status": "pass",
+      "command": "python3 apps/sk-sgx/native.py --out build/sk-sgx/update-native",
+      "execution_class": "native fake platform / recording SDK spies",
+      "scope": "RADIX_ONLY 54 and MAC27 56 checks, zero failures",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/sk-native.log",
+      "log_sha256": "6044c24cffddbb6a232297db6c17e91d6af63e242207e47192de27fbb6ca68f9",
+      "output_excerpt": [
+        "RADIX_ONLY sk_sgx_adapters_test    54 checks, 0 failures",
+        "MAC27 sk_sgx_adapters_test    56 checks, 0 failures"
+      ]
+    },
+    {
+      "name": "usig-native",
+      "status": "pass",
+      "command": "python3 apps/go-consensus-usig/native.py --out build/usig/update-native",
+      "execution_class": "native fake platform / recording SDK spies",
+      "scope": "RADIX_ONLY 81 and MAC27 83 checks, zero failures",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/usig-native.log",
+      "log_sha256": "06ca14c65beb1cd9a6cc7f9fa0250e1bd3e1144c33a1f4c1834be32aeae882ea",
+      "output_excerpt": [
+        "RADIX_ONLY usig_adapters_test      81 checks, 0 failures",
+        "",
+        "MAC27 usig_adapters_test      83 checks, 0 failures",
+        ""
+      ]
+    },
+    {
+      "name": "wallet",
+      "status": "pass",
+      "command": "tools/with-integration-defaults.sh make -C apps/sgx-wallet PROFILE=MAC27 APP_FRONTEND_OPT=-O2 APP_CODEGEN_OPT=-O2 benign boundary upstream",
+      "execution_class": "SDK SIM",
+      "scope": "MAC27 low-base benign, boundary, original-host and closure checks; full preset",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/wallet-preset.log",
+      "log_sha256": "375cce9d5fd008b55e223c6adaffb265bb0cb7e15ded60d4f45b70ac87d8fa23",
+      "output_excerpt": [
+        "upstream-host: ok: cli-add (rc=0)",
+        "upstream-host: ok: cli-show-after-add (rc=0)",
+        "upstream-host: ok: cli-change (rc=0)",
+        "upstream-host: ok: cli-remove (rc=0)",
+        "upstream-host: ok: cli-show-after-remove (rc=0)",
+        "upstream-host: ok: cli-wrong-password (rc=0)",
+        "UPSTREAM HOST PASS (logs: /home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/ENCBound-paper/build/evaluation-runs/wallet-upstream/SIM-MAC27-dbg1-feO2-cgO2/20261030T111010-89xvq7_9)",
+        "make: Leaving directory '/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/ENCBound-paper/apps/sgx-wallet'"
+      ]
+    },
+    {
+      "name": "wallet-host-final",
+      "status": "pass",
+      "command": "tools/run_upstream_host.sh build/apps/sgx-wallet-modified/SIM-MAC27-dbg1-feO2-cgO2",
+      "execution_class": "SDK SIM",
+      "scope": "Original host after making the shell SDK default artifact-relative",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/wallet-host-final.log",
+      "log_sha256": "aebdf5e6b34ed85212756403179412444e050f6aa3f0d950bd970cb48f835ea6",
+      "output_excerpt": [
+        "upstream-host: ok: cli-create (rc=0)",
+        "upstream-host: ok: cli-add (rc=0)",
+        "upstream-host: ok: cli-show-after-add (rc=0)",
+        "upstream-host: ok: cli-change (rc=0)",
+        "upstream-host: ok: cli-remove (rc=0)",
+        "upstream-host: ok: cli-show-after-remove (rc=0)",
+        "upstream-host: ok: cli-wrong-password (rc=0)",
+        "UPSTREAM HOST PASS (logs: /home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/ENCBound-paper/build/evaluation-runs/wallet-upstream/SIM-MAC27-dbg1-feO2-cgO2/20261030T111608-1v4c1p_9)"
+      ]
+    },
+    {
+      "name": "wallet-oracles",
+      "status": "pass",
+      "command": "tools/run_upstream_host.sh --selftest; tools/run_overflow_attribution.sh --selftest",
+      "execution_class": "native transcript/oracle controls",
+      "scope": "Original-host and overflow-attribution checker controls",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/wallet-oracles.log",
+      "log_sha256": "8dbd47815e303170f54c65f1dfcb0f9fa80b1694d3651195df4cd1c4e112004e",
+      "output_excerpt": [
+        "selftest: ok: obsolete_adapter_path (fail)",
+        "selftest: ok: success_then_unrelated_crash (fail)",
+        "selftest: ok: wrong_width (fail)",
+        "selftest: ok: wrong_allocation_geometry (fail)",
+        "selftest: ok: wrong_host_backing (fail)",
+        "selftest: ok: missing_application_frame (fail)",
+        "selftest: ok: unrelated_stop (fail)",
+        "OVERFLOW ATTRIBUTION ORACLE SELFTEST PASS"
+      ]
+    },
+    {
+      "name": "fedserving",
+      "status": "pass",
+      "command": "tools/with-integration-defaults.sh python3 apps/fedserving/run.py --profile RADIX_ONLY --out build/fedserving/update-validation",
+      "execution_class": "SDK SIM",
+      "scope": "RADIX_ONLY low-base six complete numerical responses and five negative oracle controls",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/fedserving.log",
+      "log_sha256": "372a682f725d406c292d3907ba22366a89032adb075bf693ca7d16bfa123263b",
+      "output_excerpt": [
+        "RADIX_ONLY PASS 6 complete numerical responses"
+      ]
+    },
+    {
+      "name": "posup",
+      "status": "pass",
+      "command": "python3 apps/posup-trustfl/build.py --app POSUP --profile MAC27 --out build/posup-update/MAC27",
+      "execution_class": "SDK SIM",
+      "scope": "MAC27 low-base functional workflow: 54 calls, 234 comparisons; closure/startup/ownership audits",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/posup.log",
+      "log_sha256": "bd40081f8d3685395adb06dfb53c009be0d368e8827ab99f37bcab39fe0cfa66",
+      "output_excerpt": [
+        "POSUP MAC27 sizing-sign PASS",
+        "POSUP MAC27 extent PASS",
+        "POSUP MAC27 final-config PASS",
+        "POSUP MAC27 final-sign PASS",
+        "POSUP MAC27 metadata PASS",
+        "POSUP MAC27 host PASS",
+        "POSUP MAC27 audit PASS",
+        "POSUP MAC27 functional PASS"
+      ]
+    },
+    {
+      "name": "trustfl",
+      "status": "pass",
+      "command": "python3 apps/posup-trustfl/build.py --app TrustFL --profile MAC27 --out build/trustfl-update/MAC27",
+      "execution_class": "SDK SIM",
+      "scope": "MAC27 low-base functional workflow: 5 calls, 5820000 comparisons; closure/startup/ownership audits",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/trustfl.log",
+      "log_sha256": "954dd9a964ded8bbbf49e160802daff10ddc873b885ffde352e193efe1982ebf",
+      "output_excerpt": [
+        "TrustFL MAC27 sizing-sign PASS",
+        "TrustFL MAC27 extent PASS",
+        "TrustFL MAC27 final-config PASS",
+        "TrustFL MAC27 final-sign PASS",
+        "TrustFL MAC27 metadata PASS",
+        "TrustFL MAC27 host PASS",
+        "TrustFL MAC27 audit PASS",
+        "TrustFL MAC27 functional PASS"
+      ]
+    },
+    {
+      "name": "sk-probe",
+      "status": "pass",
+      "command": "python3 apps/sk-sgx/probe.py --profile MAC27 --scalar --out build/sk-sgx/update-MAC27",
+      "execution_class": "compiler/admission",
+      "scope": "Complete ten-unit selected enclave closure",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/sk-probe.log",
+      "log_sha256": "ec63242bef51812e22b41e43551f7632e2a96fbfcdb1f43aecba72a0882af607",
+      "output_excerpt": [
+        "ge25519-application PASS",
+        "sc25519-application PASS",
+        "sha256blocks-application PASS",
+        "sha256hash-application PASS",
+        "sha512blocks-application PASS",
+        "sha512hash-application PASS",
+        "verify-application PASS",
+        "Complete closure admission: True /home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/ENCBound-paper/build/sk-sgx/update-MAC27"
+      ]
+    },
+    {
+      "name": "sk-functional",
+      "status": "pass",
+      "command": "python3 apps/sk-sgx/finish.py --build build/sk-sgx/update-MAC27 --base 0x40000000",
+      "execution_class": "SDK SIM",
+      "scope": "MAC27 low-base: 68 ECALLs, 21 independently verified signatures and original provider; exact closure audit",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/sk-finish.log",
+      "log_sha256": "3e06a62c51d12312e73522082022aaf905d11e485927b0606b96e12f4e43dcad",
+      "output_excerpt": [
+        "sizing-sign PASS",
+        "required PASS",
+        "final-config PASS",
+        "final-sign PASS",
+        "metadata PASS",
+        "host PASS",
+        "audit PASS",
+        "run PASS"
+      ]
+    },
+    {
+      "name": "oblidb-build",
+      "status": "pass",
+      "command": "tools/with-integration-defaults.sh make -C apps/oblidb PROFILE=MAC27 BUILD=<artifact>/build/oblidb/update-MAC27 all",
+      "execution_class": "build/audits",
+      "scope": "48 application objects; closure, source, SDK, placement and ownership checks",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/oblidb.log",
+      "log_sha256": "55bb0c3ce6009de9622c7bd0775e331d9fee10ff0dff815a7a8579b92323be6f",
+      "output_excerpt": [
+        "    8432",
+        "  ],",
+        "  \"symbol\": \"encbound_early_bootstrap\"",
+        "}",
+        "APPLICATION ERRNO PROVIDER / OWNERSHIP PASS",
+        "APPLICATION GLOBAL OWNERSHIP / ELF PERMISSIONS PASS",
+        "OBLIDB COMPLETE AUDIT PASS MAC27 48 application objects",
+        "make: Leaving directory '/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/ENCBound-paper/apps/oblidb'"
+      ]
+    },
+    {
+      "name": "oblidb-functional",
+      "status": "pass",
+      "command": "LD_LIBRARY_PATH=<SDK>/lib64 ENCBOUND_TEST_BASE=0x40000000 build/oblidb/update-MAC27/host/host build/oblidb/update-MAC27/enclave/enclave.signed.so",
+      "execution_class": "SDK SIM",
+      "scope": "MAC27 low-base: 1117 ECALLs, 336384 byte comparisons and nine tamper recoveries",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/oblidb-functional.log",
+      "log_sha256": "e02aa15dabd0b78f022308f4d53d5cd397960c998dd8da0f53a16adc63c644cf",
+      "output_excerpt": [
+        "loaded app page permissions: PASS (6 ranges; zero means not applicable)",
+        "{\"result\":\"PASS\",\"calls\":1117,\"byte_comparisons\":336384,\"reads\":666,\"writes\":648,\"structures\":9,\"tamper_recoveries\":9}"
+      ]
+    },
+    {
+      "name": "usig-functional",
+      "status": "pass",
+      "command": "python3 apps/go-consensus-usig/build.py --profile MAC27 --out build/usig/update-MAC27-final",
+      "execution_class": "SDK SIM",
+      "scope": "MAC27 low-base: 81 ECALLs, 19 Ed25519, 7 P-256 and 13 HMAC oracle checks; exact closure audit",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/usig-final.log",
+      "log_sha256": "7c63f222b1acd3a7ef6832dfce11b051486de63b0a0ee2c80a58e8bae26062fc",
+      "output_excerpt": [
+        "sizing-sign PASS",
+        "extent PASS",
+        "final-config PASS",
+        "final-sign PASS",
+        "metadata PASS",
+        "host PASS",
+        "audit PASS",
+        "run PASS"
+      ]
+    },
+    {
+      "name": "crust",
+      "status": "pass",
+      "command": "python3 apps/crust-selected/run.py --profile MAC27 --out-dir build/crust-selected/update-MAC27",
+      "execution_class": "SDK SIM / separate GDB terminal-callback attribution",
+      "scope": "MAC27 at low/high bases: 90 calls, 44 snapshots and 22016 compared bytes per row; expected terminal restore remains explicit",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/crust.log",
+      "log_sha256": "8dbb9650ded00812620c6c1db89610d0411fc11e9df8cdeca066db169a0fcab8",
+      "output_excerpt": [
+        "APPLICATION GLOBAL OWNERSHIP / ELF PERMISSIONS PASS",
+        "CRUST SELECTED CLOSED INVENTORY PASS MAC27 0x140000000",
+        "MAC27-0x140000000-host PASS",
+        "MAC27-0x140000000-functional PASS",
+        "MAC27-0x140000000-completion PASS",
+        "MAC27-0x140000000-completion-trace PASS",
+        "MAC27-0x140000000 SDK SIM PASS {'result': 'PASS', 'calls': 90, 'snapshots': 44, 'compared_bytes': 22016, 'retained_buffers': 3}",
+        "CRUST SELECTED SDK SIM PASS 2 configurations"
+      ]
+    },
+    {
+      "name": "audit-negative-controls",
+      "status": "pass",
+      "command": "python3 <working-repo>/build/paper-update-2026-10-30/negative-controls.py",
+      "execution_class": "validation controls",
+      "scope": "USIG/sk-sgx reject extra flags and missing errno prefixes (four controls); source helper rejects modified source; restored controls pass",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/negative-controls.log",
+      "log_sha256": "69aed47c6b2266b75c838259f4780549f865261c9c5b46b07f9fec74bad977ba",
+      "output_excerpt": [
+        "    \"status\": \"rejected\"",
+        "  },",
+        "  {",
+        "    \"app\": \"FedServing\",",
+        "    \"control\": \"original-restored\",",
+        "    \"status\": \"pass\"",
+        "  }",
+        "]"
+      ],
+      "result": [
+        {
+          "app": "go-consensus-usig",
+          "control": "extra-flag",
+          "status": "rejected",
+          "returncode": 1
+        },
+        {
+          "app": "go-consensus-usig",
+          "control": "missing-errno-prefix",
+          "status": "rejected",
+          "returncode": 1
+        },
+        {
+          "app": "go-consensus-usig",
+          "control": "original-restored",
+          "status": "pass"
+        },
+        {
+          "app": "sk-sgx",
+          "control": "extra-flag",
+          "status": "rejected",
+          "returncode": 1
+        },
+        {
+          "app": "sk-sgx",
+          "control": "missing-errno-prefix",
+          "status": "rejected",
+          "returncode": 1
+        },
+        {
+          "app": "sk-sgx",
+          "control": "original-restored",
+          "status": "pass"
+        },
+        {
+          "app": "FedServing",
+          "control": "modified-source",
+          "status": "rejected"
+        },
+        {
+          "app": "FedServing",
+          "control": "original-restored",
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "source_preparation": [
+    {
+      "name": "FedServing",
+      "revision": "da49236c4ae18cf3c9cdde5d8df6fd7505d442c0",
+      "file_pins": 4,
+      "status": "pass",
+      "route": "exact local cache; Git commit retained"
+    },
+    {
+      "name": "ObliDB",
+      "revision": "6de5ba15eb27b4ddc86481e2eb8db549159344ea",
+      "file_pins": 8,
+      "status": "pass",
+      "route": "exact local cache; Git commit retained"
+    },
+    {
+      "name": "POSUP",
+      "revision": "9a6e181763535fd927bca1749cd804e5d77f2f73",
+      "file_pins": 17,
+      "status": "pass",
+      "route": "exact local cache; Git commit retained"
+    },
+    {
+      "name": "TrustFL",
+      "revision": "9e05a7e160bbf4fa1e7a426767f69158ea89b22d",
+      "file_pins": 655,
+      "status": "pass",
+      "route": "exact local cache; Git commit retained"
+    },
+    {
+      "name": "crust-sworker",
+      "revision": "a109e0a60a4ea256d884fde192b06b025e8bd6b1",
+      "file_pins": 7,
+      "status": "pass",
+      "route": "exact local cache; Git commit retained"
+    },
+    {
+      "name": "sgx-wallet",
+      "revision": "8d15df13e1e37b95d233b3911b5e21ba32a8b962",
+      "file_pins": 15,
+      "status": "pass",
+      "route": "exact local cache; Git commit retained"
+    },
+    {
+      "name": "go-consensus-usig",
+      "revision": "3a733ffd036a5b66d578f9002fca76ede40f8d47",
+      "file_pins": 29,
+      "status": "pass",
+      "route": "exact local source cache"
+    }
+  ],
+  "static_checks": {
+    "syntax": {
+      "json": 72,
+      "python": 168,
+      "shell": 6
+    },
+    "implementation_body_byte_equality": {
+      "status": "pass",
+      "files": 269
+    },
+    "original_dated_record_byte_equality": {
+      "status": "pass",
+      "files": 58
+    },
+    "original_juliet_row_byte_equality": "pass",
+    "research_and_generated_output_exclusion": "pass",
+    "entrypoint_links": "pass",
+    "private_key_and_ELF_scan": "pass"
+  },
+  "previous_validation": {
+    "file": "VALIDATION-2026-10-27.json",
+    "sha256": "6af690544224b0f595370f065b68e26d6b4b84e2f15b1b713ae61eab159dd467",
+    "meaning": "Unchanged historical export validation; original five app matrices/benchmark checks were not rerun in this update."
+  },
+  "packaging_corrections": [
+    "Use configurable SGX_SDK/PINNED_SRC and artifact-local source defaults for the added recipes.",
+    "Extend the existing source helper to retain pinned Git commits required by unmodified committed-source preparers; exact local caches verified.",
+    "Relocate the two required Crust/STL diagnostic inputs byte for byte into tests/fixtures/crust.",
+    "Retain the current modified Intel generator for wallet; include its pin/audit/attribution/original-host helpers.",
+    "USIG and sk-sgx exact frontend-flag audits account for the two application-errno includes prepended by the current compiler driver; four altered-flag controls reject.",
+    "Route fresh record defaults into build/evidence and create parent directories.",
+    "Retain Juliet original rows and fresh validation rows separately; no original result is relabeled."
+  ],
+  "limitations": [
+    "No SGX hardware execution or fresh performance/memory measurement.",
+    "Fresh added-application checks cover only the configurations named per check; full historical matrices and all hostile controls were not rerun.",
+    "The source helper network routes were not exercised; exact local-cache and Git-commit paths were exercised.",
+    "Completion means the selected bounded ECALL/dependency closure; original README/evidence exclusions remain.",
+    "Juliet normal bad-case returns do not establish prevention or containment."
+  ],
+  "behavior_change": "No C/C++/LLVM-pass/OCaml implementation body changed; only packaging, source/build paths, preparation and exact audit expectations were adapted."
+}

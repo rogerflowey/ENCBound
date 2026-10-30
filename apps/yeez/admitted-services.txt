@@ -1,0 +1,9 @@
+yeez_read_rand = encbound_yeez_read_rand
+yeez_encrypt = encbound_yeez_encrypt
+yeez_decrypt = encbound_yeez_decrypt
+yeez_cmac = encbound_yeez_cmac
+yeez_sha256 = encbound_yeez_sha256
+yeez_memset_s = encbound_yeez_memset_s
+yeez_dh_init = encbound_yeez_dh_init
+yeez_dh_msg1 = encbound_yeez_dh_msg1
+yeez_dh_msg3 = encbound_yeez_dh_msg3

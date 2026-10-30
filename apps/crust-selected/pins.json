@@ -1,0 +1,15 @@
+{
+  "repository": "crustio/crust-sworker",
+  "revision": "a109e0a60a4ea256d884fde192b06b025e8bd6b1",
+  "license": "Upstream LICENSE contains GNU GPL version 3",
+  "files": {
+    "LICENSE": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "src/enclave/utils/SafeLock.cpp": "5d4b7116179781d07736e3083be671979311919320f79cab5a67def220b72835",
+    "src/enclave/utils/SafeLock.h": "948808e84e4279d48670955ca2989a50a1e40a65e5e76eee7196d01252a32170",
+    "src/enclave/Enclave.cpp": "697f454d78ce9dd4f9769af58f7620571c3086ae5ece7c622cb160e720b31607",
+    "src/enclave/Enclave.edl": "a2d13041363df549495ca06af343a6d1fa22373b359f8c02fa5be28318accea8",
+    "src/enclave/include/Parameter.h": "e78e4b7cc50cc91e30badccb2f23697b853f18043197fd7f349a74c4cbcb4c9c",
+    "src/enclave/include/CrustStatus.h": "eb3fc1320e68eda5a8f3fd9dfa668fdb8278bcff869a1d3c69e3d004abf8f4c4"
+  },
+  "selected_body_sha256": "235991fbafed98c157c6b43c47707aac01149ce796b01b467821d6105c1c7603"
+}

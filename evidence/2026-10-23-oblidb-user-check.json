@@ -1,0 +1,255 @@
+{
+  "date": "2026-10-23",
+  "observed_at": "2026-10-22T16:40:15.237960+00:00",
+  "application": "SabaEskandarian/ObliDB selected linear-scan block workload",
+  "pin": "6de5ba15eb27b4ddc86481e2eb8db549159344ea",
+  "scope": "SDK SIM direct [user_check] pointer forgery; no hardware, unbounded exploit, full SQL/ORAM or full-workflow claim",
+  "finding": {
+    "edl": "isv_enclave/isv_enclave.edl:109 opOneLinearScanBlock",
+    "sink": [
+      "prepared/enclave_data_structures.cpp:88 memcpy(real->data, block, BLOCK_DATA_SIZE)",
+      "prepared/enclave_data_structures.cpp:111 if(!write) memcpy(block, real->data, BLOCK_DATA_SIZE)"
+    ],
+    "primitive": "host-supplied [user_check] block pointer is dereferenced without an outside-enclave or range check; the body first reads 512 bytes from it and, on a read, writes 512 bytes back",
+    "baseline": "writes block 0 into the enclave-internal linOramCache and reads the same address back through block 1",
+    "protected": "RADIX_ONLY/MAC27 abort in encbound_require with ENCBOUND_ERR_POLICY (code=3) before the first 512-byte access"
+  },
+  "builds": [
+    {
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "build": "build/oblidb/all-compat-v1/BASELINE",
+      "log": "build/oblidb/user-check/build-BASELINE-40000000.log",
+      "log_sha256": "583c6f829c05f6fab973b97d503b32ebf91aa17abb948a40dc2b9f3c5ca7bc35"
+    },
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "build": "build/oblidb/all-compat-v1/RADIX_ONLY",
+      "log": "build/oblidb/user-check/build-RADIX_ONLY-40000000.log",
+      "log_sha256": "1b5515f84509d423c85b6f7924dff1e82aca0ce09fd175229d49cbd9fe37f194"
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "build": "build/oblidb/all-compat-v1/MAC27",
+      "log": "build/oblidb/user-check/build-MAC27-40000000.log",
+      "log_sha256": "416cb59b8502492e58b39197e75cb604dce33e897d019ba0f7a92909b6f54d92"
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "build": "build/oblidb/all-compat-v1/MAC27-base140000000",
+      "log": "build/oblidb/user-check/build-MAC27-140000000.log",
+      "log_sha256": "2f7e52459910989efe177c6cfafb089978183004b968449bbfa4f3f7daeaf123"
+    }
+  ],
+  "sim": [
+    {
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "modes": {
+        "functional": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/BASELINE/host/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/BASELINE/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "build/oblidb/user-check/BASELINE-40000000-functional.log",
+          "log_sha256": "56f898fc81a51763c3163189ff2f333384bd642fcac0bc9594a45f3faf06ed65"
+        },
+        "control": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/BASELINE/host/uc-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/BASELINE/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/oblidb/user-check/BASELINE-40000000-control.log",
+          "log_sha256": "883eb2c29930074b0072d6c3a2e19445aa76c7edb2a28d53cd0c86c9250dd196"
+        },
+        "cd": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/BASELINE/host/uc-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/BASELINE/enclave/enclave.signed.so",
+            "cd"
+          ],
+          "returncode": 0,
+          "log": "build/oblidb/user-check/BASELINE-40000000-cd.log",
+          "log_sha256": "22eadb069f4b40a2661c59854fa4413db671e05f14fb582e6f93d11e5d6824a6"
+        }
+      }
+    },
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "modes": {
+        "functional": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/RADIX_ONLY/host/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/RADIX_ONLY/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "build/oblidb/user-check/RADIX_ONLY-40000000-functional.log",
+          "log_sha256": "ec1426e8f5a5576ddad15b6265be5642cc076d366894cbbdfb6d65d1c29ec1ed"
+        },
+        "control": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/RADIX_ONLY/host/uc-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/RADIX_ONLY/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/oblidb/user-check/RADIX_ONLY-40000000-control.log",
+          "log_sha256": "d6fe0d47d14a32d7a8b8b41426567606c6f690a4f486df3e8d784b01221d56bd"
+        },
+        "cd": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/RADIX_ONLY/host/uc-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/RADIX_ONLY/enclave/enclave.signed.so",
+            "cd"
+          ],
+          "returncode": -4,
+          "log": "build/oblidb/user-check/RADIX_ONLY-40000000-cd.log",
+          "log_sha256": "5d844e89857e43e762331ad4540482c7ef6811d6ac0a984e1cf6df491640866e"
+        }
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "modes": {
+        "functional": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27/host/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "build/oblidb/user-check/MAC27-40000000-functional.log",
+          "log_sha256": "ec1426e8f5a5576ddad15b6265be5642cc076d366894cbbdfb6d65d1c29ec1ed"
+        },
+        "control": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27/host/uc-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/oblidb/user-check/MAC27-40000000-control.log",
+          "log_sha256": "d6fe0d47d14a32d7a8b8b41426567606c6f690a4f486df3e8d784b01221d56bd"
+        },
+        "cd": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27/host/uc-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27/enclave/enclave.signed.so",
+            "cd"
+          ],
+          "returncode": -4,
+          "log": "build/oblidb/user-check/MAC27-40000000-cd.log",
+          "log_sha256": "5d844e89857e43e762331ad4540482c7ef6811d6ac0a984e1cf6df491640866e"
+        }
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "modes": {
+        "functional": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27-base140000000/host/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27-base140000000/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "build/oblidb/user-check/MAC27-140000000-functional.log",
+          "log_sha256": "ec1426e8f5a5576ddad15b6265be5642cc076d366894cbbdfb6d65d1c29ec1ed"
+        },
+        "control": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27-base140000000/host/uc-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27-base140000000/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/oblidb/user-check/MAC27-140000000-control.log",
+          "log_sha256": "5cddd708b7805669d2f6e8d9d695bbb1f9be1e7dea35563406beb4918d5c98f9"
+        },
+        "cd": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27-base140000000/host/uc-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27-base140000000/enclave/enclave.signed.so",
+            "cd"
+          ],
+          "returncode": -4,
+          "log": "build/oblidb/user-check/MAC27-140000000-cd.log",
+          "log_sha256": "5d844e89857e43e762331ad4540482c7ef6811d6ac0a984e1cf6df491640866e"
+        }
+      }
+    }
+  ],
+  "gdb_attribution": [
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "abort_code": 3,
+      "source_line": "prepared/enclave_data_structures.cpp:88",
+      "script": "build/oblidb/user-check/attr-RADIX_ONLY-40000000.gdb",
+      "log": "build/oblidb/user-check/attr-RADIX_ONLY-40000000.log",
+      "log_sha256": "7a6c11b6b13781609278a9149a7466b79104a0ca9b24cad4d742aaee8183acfe",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x000000004000bcdc in encbound_require (capability=capability@entry=1075101696, width=width@entry=512, kind=kind@entry=1) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x000000004000b118 in encbound_memcpy (dst=0x5000000001001004, src=0x4014c000 <linOramCache>, n=512) at /home/roger/project/TEE/ENCBound-restart/runtime/adapters.c:28",
+        "#3  0x0000000040003ef5 in opOneLinearScanBlock (structureId=0, index=0, block=0x4014c000 <linOramCache>, write=0) at /home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/RADIX_ONLY/prepared/enclave_data_structures.cpp:88",
+        "#4  0x0000000040008c00 in sgx_opOneLinearScanBlock (pms=0x7fffffffcf20) at /home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/RADIX_ONLY/generated/Enclave_t.c:190",
+        "#5  sgx_opOneLinearScanBlock (pms=0x7fffffffcf20) at /home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/RADIX_ONLY/generated/Enclave_t.c:171"
+      ]
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "abort_code": 3,
+      "source_line": "prepared/enclave_data_structures.cpp:88",
+      "script": "build/oblidb/user-check/attr-MAC27-40000000.gdb",
+      "log": "build/oblidb/user-check/attr-MAC27-40000000.log",
+      "log_sha256": "6f626964e74128cc3516b579dfe6ca09dd2b27859249d73e864a33203ade6c43",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x000000004000bedc in encbound_require (capability=capability@entry=1075101696, width=width@entry=512, kind=kind@entry=1) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x000000004000b118 in encbound_memcpy (dst=0x557ae9ab01001004, src=0x4014c000 <linOramCache>, n=512) at /home/roger/project/TEE/ENCBound-restart/runtime/adapters.c:28",
+        "#3  0x0000000040003ef5 in opOneLinearScanBlock (structureId=0, index=0, block=0x4014c000 <linOramCache>, write=0) at /home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27/prepared/enclave_data_structures.cpp:88",
+        "#4  0x0000000040008c00 in sgx_opOneLinearScanBlock (pms=0x7fffffffcf40) at /home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27/generated/Enclave_t.c:190",
+        "#5  sgx_opOneLinearScanBlock (pms=0x7fffffffcf40) at /home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27/generated/Enclave_t.c:171"
+      ]
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "abort_code": 3,
+      "source_line": "prepared/enclave_data_structures.cpp:88",
+      "script": "build/oblidb/user-check/attr-MAC27-140000000.gdb",
+      "log": "build/oblidb/user-check/attr-MAC27-140000000.log",
+      "log_sha256": "b87d1dec3e22eea1f39dd3827f009ee979edfe3872f83a510e13284811c1faa7",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x000000014000bedc in encbound_require (capability=capability@entry=5370068992, width=width@entry=512, kind=kind@entry=1) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x000000014000b118 in encbound_memcpy (dst=0x53fb202101001004, src=0x14014c000 <linOramCache>, n=512) at /home/roger/project/TEE/ENCBound-restart/runtime/adapters.c:28",
+        "#3  0x0000000140003ef5 in opOneLinearScanBlock (structureId=0, index=0, block=0x14014c000 <linOramCache>, write=0) at /home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27-base140000000/prepared/enclave_data_structures.cpp:88",
+        "#4  0x0000000140008c00 in sgx_opOneLinearScanBlock (pms=0x7fffffffcf00) at /home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27-base140000000/generated/Enclave_t.c:190",
+        "#5  sgx_opOneLinearScanBlock (pms=0x7fffffffcf00) at /home/roger/project/TEE/ENCBound-restart/build/oblidb/all-compat-v1/MAC27-base140000000/generated/Enclave_t.c:171"
+      ]
+    }
+  ],
+  "notes": [
+    "The target is the images own LOCAL symbol linOramCache, found in .symtab and checked against /proc/self/maps.",
+    "Only BASELINE reaches a copy. Protected profiles reject the raw enclave pointer before any read or write.",
+    "The target is not otherwise used by the selected linear path (MIXED_USE_MODE=0), so the BASELINE read-back is attributable to the two opOneLinearScanBlock calls."
+  ],
+  "limits": [
+    "SDK SIM only; no SGX hardware.",
+    "No arbitrary-address sweep, secret extraction or code execution is claimed.",
+    "The host knows the enclave base and the image symbol in SIM, as a loader does; this is not a production address leak."
+  ]
+}

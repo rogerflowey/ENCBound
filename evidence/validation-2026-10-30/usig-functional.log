@@ -1,0 +1,4 @@
+PASS mode=normal ecalls=81 ed25519=19 ecdsa=7 hmac=13 logs=2
+loaded app page permissions: PASS (6 ranges; zero means not applicable)
+USIG: ecall_usig_create_ui_sig_edd25519: sig_len wrong
+USIG: ecall_usig_create_ui_sig_edd25519: sig_len wrong

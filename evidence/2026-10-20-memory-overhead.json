@@ -1,0 +1,1435 @@
+{
+  "result": {
+    "mode": "SDK SIM",
+    "diagnostic_only": true,
+    "start_utc": "2026-10-20T04:22:40Z",
+    "platform": {
+      "system": "Linux",
+      "node": "LAPTOP-EIV5TD6R",
+      "release": "6.18.33.1-microsoft-standard-WSL2",
+      "version": "#1 SMP PREEMPT_DYNAMIC Fri Jun  5 01:12:21 UTC 2026",
+      "machine": "x86_64",
+      "processor": ""
+    },
+    "configuration": {
+      "frontend": "-O2",
+      "codegen": "-O2",
+      "trusted": "-O2/fused",
+      "check_reuse": "off",
+      "local_proofs": 0,
+      "fast_paths": "off",
+      "mac_algorithm": "siphash24",
+      "debug_enclave": true,
+      "integration_preset": "historical general-bench configuration"
+    },
+    "profiles": {
+      "BASELINE": {
+        "rows": [
+          {
+            "case": "lists",
+            "profile": "BASELINE",
+            "status": "passed",
+            "peaks": {
+              "requested": 4880,
+              "rounded": 0,
+              "live_objects": 4,
+              "sdk_requested": 4880,
+              "sdk_chunks": 4976,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "active_heap_bytes": 4976,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 4976
+            },
+            "at_active_heap_peak": {
+              "event": "sdk_allocations",
+              "sdk_event_count": 4,
+              "requested": 4880,
+              "rounded": 0,
+              "live_objects": 4,
+              "sdk_requested": 4880,
+              "sdk_chunks": 4976,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 4976,
+              "active_heap_bytes": 4976
+            },
+            "counts": {
+              "sdk_allocations": 14,
+              "sdk_frees": 14,
+              "protected_allocations": 0,
+              "protected_frees": 0
+            },
+            "final": {
+              "event": "sdk_frees",
+              "sdk_event_count": 28,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 0,
+              "sdk_chunks": 0,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 0
+            },
+            "static_root_bytes": 0
+          },
+          {
+            "case": "heapsort",
+            "profile": "BASELINE",
+            "status": "passed",
+            "peaks": {
+              "requested": 65544,
+              "rounded": 0,
+              "live_objects": 2,
+              "sdk_requested": 65544,
+              "sdk_chunks": 65584,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "active_heap_bytes": 65584,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 65584
+            },
+            "at_active_heap_peak": {
+              "event": "sdk_allocations",
+              "sdk_event_count": 2,
+              "requested": 65544,
+              "rounded": 0,
+              "live_objects": 2,
+              "sdk_requested": 65544,
+              "sdk_chunks": 65584,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 65584,
+              "active_heap_bytes": 65584
+            },
+            "counts": {
+              "sdk_allocations": 6,
+              "sdk_frees": 6,
+              "protected_allocations": 0,
+              "protected_frees": 0
+            },
+            "final": {
+              "event": "sdk_frees",
+              "sdk_event_count": 12,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 0,
+              "sdk_chunks": 0,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 0
+            },
+            "static_root_bytes": 0
+          },
+          {
+            "case": "atax",
+            "profile": "BASELINE",
+            "status": "passed",
+            "peaks": {
+              "requested": 134144,
+              "rounded": 0,
+              "live_objects": 4,
+              "sdk_requested": 134144,
+              "sdk_chunks": 134208,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "active_heap_bytes": 134208,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 134208
+            },
+            "at_active_heap_peak": {
+              "event": "sdk_allocations",
+              "sdk_event_count": 4,
+              "requested": 134144,
+              "rounded": 0,
+              "live_objects": 4,
+              "sdk_requested": 134144,
+              "sdk_chunks": 134208,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 134208,
+              "active_heap_bytes": 134208
+            },
+            "counts": {
+              "sdk_allocations": 14,
+              "sdk_frees": 14,
+              "protected_allocations": 0,
+              "protected_frees": 0
+            },
+            "final": {
+              "event": "sdk_frees",
+              "sdk_event_count": 28,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 0,
+              "sdk_chunks": 0,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 0
+            },
+            "static_root_bytes": 0
+          },
+          {
+            "case": "gemm",
+            "profile": "BASELINE",
+            "status": "passed",
+            "peaks": {
+              "requested": 55296,
+              "rounded": 0,
+              "live_objects": 3,
+              "sdk_requested": 55296,
+              "sdk_chunks": 55344,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "active_heap_bytes": 55344,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 55344
+            },
+            "at_active_heap_peak": {
+              "event": "sdk_allocations",
+              "sdk_event_count": 3,
+              "requested": 55296,
+              "rounded": 0,
+              "live_objects": 3,
+              "sdk_requested": 55296,
+              "sdk_chunks": 55344,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 55344,
+              "active_heap_bytes": 55344
+            },
+            "counts": {
+              "sdk_allocations": 10,
+              "sdk_frees": 10,
+              "protected_allocations": 0,
+              "protected_frees": 0
+            },
+            "final": {
+              "event": "sdk_frees",
+              "sdk_event_count": 20,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 0,
+              "sdk_chunks": 0,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 0
+            },
+            "static_root_bytes": 0
+          },
+          {
+            "case": "jacobi",
+            "profile": "BASELINE",
+            "status": "passed",
+            "peaks": {
+              "requested": 65536,
+              "rounded": 0,
+              "live_objects": 2,
+              "sdk_requested": 65536,
+              "sdk_chunks": 65568,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "active_heap_bytes": 65568,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 65568
+            },
+            "at_active_heap_peak": {
+              "event": "sdk_allocations",
+              "sdk_event_count": 2,
+              "requested": 65536,
+              "rounded": 0,
+              "live_objects": 2,
+              "sdk_requested": 65536,
+              "sdk_chunks": 65568,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 65568,
+              "active_heap_bytes": 65568
+            },
+            "counts": {
+              "sdk_allocations": 6,
+              "sdk_frees": 6,
+              "protected_allocations": 0,
+              "protected_frees": 0
+            },
+            "final": {
+              "event": "sdk_frees",
+              "sdk_event_count": 12,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 0,
+              "sdk_chunks": 0,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 0,
+              "startup_chunks": 0,
+              "startup_objects": 0,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 0
+            },
+            "static_root_bytes": 0
+          }
+        ],
+        "security": [],
+        "resources": {
+          "configured": {
+            "StackMaxSize": 1048576,
+            "HeapMaxSize": 2097152,
+            "ReservedMemInitSize": 33554432,
+            "ReservedMemMaxSize": 33554432,
+            "ELRangeSize": 67108864,
+            "TCSNum": 1
+          },
+          "elf_load_segments": [
+            {
+              "address": 0,
+              "flags": 4,
+              "file_bytes": 2920,
+              "memory_bytes": 2920
+            },
+            {
+              "address": 4096,
+              "flags": 5,
+              "file_bytes": 122128,
+              "memory_bytes": 122128
+            },
+            {
+              "address": 126976,
+              "flags": 4,
+              "file_bytes": 19200,
+              "memory_bytes": 19200
+            },
+            {
+              "address": 150256,
+              "flags": 6,
+              "file_bytes": 5892,
+              "memory_bytes": 10664
+            }
+          ],
+          "elf_load_memory_bytes": 154912,
+          "signed_file_bytes": 261312
+        },
+        "host_sha256": "87ab5c2a7ea32fdc07fce37ef8ba87965f2896dc90f0ad7907813f02bcbe7635",
+        "unsigned_sha256": "fee1d1f8d7ff19bb7cc273d433280e3f651a0fabf92c415ca2a491c6386daea9",
+        "signed_sha256": "f2796ac0e5168bc9c8ad7ac9101cf114d5d0669dfdfa68f617bf86691be364e7"
+      },
+      "RADIX_ONLY": {
+        "rows": [
+          {
+            "case": "lists",
+            "profile": "RADIX_ONLY",
+            "status": "passed",
+            "peaks": {
+              "requested": 4880,
+              "rounded": 8240,
+              "live_objects": 4,
+              "sdk_requested": 2544,
+              "sdk_chunks": 3392,
+              "metadata_payload": 1008,
+              "metadata_chunks": 1344,
+              "active_heap_bytes": 11632,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 9584
+            },
+            "at_active_heap_peak": {
+              "event": "protected_allocations",
+              "sdk_event_count": 53,
+              "requested": 4880,
+              "rounded": 8240,
+              "live_objects": 4,
+              "sdk_requested": 2544,
+              "sdk_chunks": 3392,
+              "metadata_payload": 1008,
+              "metadata_chunks": 1344,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 9584,
+              "active_heap_bytes": 11632
+            },
+            "counts": {
+              "sdk_allocations": 76,
+              "sdk_frees": 44,
+              "protected_allocations": 14,
+              "protected_frees": 14
+            },
+            "final": {
+              "event": "protected_frees",
+              "sdk_event_count": 120,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 1536,
+              "sdk_chunks": 2048,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 2048
+            },
+            "static_root_bytes": 24
+          },
+          {
+            "case": "heapsort",
+            "profile": "RADIX_ONLY",
+            "status": "passed",
+            "peaks": {
+              "requested": 65544,
+              "rounded": 98304,
+              "live_objects": 2,
+              "sdk_requested": 1968,
+              "sdk_chunks": 2624,
+              "metadata_payload": 432,
+              "metadata_chunks": 576,
+              "active_heap_bytes": 100928,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 98880
+            },
+            "at_active_heap_peak": {
+              "event": "protected_allocations",
+              "sdk_event_count": 41,
+              "requested": 65544,
+              "rounded": 98304,
+              "live_objects": 2,
+              "sdk_requested": 1968,
+              "sdk_chunks": 2624,
+              "metadata_payload": 432,
+              "metadata_chunks": 576,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 98880,
+              "active_heap_bytes": 100928
+            },
+            "counts": {
+              "sdk_allocations": 50,
+              "sdk_frees": 18,
+              "protected_allocations": 6,
+              "protected_frees": 6
+            },
+            "final": {
+              "event": "protected_frees",
+              "sdk_event_count": 68,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 1536,
+              "sdk_chunks": 2048,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 2048
+            },
+            "static_root_bytes": 24
+          },
+          {
+            "case": "atax",
+            "profile": "RADIX_ONLY",
+            "status": "passed",
+            "peaks": {
+              "requested": 134144,
+              "rounded": 134144,
+              "live_objects": 4,
+              "sdk_requested": 2256,
+              "sdk_chunks": 3008,
+              "metadata_payload": 720,
+              "metadata_chunks": 960,
+              "active_heap_bytes": 137152,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 135104
+            },
+            "at_active_heap_peak": {
+              "event": "protected_allocations",
+              "sdk_event_count": 47,
+              "requested": 134144,
+              "rounded": 134144,
+              "live_objects": 4,
+              "sdk_requested": 2256,
+              "sdk_chunks": 3008,
+              "metadata_payload": 720,
+              "metadata_chunks": 960,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 135104,
+              "active_heap_bytes": 137152
+            },
+            "counts": {
+              "sdk_allocations": 64,
+              "sdk_frees": 32,
+              "protected_allocations": 14,
+              "protected_frees": 14
+            },
+            "final": {
+              "event": "protected_frees",
+              "sdk_event_count": 96,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 1536,
+              "sdk_chunks": 2048,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 2048
+            },
+            "static_root_bytes": 24
+          },
+          {
+            "case": "gemm",
+            "profile": "RADIX_ONLY",
+            "status": "passed",
+            "peaks": {
+              "requested": 55296,
+              "rounded": 98304,
+              "live_objects": 3,
+              "sdk_requested": 2016,
+              "sdk_chunks": 2688,
+              "metadata_payload": 480,
+              "metadata_chunks": 640,
+              "active_heap_bytes": 100992,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 98944
+            },
+            "at_active_heap_peak": {
+              "event": "protected_allocations",
+              "sdk_event_count": 42,
+              "requested": 55296,
+              "rounded": 98304,
+              "live_objects": 3,
+              "sdk_requested": 2016,
+              "sdk_chunks": 2688,
+              "metadata_payload": 480,
+              "metadata_chunks": 640,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 98944,
+              "active_heap_bytes": 100992
+            },
+            "counts": {
+              "sdk_allocations": 54,
+              "sdk_frees": 22,
+              "protected_allocations": 10,
+              "protected_frees": 10
+            },
+            "final": {
+              "event": "protected_frees",
+              "sdk_event_count": 76,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 1536,
+              "sdk_chunks": 2048,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 2048
+            },
+            "static_root_bytes": 24
+          },
+          {
+            "case": "jacobi",
+            "profile": "RADIX_ONLY",
+            "status": "passed",
+            "peaks": {
+              "requested": 65536,
+              "rounded": 65536,
+              "live_objects": 2,
+              "sdk_requested": 1968,
+              "sdk_chunks": 2624,
+              "metadata_payload": 432,
+              "metadata_chunks": 576,
+              "active_heap_bytes": 68160,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 66112
+            },
+            "at_active_heap_peak": {
+              "event": "protected_allocations",
+              "sdk_event_count": 41,
+              "requested": 65536,
+              "rounded": 65536,
+              "live_objects": 2,
+              "sdk_requested": 1968,
+              "sdk_chunks": 2624,
+              "metadata_payload": 432,
+              "metadata_chunks": 576,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 66112,
+              "active_heap_bytes": 68160
+            },
+            "counts": {
+              "sdk_allocations": 50,
+              "sdk_frees": 18,
+              "protected_allocations": 6,
+              "protected_frees": 6
+            },
+            "final": {
+              "event": "protected_frees",
+              "sdk_event_count": 68,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 1536,
+              "sdk_chunks": 2048,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 2048
+            },
+            "static_root_bytes": 24
+          }
+        ],
+        "security": [
+          {
+            "profile": "RADIX_ONLY",
+            "case": "range",
+            "status": "passed",
+            "diagnostic_only": true
+          },
+          {
+            "profile": "RADIX_ONLY",
+            "case": "tag",
+            "status": "passed",
+            "diagnostic_only": true
+          },
+          {
+            "profile": "RADIX_ONLY",
+            "case": "raw",
+            "status": "passed",
+            "diagnostic_only": true
+          }
+        ],
+        "resources": {
+          "configured": {
+            "StackMaxSize": 1048576,
+            "HeapMaxSize": 2097152,
+            "ReservedMemInitSize": 33554432,
+            "ReservedMemMaxSize": 33554432,
+            "ELRangeSize": 67108864,
+            "TCSNum": 1
+          },
+          "elf_load_segments": [
+            {
+              "address": 0,
+              "flags": 4,
+              "file_bytes": 3304,
+              "memory_bytes": 3304
+            },
+            {
+              "address": 4096,
+              "flags": 5,
+              "file_bytes": 140944,
+              "memory_bytes": 140944
+            },
+            {
+              "address": 147456,
+              "flags": 4,
+              "file_bytes": 21448,
+              "memory_bytes": 21448
+            },
+            {
+              "address": 174704,
+              "flags": 6,
+              "file_bytes": 6084,
+              "memory_bytes": 11784
+            }
+          ],
+          "elf_load_memory_bytes": 177480,
+          "signed_file_bytes": 366600
+        },
+        "host_sha256": "2b7711f01dff4f005f6759cd34a745c58997ec68e942692e23470fb1e7146959",
+        "unsigned_sha256": "25fab4f5ceb5dc54a3bc463dd3b64d4f97f072c395070aea9a787aca5f756f55",
+        "signed_sha256": "cf4dd12253b3733a26504eb55847e79d4a3d1253fcc4c565105fc2d6d27c17b3"
+      },
+      "MAC27": {
+        "rows": [
+          {
+            "case": "lists",
+            "profile": "MAC27",
+            "status": "passed",
+            "peaks": {
+              "requested": 4880,
+              "rounded": 8240,
+              "live_objects": 4,
+              "sdk_requested": 2544,
+              "sdk_chunks": 3392,
+              "metadata_payload": 1008,
+              "metadata_chunks": 1344,
+              "active_heap_bytes": 11632,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 9584
+            },
+            "at_active_heap_peak": {
+              "event": "protected_allocations",
+              "sdk_event_count": 53,
+              "requested": 4880,
+              "rounded": 8240,
+              "live_objects": 4,
+              "sdk_requested": 2544,
+              "sdk_chunks": 3392,
+              "metadata_payload": 1008,
+              "metadata_chunks": 1344,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 9584,
+              "active_heap_bytes": 11632
+            },
+            "counts": {
+              "sdk_allocations": 76,
+              "sdk_frees": 44,
+              "protected_allocations": 14,
+              "protected_frees": 14
+            },
+            "final": {
+              "event": "protected_frees",
+              "sdk_event_count": 120,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 1536,
+              "sdk_chunks": 2048,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 2048
+            },
+            "static_root_bytes": 24
+          },
+          {
+            "case": "heapsort",
+            "profile": "MAC27",
+            "status": "passed",
+            "peaks": {
+              "requested": 65544,
+              "rounded": 98304,
+              "live_objects": 2,
+              "sdk_requested": 1968,
+              "sdk_chunks": 2624,
+              "metadata_payload": 432,
+              "metadata_chunks": 576,
+              "active_heap_bytes": 100928,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 98880
+            },
+            "at_active_heap_peak": {
+              "event": "protected_allocations",
+              "sdk_event_count": 41,
+              "requested": 65544,
+              "rounded": 98304,
+              "live_objects": 2,
+              "sdk_requested": 1968,
+              "sdk_chunks": 2624,
+              "metadata_payload": 432,
+              "metadata_chunks": 576,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 98880,
+              "active_heap_bytes": 100928
+            },
+            "counts": {
+              "sdk_allocations": 50,
+              "sdk_frees": 18,
+              "protected_allocations": 6,
+              "protected_frees": 6
+            },
+            "final": {
+              "event": "protected_frees",
+              "sdk_event_count": 68,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 1536,
+              "sdk_chunks": 2048,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 2048
+            },
+            "static_root_bytes": 24
+          },
+          {
+            "case": "atax",
+            "profile": "MAC27",
+            "status": "passed",
+            "peaks": {
+              "requested": 134144,
+              "rounded": 134144,
+              "live_objects": 4,
+              "sdk_requested": 2256,
+              "sdk_chunks": 3008,
+              "metadata_payload": 720,
+              "metadata_chunks": 960,
+              "active_heap_bytes": 137152,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 135104
+            },
+            "at_active_heap_peak": {
+              "event": "protected_allocations",
+              "sdk_event_count": 47,
+              "requested": 134144,
+              "rounded": 134144,
+              "live_objects": 4,
+              "sdk_requested": 2256,
+              "sdk_chunks": 3008,
+              "metadata_payload": 720,
+              "metadata_chunks": 960,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 135104,
+              "active_heap_bytes": 137152
+            },
+            "counts": {
+              "sdk_allocations": 64,
+              "sdk_frees": 32,
+              "protected_allocations": 14,
+              "protected_frees": 14
+            },
+            "final": {
+              "event": "protected_frees",
+              "sdk_event_count": 96,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 1536,
+              "sdk_chunks": 2048,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 2048
+            },
+            "static_root_bytes": 24
+          },
+          {
+            "case": "gemm",
+            "profile": "MAC27",
+            "status": "passed",
+            "peaks": {
+              "requested": 55296,
+              "rounded": 98304,
+              "live_objects": 3,
+              "sdk_requested": 2016,
+              "sdk_chunks": 2688,
+              "metadata_payload": 480,
+              "metadata_chunks": 640,
+              "active_heap_bytes": 100992,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 98944
+            },
+            "at_active_heap_peak": {
+              "event": "protected_allocations",
+              "sdk_event_count": 42,
+              "requested": 55296,
+              "rounded": 98304,
+              "live_objects": 3,
+              "sdk_requested": 2016,
+              "sdk_chunks": 2688,
+              "metadata_payload": 480,
+              "metadata_chunks": 640,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 98944,
+              "active_heap_bytes": 100992
+            },
+            "counts": {
+              "sdk_allocations": 54,
+              "sdk_frees": 22,
+              "protected_allocations": 10,
+              "protected_frees": 10
+            },
+            "final": {
+              "event": "protected_frees",
+              "sdk_event_count": 76,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 1536,
+              "sdk_chunks": 2048,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 2048
+            },
+            "static_root_bytes": 24
+          },
+          {
+            "case": "jacobi",
+            "profile": "MAC27",
+            "status": "passed",
+            "peaks": {
+              "requested": 65536,
+              "rounded": 65536,
+              "live_objects": 2,
+              "sdk_requested": 1968,
+              "sdk_chunks": 2624,
+              "metadata_payload": 432,
+              "metadata_chunks": 576,
+              "active_heap_bytes": 68160,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 66112
+            },
+            "at_active_heap_peak": {
+              "event": "protected_allocations",
+              "sdk_event_count": 41,
+              "requested": 65536,
+              "rounded": 65536,
+              "live_objects": 2,
+              "sdk_requested": 1968,
+              "sdk_chunks": 2624,
+              "metadata_payload": 432,
+              "metadata_chunks": 576,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 66112,
+              "active_heap_bytes": 68160
+            },
+            "counts": {
+              "sdk_allocations": 50,
+              "sdk_frees": 18,
+              "protected_allocations": 6,
+              "protected_frees": 6
+            },
+            "final": {
+              "event": "protected_frees",
+              "sdk_event_count": 68,
+              "requested": 0,
+              "rounded": 0,
+              "live_objects": 0,
+              "sdk_requested": 1536,
+              "sdk_chunks": 2048,
+              "metadata_payload": 0,
+              "metadata_chunks": 0,
+              "startup_requested": 1536,
+              "startup_chunks": 2048,
+              "startup_objects": 32,
+              "workload_active_heap_bytes": 0,
+              "active_heap_bytes": 2048
+            },
+            "static_root_bytes": 24
+          }
+        ],
+        "security": [
+          {
+            "profile": "MAC27",
+            "case": "range",
+            "status": "passed",
+            "diagnostic_only": true
+          },
+          {
+            "profile": "MAC27",
+            "case": "tag",
+            "status": "passed",
+            "diagnostic_only": true
+          },
+          {
+            "profile": "MAC27",
+            "case": "raw",
+            "status": "passed",
+            "diagnostic_only": true
+          }
+        ],
+        "resources": {
+          "configured": {
+            "StackMaxSize": 1048576,
+            "HeapMaxSize": 2097152,
+            "ReservedMemInitSize": 33554432,
+            "ReservedMemMaxSize": 33554432,
+            "ELRangeSize": 67108864,
+            "TCSNum": 1
+          },
+          "elf_load_segments": [
+            {
+              "address": 0,
+              "flags": 4,
+              "file_bytes": 3304,
+              "memory_bytes": 3304
+            },
+            {
+              "address": 4096,
+              "flags": 5,
+              "file_bytes": 141456,
+              "memory_bytes": 141456
+            },
+            {
+              "address": 147456,
+              "flags": 4,
+              "file_bytes": 21520,
+              "memory_bytes": 21520
+            },
+            {
+              "address": 174704,
+              "flags": 6,
+              "file_bytes": 6084,
+              "memory_bytes": 11784
+            }
+          ],
+          "elf_load_memory_bytes": 178064,
+          "signed_file_bytes": 366432
+        },
+        "host_sha256": "c451ec5e54d8119bec29586c8abf52ad22dba539e2ed39680e61b59c985aeabb",
+        "unsigned_sha256": "8d5c42e9b1b005a7c7aa9fa7cc3ee291e7ae7b8d40422210034ffdfc09a01f63",
+        "signed_sha256": "35ef4087b0e3b6cca6ea6d933d30296a5e3919c41f0ba24949073a76c7f87ae6"
+      }
+    },
+    "comparisons": [
+      {
+        "case": "lists",
+        "baseline_active_heap_bytes": 4976,
+        "mac27_active_heap_bytes": 11632,
+        "full_active_heap_overhead_percent": 133.7620578778135,
+        "workload_only_heap_overhead_percent": 92.60450160771705,
+        "incremental_mac_active_heap_bytes": 0
+      },
+      {
+        "case": "heapsort",
+        "baseline_active_heap_bytes": 65584,
+        "mac27_active_heap_bytes": 100928,
+        "full_active_heap_overhead_percent": 53.89119297389606,
+        "workload_only_heap_overhead_percent": 50.76848011710173,
+        "incremental_mac_active_heap_bytes": 0
+      },
+      {
+        "case": "atax",
+        "baseline_active_heap_bytes": 134208,
+        "mac27_active_heap_bytes": 137152,
+        "full_active_heap_overhead_percent": 2.193609918931805,
+        "workload_only_heap_overhead_percent": 0.6676204101096817,
+        "incremental_mac_active_heap_bytes": 0
+      },
+      {
+        "case": "gemm",
+        "baseline_active_heap_bytes": 55344,
+        "mac27_active_heap_bytes": 100992,
+        "full_active_heap_overhead_percent": 82.48048568950563,
+        "workload_only_heap_overhead_percent": 78.77999421798208,
+        "incremental_mac_active_heap_bytes": 0
+      },
+      {
+        "case": "jacobi",
+        "baseline_active_heap_bytes": 65568,
+        "mac27_active_heap_bytes": 68160,
+        "full_active_heap_overhead_percent": 3.9531478770131745,
+        "workload_only_heap_overhead_percent": 0.829673011224985,
+        "incremental_mac_active_heap_bytes": 0
+      }
+    ],
+    "limitations": [
+      "Active heap excludes pre-entry SDK state, static state and stack.",
+      "Arena activation retains SDK reserve-manager startup chunks, reported separately.",
+      "SDK chunks include live headers/alignment; free-space fragmentation is unmeasured.",
+      "Configured capacities are distinct from live use or resident EPC pages.",
+      "These kernels have no writable application globals; no protected-global cost is measured.",
+      "No observed stack high-water, SGX hardware/EPC, or full application memory result."
+    ],
+    "end_utc": "2026-10-20T04:22:48Z"
+  },
+  "artifact_root": "build/memory-overhead-2026-10-20-final-evidence",
+  "artifact_manifest_sha256": "8770cd248ab61d8acf1940dcad9c01842ee892734db190f8f46c02c937717230",
+  "results_sha256": "3f3aa1ef754c16b89d69af5dfb37c99d57c36de310e7eded1eff028195d61319",
+  "validation": {
+    "status": "passed",
+    "detail": "PASS: 15 trace replays, independent SDK charges, 75 rejected-evidence controls, manifest hashes",
+    "sdk_sim_memory_rows": 15,
+    "complete_output_checks": 30,
+    "corruption_controls": 6
+  },
+  "hardware": {
+    "status": "blocked",
+    "sgx_cpu_flag": false,
+    "devices": [],
+    "reason": "No SGX CPU flag or enclave device exposed on this WSL2 host"
+  },
+  "signed_metadata": {
+    "BASELINE": {
+      "version": 47244640261,
+      "enclave_size": 67108864,
+      "elrange": {
+        "image": 1073741824,
+        "start": 1073741824,
+        "size": 67108864
+      },
+      "layouts": [
+        {
+          "id": 1,
+          "attributes": 1,
+          "page_count": 1,
+          "rva": 163840,
+          "end": 167936
+        },
+        {
+          "id": 2,
+          "attributes": 17,
+          "page_count": 511,
+          "rva": 167936,
+          "end": 2260992
+        },
+        {
+          "id": 10,
+          "attributes": 0,
+          "page_count": 16,
+          "rva": 2260992,
+          "end": 2326528
+        },
+        {
+          "id": 7,
+          "attributes": 83,
+          "page_count": 254,
+          "rva": 2326528,
+          "end": 3366912
+        },
+        {
+          "id": 8,
+          "attributes": 3,
+          "page_count": 2,
+          "rva": 3366912,
+          "end": 3375104
+        },
+        {
+          "id": 10,
+          "attributes": 0,
+          "page_count": 16,
+          "rva": 3375104,
+          "end": 3440640
+        },
+        {
+          "id": 4,
+          "attributes": 3,
+          "page_count": 1,
+          "rva": 3440640,
+          "end": 3444736
+        },
+        {
+          "id": 6,
+          "attributes": 3,
+          "page_count": 2,
+          "rva": 3444736,
+          "end": 3452928
+        },
+        {
+          "id": 10,
+          "attributes": 0,
+          "page_count": 16,
+          "rva": 3452928,
+          "end": 3518464
+        },
+        {
+          "id": 5,
+          "attributes": 3,
+          "page_count": 1,
+          "rva": 3518464,
+          "end": 3522560
+        },
+        {
+          "id": 20,
+          "attributes": 1,
+          "page_count": 8192,
+          "rva": 3522560,
+          "end": 37076992
+        },
+        {
+          "id": 10,
+          "attributes": 0,
+          "page_count": 7332,
+          "rva": 37076992,
+          "end": 67108864
+        }
+      ]
+    },
+    "RADIX_ONLY": {
+      "version": 47244640261,
+      "enclave_size": 67108864,
+      "elrange": {
+        "image": 1073741824,
+        "start": 1073741824,
+        "size": 67108864
+      },
+      "layouts": [
+        {
+          "id": 1,
+          "attributes": 1,
+          "page_count": 1,
+          "rva": 188416,
+          "end": 192512
+        },
+        {
+          "id": 2,
+          "attributes": 17,
+          "page_count": 511,
+          "rva": 192512,
+          "end": 2285568
+        },
+        {
+          "id": 10,
+          "attributes": 0,
+          "page_count": 16,
+          "rva": 2285568,
+          "end": 2351104
+        },
+        {
+          "id": 7,
+          "attributes": 83,
+          "page_count": 254,
+          "rva": 2351104,
+          "end": 3391488
+        },
+        {
+          "id": 8,
+          "attributes": 3,
+          "page_count": 2,
+          "rva": 3391488,
+          "end": 3399680
+        },
+        {
+          "id": 10,
+          "attributes": 0,
+          "page_count": 16,
+          "rva": 3399680,
+          "end": 3465216
+        },
+        {
+          "id": 4,
+          "attributes": 3,
+          "page_count": 1,
+          "rva": 3465216,
+          "end": 3469312
+        },
+        {
+          "id": 6,
+          "attributes": 3,
+          "page_count": 2,
+          "rva": 3469312,
+          "end": 3477504
+        },
+        {
+          "id": 10,
+          "attributes": 0,
+          "page_count": 16,
+          "rva": 3477504,
+          "end": 3543040
+        },
+        {
+          "id": 5,
+          "attributes": 3,
+          "page_count": 1,
+          "rva": 3543040,
+          "end": 3547136
+        },
+        {
+          "id": 20,
+          "attributes": 1,
+          "page_count": 8192,
+          "rva": 3547136,
+          "end": 37101568
+        },
+        {
+          "id": 10,
+          "attributes": 0,
+          "page_count": 7326,
+          "rva": 37101568,
+          "end": 67108864
+        }
+      ]
+    },
+    "MAC27": {
+      "version": 47244640261,
+      "enclave_size": 67108864,
+      "elrange": {
+        "image": 1073741824,
+        "start": 1073741824,
+        "size": 67108864
+      },
+      "layouts": [
+        {
+          "id": 1,
+          "attributes": 1,
+          "page_count": 1,
+          "rva": 188416,
+          "end": 192512
+        },
+        {
+          "id": 2,
+          "attributes": 17,
+          "page_count": 511,
+          "rva": 192512,
+          "end": 2285568
+        },
+        {
+          "id": 10,
+          "attributes": 0,
+          "page_count": 16,
+          "rva": 2285568,
+          "end": 2351104
+        },
+        {
+          "id": 7,
+          "attributes": 83,
+          "page_count": 254,
+          "rva": 2351104,
+          "end": 3391488
+        },
+        {
+          "id": 8,
+          "attributes": 3,
+          "page_count": 2,
+          "rva": 3391488,
+          "end": 3399680
+        },
+        {
+          "id": 10,
+          "attributes": 0,
+          "page_count": 16,
+          "rva": 3399680,
+          "end": 3465216
+        },
+        {
+          "id": 4,
+          "attributes": 3,
+          "page_count": 1,
+          "rva": 3465216,
+          "end": 3469312
+        },
+        {
+          "id": 6,
+          "attributes": 3,
+          "page_count": 2,
+          "rva": 3469312,
+          "end": 3477504
+        },
+        {
+          "id": 10,
+          "attributes": 0,
+          "page_count": 16,
+          "rva": 3477504,
+          "end": 3543040
+        },
+        {
+          "id": 5,
+          "attributes": 3,
+          "page_count": 1,
+          "rva": 3543040,
+          "end": 3547136
+        },
+        {
+          "id": 20,
+          "attributes": 1,
+          "page_count": 8192,
+          "rva": 3547136,
+          "end": 37101568
+        },
+        {
+          "id": 10,
+          "attributes": 0,
+          "page_count": 7326,
+          "rva": 37101568,
+          "end": 67108864
+        }
+      ]
+    }
+  },
+  "source_sha256": {
+    "apps/general-bench/memory.py": "2c84ea3eadd1c89e3d312705a511d31920a270dd8c517d1bcd7a7c4438495d33",
+    "apps/general-bench/memory_gdb.py": "df9b44f6e0bbf41dd6830485a539bdf0c1ebdb902b4e728abdb6cc8b4ec91d54",
+    "tests/general_bench_memory_test.py": "93eb64b802008c218481d9cdf9260c38845392ff43ebc9e985972fd342778a7f",
+    "apps/general-bench/README.md": "8dccf59bdb63ec70329632effcd67166e245259f4e406fa0ff7b01ef2f1e4b32",
+    "evidence/2026-10-20-memory-overhead.md": "f762e0a57acf0f23c1a12baa4fd8aab982c1fa64a86de3e287a8604cff3dedcb"
+  }
+}

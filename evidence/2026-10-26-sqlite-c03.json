@@ -1,0 +1,311 @@
+{
+  "date": "2026-10-26",
+  "scope": "Pinned SGX_SQLite selected serial Unix-VFS route; C03 V2+V4 hostile ingress; SDK SIM only",
+  "source_revision": "c470f0a6afcbb2461a94faa6045df47450c3354b",
+  "source_root": "/home/roger/project/TEE/SGX-repo-screening/build/appscreening/sources/SGX_SQLite",
+  "recipe": {
+    "path": "apps/sqlite-sgx/run.py",
+    "sha256": "2b6d3ca0cccb522d6e154dab4a7e50864613808eba90fd405a7dafadd3419623"
+  },
+  "host_inputs": {
+    "apps/sqlite-sgx/c03_host.c": "600da321cc9a03d34bcea61fc2894c81358691d07ca03711c72f8115ed431523",
+    "apps/sqlite-sgx/c03_ocalls.c": "582b33e9599400445784eb53709c8480524b16e1c3dae0c7128ce00520c3cafb",
+    "apps/sqlite-sgx/c03_ocalls.h": "182dcf01b849c4a4c4d722e8fc250733760c2195ade6472f701499a3b4127b5a",
+    "apps/sqlite-sgx/vfs_interface.c": "3cddbf10255f5eaa8b53081c3ea64730e9bcf81285dafbfe43120ba0418f776b",
+    "apps/sqlite-sgx/Enclave.edl": "c2a4468ee196873be84a43a0e652b7ab26ba597abd2d2e18083b1f36ce5328d0",
+    "apps/sqlite-sgx/interface.json": "595434ce97c43181384f4f934f81ba9ff6112f74cc61f5235ed46e1b7058504d",
+    "apps/sqlite-sgx/pins.json": "c7310b93cd70d960c1cc3b7071c859f716c090c5d2c7273d727a940a37026033",
+    "apps/sqlite-sgx/serial_strings.c": "313a729efa0450f3634544ecce83f3b00899bfd81605dcf176fc5a93fda788c5",
+    "apps/sqlite-sgx/ocall_types.h": "6a86f7c1c71cf2db89a367036f83fe7dfc4d7f6c32e6ec4608fc1a10399dcef5"
+  },
+  "trigger": {
+    "sql": "PRAGMA temp_store=FILE; PRAGMA temp.cache_size=10; CREATE TEMP TABLE ...; 10000-row recursive INSERT; ORDER BY ... LIMIT 3",
+    "small_query_reaches_unixTempFileDir": false
+  },
+  "canary": "C03-PROTECTED-CANARY-8f4d2a",
+  "rows": [
+    {
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "canary_address": "0x400ed6b0",
+      "canary_section": ".encbound.apprw",
+      "canary_section_flags": "WA",
+      "canary_protected": false,
+      "signed_sha256": "d79a27e0ec192bcf8430960d64c387a6d44d137e8c7742a52e429e3ccd077d71",
+      "map_sha256": "f679589c434073f340d3e2d3cd878739c7ccb875b2ecff06e16ed761f9e64330",
+      "library_sha256": "39dbabeea6c1ce0fddf665f883f0ff603c2500e4ca3ea7f6d6182619892f60df",
+      "admitted_sha256": "808ac6943956a2d4657af78259ed6137f394bce6ba1301d74f51b989f3e3f0a8",
+      "benign": {
+        "result": "PASS",
+        "mode": "benign",
+        "getenv_calls": 4,
+        "hostile_getenv_calls": 0,
+        "stat_calls": 10,
+        "canary_stat_calls": 0,
+        "temp_open_calls": 2,
+        "phase1": {
+          "getenv": 2,
+          "hostile_getenv": 0,
+          "stat": 5,
+          "canary_stat": 0,
+          "temp_open": 1
+        },
+        "phase2": {
+          "getenv": 2,
+          "hostile_getenv": 0,
+          "stat": 5,
+          "canary_stat": 0,
+          "temp_open": 1
+        }
+      },
+      "benign_exit": 0,
+      "benign_log_sha256": "9a09a2f637fda2bb66c434622e7fa774598ec2a0c865ce5a8e4f578a9ae13148",
+      "hostile": {
+        "result": "PASS",
+        "mode": "hostile",
+        "getenv_calls": 3,
+        "hostile_getenv_calls": 1,
+        "stat_calls": 12,
+        "canary_stat_calls": 2,
+        "temp_open_calls": 2,
+        "phase1": {
+          "getenv": 2,
+          "hostile_getenv": 1,
+          "stat": 6,
+          "canary_stat": 1,
+          "temp_open": 1
+        },
+        "phase2": {
+          "getenv": 1,
+          "hostile_getenv": 0,
+          "stat": 6,
+          "canary_stat": 1,
+          "temp_open": 1
+        }
+      },
+      "hostile_exit": 0,
+      "hostile_log_sha256": "6a73bdf841c56493debc63c8de0884e16aab6f85f4db3a0cf92f35c5fda1ec54",
+      "disclosure": true,
+      "abort_code": null,
+      "abort_trace": null,
+      "abort_trace_sha256": null,
+      "baseline_stock_equal": {
+        "Enclave_t.c": "errno-extension-only",
+        "Enclave_t.h": true,
+        "Enclave_u.c": true,
+        "Enclave_u.h": true
+      },
+      "sdk_archives": {
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tcrypto.a": "cbb7ed1d7685e5c98dbf6b7560488bde889a1ad408c6777d0303843a52639cec",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tcxx.a": "50731a201df955b9fab2f4b6292c5c9004bcfc089fa7af4ad956a97bb8fa1a21",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_trts_sim.a": "fd2e9a148f59e73e6968aa99c96dd5b286460d6ab76648095c0906ea2312bf73",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tservice_sim.a": "b53f3e15dc543515ee2f595d389a1f62724fafdc7c98d42aabc0ce61c7462f70",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tstdc.a": "61023a3d31cdb630150752feadba1da6165290d598e2ea530f2a0d633fa5bf1f",
+        "/home/roger/project/TEE/ENCBound-restart/build/sqlite-sgx-c03/libcxx-BASELINE/libencbound_cxx.a": "39dbabeea6c1ce0fddf665f883f0ff603c2500e4ca3ea7f6d6182619892f60df"
+      }
+    },
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "canary_address": "0x40306400",
+      "canary_section": ".encbound.globalrw",
+      "canary_section_flags": "WAo",
+      "canary_protected": true,
+      "signed_sha256": "afcab1290099923055e8a003ef423556e825abb449b5f9cceb6d4c76d6154e59",
+      "map_sha256": "e7120477cd558eb04b4509041696961c25c6d3489720d7901ccb2bce0270c9ef",
+      "library_sha256": "0c69f01eee8cfdd654aefde1048eaa27f39537e762f4366d02f067cab56424d3",
+      "admitted_sha256": "808ac6943956a2d4657af78259ed6137f394bce6ba1301d74f51b989f3e3f0a8",
+      "benign": {
+        "result": "PASS",
+        "mode": "benign",
+        "getenv_calls": 4,
+        "hostile_getenv_calls": 0,
+        "stat_calls": 10,
+        "canary_stat_calls": 0,
+        "temp_open_calls": 2,
+        "phase1": {
+          "getenv": 2,
+          "hostile_getenv": 0,
+          "stat": 5,
+          "canary_stat": 0,
+          "temp_open": 1
+        },
+        "phase2": {
+          "getenv": 2,
+          "hostile_getenv": 0,
+          "stat": 5,
+          "canary_stat": 0,
+          "temp_open": 1
+        }
+      },
+      "benign_exit": 0,
+      "benign_log_sha256": "398c4481c9bcaa39bf53eb9de78be5726361cb81004cc4bb9055176e555bca0b",
+      "hostile": null,
+      "hostile_exit": -4,
+      "hostile_log_sha256": "288741aef414793b450f79152a10d8d493a43f854dd9c0c60d69c7d7db4ed422",
+      "disclosure": false,
+      "abort_code": 3,
+      "abort_trace": "/home/roger/project/TEE/ENCBound-restart/build/sqlite-sgx-c03/c03-abort-RADIX_ONLY-0x40000000.log",
+      "abort_trace_sha256": "149981d4e7be003f011ec7b05b6f7116b32d3be8605699884f01c335f791a55c",
+      "baseline_stock_equal": null,
+      "sdk_archives": {
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tcrypto.a": "cbb7ed1d7685e5c98dbf6b7560488bde889a1ad408c6777d0303843a52639cec",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tcxx.a": "50731a201df955b9fab2f4b6292c5c9004bcfc089fa7af4ad956a97bb8fa1a21",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_trts_sim.a": "fd2e9a148f59e73e6968aa99c96dd5b286460d6ab76648095c0906ea2312bf73",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tservice_sim.a": "b53f3e15dc543515ee2f595d389a1f62724fafdc7c98d42aabc0ce61c7462f70",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tstdc.a": "61023a3d31cdb630150752feadba1da6165290d598e2ea530f2a0d633fa5bf1f",
+        "/home/roger/project/TEE/ENCBound-restart/build/sqlite-sgx-c03/libcxx-RADIX_ONLY/libencbound_cxx.a": "0c69f01eee8cfdd654aefde1048eaa27f39537e762f4366d02f067cab56424d3"
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "canary_address": "0x40306400",
+      "canary_section": ".encbound.globalrw",
+      "canary_section_flags": "WAo",
+      "canary_protected": true,
+      "signed_sha256": "a77337c39c0b7ac907293ae4adc3c334c5b8de63eb770c2d74468462e3d40a46",
+      "map_sha256": "e404d8b08648ab0588ac14b921a26ed6659636fa96517fea5626371f48b3fb04",
+      "library_sha256": "98f67e355203d13545972f8e1c2a8a73857b6016b3c6159d44760a892a44f542",
+      "admitted_sha256": "808ac6943956a2d4657af78259ed6137f394bce6ba1301d74f51b989f3e3f0a8",
+      "benign": {
+        "result": "PASS",
+        "mode": "benign",
+        "getenv_calls": 4,
+        "hostile_getenv_calls": 0,
+        "stat_calls": 10,
+        "canary_stat_calls": 0,
+        "temp_open_calls": 2,
+        "phase1": {
+          "getenv": 2,
+          "hostile_getenv": 0,
+          "stat": 5,
+          "canary_stat": 0,
+          "temp_open": 1
+        },
+        "phase2": {
+          "getenv": 2,
+          "hostile_getenv": 0,
+          "stat": 5,
+          "canary_stat": 0,
+          "temp_open": 1
+        }
+      },
+      "benign_exit": 0,
+      "benign_log_sha256": "744b70b39a7463da3f1528f5a7697d356d929e0431aec1f4f0c89faddb32906b",
+      "hostile": null,
+      "hostile_exit": -4,
+      "hostile_log_sha256": "4526c8a945ff67eb8d7e03628ffbb54845446c6a679617949cb84ee010b242a5",
+      "disclosure": false,
+      "abort_code": 3,
+      "abort_trace": "/home/roger/project/TEE/ENCBound-restart/build/sqlite-sgx-c03/c03-abort-MAC27-0x40000000.log",
+      "abort_trace_sha256": "1767861b9c67bbf15edde698433d57012c5ac3e69036e803883de158e5614f9c",
+      "baseline_stock_equal": null,
+      "sdk_archives": {
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tcrypto.a": "cbb7ed1d7685e5c98dbf6b7560488bde889a1ad408c6777d0303843a52639cec",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tcxx.a": "50731a201df955b9fab2f4b6292c5c9004bcfc089fa7af4ad956a97bb8fa1a21",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_trts_sim.a": "fd2e9a148f59e73e6968aa99c96dd5b286460d6ab76648095c0906ea2312bf73",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tservice_sim.a": "b53f3e15dc543515ee2f595d389a1f62724fafdc7c98d42aabc0ce61c7462f70",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tstdc.a": "61023a3d31cdb630150752feadba1da6165290d598e2ea530f2a0d633fa5bf1f",
+        "/home/roger/project/TEE/ENCBound-restart/build/sqlite-sgx-c03/libcxx-MAC27/libencbound_cxx.a": "98f67e355203d13545972f8e1c2a8a73857b6016b3c6159d44760a892a44f542"
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "canary_address": "0x140306400",
+      "canary_section": ".encbound.globalrw",
+      "canary_section_flags": "WAo",
+      "canary_protected": true,
+      "signed_sha256": "dbf4dbfbec071fcf3135653848f71492aa3e7527c0a0a5bef06c239d453eee78",
+      "map_sha256": "e404d8b08648ab0588ac14b921a26ed6659636fa96517fea5626371f48b3fb04",
+      "library_sha256": "98f67e355203d13545972f8e1c2a8a73857b6016b3c6159d44760a892a44f542",
+      "admitted_sha256": "808ac6943956a2d4657af78259ed6137f394bce6ba1301d74f51b989f3e3f0a8",
+      "benign": {
+        "result": "PASS",
+        "mode": "benign",
+        "getenv_calls": 4,
+        "hostile_getenv_calls": 0,
+        "stat_calls": 10,
+        "canary_stat_calls": 0,
+        "temp_open_calls": 2,
+        "phase1": {
+          "getenv": 2,
+          "hostile_getenv": 0,
+          "stat": 5,
+          "canary_stat": 0,
+          "temp_open": 1
+        },
+        "phase2": {
+          "getenv": 2,
+          "hostile_getenv": 0,
+          "stat": 5,
+          "canary_stat": 0,
+          "temp_open": 1
+        }
+      },
+      "benign_exit": 0,
+      "benign_log_sha256": "0b813ebb98192c4191b544c61669d41a5ab65c1bcdb3fa1514a22876f5d7f1f5",
+      "hostile": null,
+      "hostile_exit": -4,
+      "hostile_log_sha256": "20c77f95d36a3df70d8b49f86f13f0308b820c7254517bde1c7583f313fc561e",
+      "disclosure": false,
+      "abort_code": 3,
+      "abort_trace": "/home/roger/project/TEE/ENCBound-restart/build/sqlite-sgx-c03/c03-abort-MAC27-0x140000000.log",
+      "abort_trace_sha256": "5eebda31e28f4bdc4d778fac541a581f05a41653c5c62b33bef91d831cc73c80",
+      "baseline_stock_equal": null,
+      "sdk_archives": {
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tcrypto.a": "cbb7ed1d7685e5c98dbf6b7560488bde889a1ad408c6777d0303843a52639cec",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tcxx.a": "50731a201df955b9fab2f4b6292c5c9004bcfc089fa7af4ad956a97bb8fa1a21",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_trts_sim.a": "fd2e9a148f59e73e6968aa99c96dd5b286460d6ab76648095c0906ea2312bf73",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tservice_sim.a": "b53f3e15dc543515ee2f595d389a1f62724fafdc7c98d42aabc0ce61c7462f70",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64/libsgx_tstdc.a": "61023a3d31cdb630150752feadba1da6165290d598e2ea530f2a0d633fa5bf1f",
+        "/home/roger/project/TEE/ENCBound-restart/build/sqlite-sgx-c03/libcxx-MAC27/libencbound_cxx.a": "98f67e355203d13545972f8e1c2a8a73857b6016b3c6159d44760a892a44f542"
+      }
+    }
+  ],
+  "build": {
+    "results": "build/sqlite-sgx-c03/results.json",
+    "results_sha256": "be730aed35af7be965b138495bad17da6b31addc1fdc65793ab04f6194d8b66c",
+    "commands": "build/sqlite-sgx-c03/commands.json",
+    "commands_sha256": "69ba58bd5ed49208a3e0cd88877e017655d8591e12b53aa5639d3cfb62f63468"
+  },
+  "limits": [
+    "SDK SIM only; no SGX hardware isolation, timing or performance result.",
+    "Selected serial rollback-journal Unix-VFS route only; no WAL, mmap, concurrency or full POSIX/SQLite compatibility.",
+    "The protected stop is trusted boundary-service enforcement at encbound_bridge_string, not a later SQLite object check.",
+    "Only PROTECTED targets are rejected; raw pointers to COMPAT read-only application data are admitted by design.",
+    "A normal host TMPDIR/SQLITE_TMPDIR value is a raw host pointer and is also rejected by the protected bridge; the benign control leaves both unset.",
+    "The host knows the enclave base/canary offset; no ASLR or address-secrecy claim.",
+    "The BASELINE Enclave_t.c retains the selected propagate_errno extension; Enclave_t.h and the untrusted bridge files match stock.",
+    "In protected profiles the first hostile use aborts, so later azDirs reuse is only observable in BASELINE."
+  ],
+  "reproducibility": {
+    "second_build": "transient clean build; retained results only",
+    "second_build_results": "evidence/repros/2026-10-26-sqlite-c03-repro-results.json",
+    "second_build_results_sha256": "3f91884b269e398d9de975caa444580638cfa21a4212552d2936638998ca2b7e",
+    "admitted_inventory_equal": true,
+    "private_libcxx_archives_equal": true,
+    "per_profile_text_sections_equal": true,
+    "canary_addresses_sections_and_phase_counts_equal": true,
+    "signed_and_full_elf_hashes_equal": false,
+    "note": "Full unsigned ELF hashes differ across build directories (generated-path/debug and link metadata); signed hashes also differ because each build uses a fresh key. .text sections matched."
+  },
+  "ad_hoc_observations": [
+    {
+      "not_a_matrix_row": true,
+      "image": "build/sqlite-sgx-vfs-first (prior MAC27)",
+      "observation": "A getenv return of the prior unixTempFileDir.azDirs address 0x40304c00 stopped with ENCBOUND_ERR_POLICY (3) at encbound_bridge_string/ocall_stat."
+    },
+    {
+      "not_a_matrix_row": true,
+      "image": "build/sqlite-sgx-vfs-first (prior MAC27)",
+      "observation": "A getenv return of the enclave .encbound.appdata /var/tmp string address 0x402d8506 was accepted; the host stat received /var/tmp. This is consistent with COMPAT read-only data being admitted by design, not with protecting it."
+    },
+    {
+      "not_a_matrix_row": true,
+      "image": "build/sqlite-sgx-vfs-first (prior MAC27)",
+      "observation": "A normal host TMPDIR value was rejected with ENCBOUND_ERR_POLICY (3) at ocall_stat because the value is a raw host pointer; the benign control therefore leaves TMPDIR/SQLITE_TMPDIR unset."
+    }
+  ]
+}

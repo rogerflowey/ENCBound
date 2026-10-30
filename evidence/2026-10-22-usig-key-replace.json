@@ -1,0 +1,268 @@
+{
+  "date": "2026-10-22",
+  "mode": "SDK SIM; existing four USIG images",
+  "root": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1",
+  "rows": [
+    {
+      "configuration": "BASELINE",
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "off": 1040,
+      "length": 1104,
+      "signed": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/BASELINE/enclave/enclave.signed.so",
+      "signed_sha256": "1939e6c1e532491dc833835d1ab99d5c9f75cf72ce94bf5dd76f6159899fc036",
+      "host": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-BASELINE",
+      "host_sha256": "aee28a3ce0c2316682a494d41ff352c0caebf534ccb9b765fc13937577b30a5b",
+      "meaning": "BASELINE: overflow replaces edd25519_sk; signature verifies with the attacker key and not the legitimate key",
+      "commands": [
+        {
+          "name": "BASELINE-compile",
+          "command": [
+            "cc",
+            "-O2",
+            "-g",
+            "-Wno-deprecated-declarations",
+            "-I",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/BASELINE/generated",
+            "-I",
+            "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/include",
+            "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/key_replace_host.c",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/BASELINE/generated/usig_enclave_u.c",
+            "-L",
+            "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-Wl,-rpath-link,/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-lsgx_urts_sim",
+            "-lpthread",
+            "-lcrypto",
+            "-o",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-BASELINE"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/BASELINE-compile.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "BASELINE-direct",
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-BASELINE",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/BASELINE/enclave/enclave.signed.so",
+            "1040"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/BASELINE-direct.log",
+          "sha256": "82fc9eba84c2808113e074b5429d39d36ff91158b19ea32f1c571a24fcf40c02"
+        }
+      ]
+    },
+    {
+      "configuration": "RADIX_ONLY",
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "off": 2048,
+      "length": 2112,
+      "signed": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/RADIX_ONLY/enclave/enclave.signed.so",
+      "signed_sha256": "6a9383307defb2bd6ae55ae9fe3ad1316bdd4437f9c7cef55e351d3e2e918bae",
+      "host": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-RADIX_ONLY",
+      "host_sha256": "ba38e23ba59605a33ba4ecce2042e122a43e9d6ff8ab280cc72f0d61d5c1e323",
+      "meaning": "RADIX_ONLY: checked strncpy RANGE (code=4) at the original call, before the overflow reaches edd25519_sk",
+      "commands": [
+        {
+          "name": "RADIX_ONLY-compile",
+          "command": [
+            "cc",
+            "-O2",
+            "-g",
+            "-Wno-deprecated-declarations",
+            "-I",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/RADIX_ONLY/generated",
+            "-I",
+            "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/include",
+            "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/key_replace_host.c",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/RADIX_ONLY/generated/usig_enclave_u.c",
+            "-L",
+            "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-Wl,-rpath-link,/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-lsgx_urts_sim",
+            "-lpthread",
+            "-lcrypto",
+            "-o",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-RADIX_ONLY"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/RADIX_ONLY-compile.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "RADIX_ONLY-direct",
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-RADIX_ONLY",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/RADIX_ONLY/enclave/enclave.signed.so",
+            "2048"
+          ],
+          "returncode": -4,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/RADIX_ONLY-direct.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "RADIX_ONLY-gdb",
+          "command": [
+            "gdb",
+            "-q",
+            "-batch",
+            "-x",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/RADIX_ONLY.gdb",
+            "--args",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-RADIX_ONLY",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/RADIX_ONLY/enclave/enclave.signed.so",
+            "2048"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/RADIX_ONLY-gdb.log",
+          "sha256": "a1553d18f90df44d45b23f0dc9cc220218ec19bffe7525239fc134f16485ea79"
+        }
+      ]
+    },
+    {
+      "configuration": "MAC27",
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "off": 2048,
+      "length": 2112,
+      "signed": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/MAC27/enclave/enclave.signed.so",
+      "signed_sha256": "ab901ef4691566d77f8205423cba64fcf67a96b43d3052544e7b6aa74422626e",
+      "host": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-MAC27",
+      "host_sha256": "35b3c1dbf7a4211ac5984e7502700c6eea1f158393f6b4ceea9c96d51a436a68",
+      "meaning": "MAC27: checked strncpy RANGE (code=4) at the original call, before the overflow reaches edd25519_sk",
+      "commands": [
+        {
+          "name": "MAC27-compile",
+          "command": [
+            "cc",
+            "-O2",
+            "-g",
+            "-Wno-deprecated-declarations",
+            "-I",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/MAC27/generated",
+            "-I",
+            "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/include",
+            "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/key_replace_host.c",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/MAC27/generated/usig_enclave_u.c",
+            "-L",
+            "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-Wl,-rpath-link,/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-lsgx_urts_sim",
+            "-lpthread",
+            "-lcrypto",
+            "-o",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-MAC27"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/MAC27-compile.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "MAC27-direct",
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-MAC27",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/MAC27/enclave/enclave.signed.so",
+            "2048"
+          ],
+          "returncode": -4,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/MAC27-direct.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "MAC27-gdb",
+          "command": [
+            "gdb",
+            "-q",
+            "-batch",
+            "-x",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/MAC27.gdb",
+            "--args",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-MAC27",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/MAC27/enclave/enclave.signed.so",
+            "2048"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/MAC27-gdb.log",
+          "sha256": "c40fb5fd0ee29e7bea077da8add739b3ac35ab21c50afef28eb24ea7c090daa2"
+        }
+      ]
+    },
+    {
+      "configuration": "MAC27-high",
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "off": 2048,
+      "length": 2112,
+      "signed": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/MAC27-high/enclave/enclave.signed.so",
+      "signed_sha256": "25f2d9ae6ebd449db831fb2ddd7261b41da988a83b664eeb1a73e04fc6990616",
+      "host": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-MAC27-high",
+      "host_sha256": "609e1d4e6c31535e12d48657fdbaeb69bec149f80b00581cf62b86ce99f45ace",
+      "meaning": "MAC27-high: checked strncpy RANGE (code=4) at the original call, before the overflow reaches edd25519_sk",
+      "commands": [
+        {
+          "name": "MAC27-high-compile",
+          "command": [
+            "cc",
+            "-O2",
+            "-g",
+            "-Wno-deprecated-declarations",
+            "-I",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/MAC27-high/generated",
+            "-I",
+            "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/include",
+            "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/key_replace_host.c",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/MAC27-high/generated/usig_enclave_u.c",
+            "-L",
+            "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-Wl,-rpath-link,/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/lib64",
+            "-lsgx_urts_sim",
+            "-lpthread",
+            "-lcrypto",
+            "-o",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-MAC27-high"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/MAC27-high-compile.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "MAC27-high-direct",
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-MAC27-high",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/MAC27-high/enclave/enclave.signed.so",
+            "2048"
+          ],
+          "returncode": -4,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/MAC27-high-direct.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "MAC27-high-gdb",
+          "command": [
+            "gdb",
+            "-q",
+            "-batch",
+            "-x",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/MAC27-high.gdb",
+            "--args",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/key-replace-MAC27-high",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/MAC27-high/enclave/enclave.signed.so",
+            "2048"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/key-replace/MAC27-high-gdb.log",
+          "sha256": "085e10c16269058e07da642bd78fb02939de5adf9980643317918d9e5a50236c"
+        }
+      ]
+    }
+  ],
+  "inputs": {
+    "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/key_replace.py": "3005de6eea14ab76cad066fde4342bba05ae92a1dbd32db812274d9e51f7484c",
+    "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/key_replace_host.c": "f016599657ae21f4be13ab92e40443fe2c1a2f2ebca13533902a57637f1f1dab",
+    "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/host.c": "4161e81b6a5c1f423ddb77cb563b017533acf39b11ff3d8ceb54668ac8b9272c",
+    "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/build.py": "93d467724ba3ae58f4270569161f1457fff897653dd30a564e053fd9b5f31fba"
+  }
+}

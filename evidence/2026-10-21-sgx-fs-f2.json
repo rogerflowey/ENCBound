@@ -1,0 +1,185 @@
+{
+  "date": "2026-10-21",
+  "target": "dburihabwa/sgx-fs",
+  "finding": "F2: non-block-aligned read in FileSystem::read_data",
+  "source_location": "utils/filesystem.cpp:186-190",
+  "rows": [
+    {
+      "mode": "direct SDK SIM",
+      "result": "host-visible cross-file plaintext leak (CWE-125)",
+      "leaks": [
+        {
+          "victim": 1,
+          "offset": 17,
+          "source": 2
+        },
+        {
+          "victim": 2,
+          "offset": 17,
+          "source": 3
+        },
+        {
+          "victim": 3,
+          "offset": 17,
+          "source": 4
+        },
+        {
+          "victim": 4,
+          "offset": 17,
+          "source": 5
+        },
+        {
+          "victim": 5,
+          "offset": 17,
+          "source": 6
+        },
+        {
+          "victim": 6,
+          "offset": 17,
+          "source": 7
+        },
+        {
+          "victim": 7,
+          "offset": 17,
+          "source": 8
+        },
+        {
+          "victim": 8,
+          "offset": 17,
+          "source": 9
+        },
+        {
+          "victim": 9,
+          "offset": 17,
+          "source": 10
+        },
+        {
+          "victim": 10,
+          "offset": 17,
+          "source": 11
+        },
+        {
+          "victim": 11,
+          "offset": 17,
+          "source": 12
+        },
+        {
+          "victim": 12,
+          "offset": 17,
+          "source": 13
+        },
+        {
+          "victim": 13,
+          "offset": 17,
+          "source": 14
+        },
+        {
+          "victim": 14,
+          "offset": 17,
+          "source": 15
+        }
+      ],
+      "returncode": 0,
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/BASELINE-0x40000000-O2-O2-f2-baseline.log",
+      "log_sha256": "afc47c2df18816cc64bc45116400aec7f2a629016ac886301d425f79bd422bda",
+      "command": [
+        "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/BASELINE-0x40000000-O2-O2-host-f2",
+        "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/BASELINE-0x40000000-O2-O2/enclave.signed.so",
+        "f2"
+      ],
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "normal": {
+        "returncode": 0,
+        "log": "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/BASELINE-0x40000000-O2-O2-normal.log",
+        "log_sha256": "5aa559c49231788f9801c842445d18489f06389a9356b004425a315ffaa4eded"
+      }
+    },
+    {
+      "mode": "GDB-attributed SDK SIM",
+      "result": "checked memcpy rejects the source extent with ENCBOUND_ERR_RANGE",
+      "base": "0x140000000",
+      "text_address": "0x140004040",
+      "returncode": 0,
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/MAC27-0x140000000-O2-O2-f2-gdb.log",
+      "log_sha256": "45e91555c126fa21d6d48c904b6758c7c8a508b12576da5eaa0df56d9f770275",
+      "command": [
+        "gdb",
+        "-q",
+        "-batch",
+        "-x",
+        "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/MAC27-0x140000000-O2-O2-f2.gdb",
+        "--args",
+        "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/MAC27-0x140000000-O2-O2-host-f2",
+        "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/MAC27-0x140000000-O2-O2/enclave.signed.so",
+        "f2"
+      ],
+      "profile": "MAC27",
+      "normal": {
+        "returncode": 0,
+        "log": "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/MAC27-0x140000000-O2-O2-normal.log",
+        "log_sha256": "7bebe75de2afca651db6c4632b9eacab131b1bf054a8dd5af3702002ecef22e1"
+      }
+    },
+    {
+      "mode": "GDB-attributed SDK SIM",
+      "result": "checked memcpy rejects the source extent with ENCBOUND_ERR_RANGE",
+      "base": "0x40000000",
+      "text_address": "0x40004040",
+      "returncode": 0,
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/MAC27-0x40000000-O2-O2-f2-gdb.log",
+      "log_sha256": "215cab2dcccfd113608bbb5155b501fc6e28fc4d8e369fa9910690fafd77532b",
+      "command": [
+        "gdb",
+        "-q",
+        "-batch",
+        "-x",
+        "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/MAC27-0x40000000-O2-O2-f2.gdb",
+        "--args",
+        "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/MAC27-0x40000000-O2-O2-host-f2",
+        "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/MAC27-0x40000000-O2-O2/enclave.signed.so",
+        "f2"
+      ],
+      "profile": "MAC27",
+      "normal": {
+        "returncode": 0,
+        "log": "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/MAC27-0x40000000-O2-O2-normal.log",
+        "log_sha256": "7bebe75de2afca651db6c4632b9eacab131b1bf054a8dd5af3702002ecef22e1"
+      }
+    },
+    {
+      "mode": "GDB-attributed SDK SIM",
+      "result": "checked memcpy rejects the source extent with ENCBOUND_ERR_RANGE",
+      "base": "0x40000000",
+      "text_address": "0x40004040",
+      "returncode": 0,
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/RADIX_ONLY-0x40000000-O2-O2-f2-gdb.log",
+      "log_sha256": "6762773f4bc536f9145feba8d64c62b88169015277bc1c00e566e69c0e6d8d7b",
+      "command": [
+        "gdb",
+        "-q",
+        "-batch",
+        "-x",
+        "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/RADIX_ONLY-0x40000000-O2-O2-f2.gdb",
+        "--args",
+        "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/RADIX_ONLY-0x40000000-O2-O2-host-f2",
+        "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/RADIX_ONLY-0x40000000-O2-O2/enclave.signed.so",
+        "f2"
+      ],
+      "profile": "RADIX_ONLY",
+      "normal": {
+        "returncode": 0,
+        "log": "/home/roger/project/TEE/ENCBound-restart/build/sgx-fs/repo-local-v1/f2/RADIX_ONLY-0x40000000-O2-O2-normal.log",
+        "log_sha256": "7bebe75de2afca651db6c4632b9eacab131b1bf054a8dd5af3702002ecef22e1"
+      }
+    }
+  ],
+  "host_source": {
+    "apps/sgx-fs/host.c": "012f9b1e7a4b1d66bef2622b57269d007a82787931d93f68b4b46d3e7125b222"
+  },
+  "limits": [
+    "SDK SIM, not SGX hardware",
+    "the four enclave images are the existing apps/sgx-fs/run.py outputs",
+    "F2 is the leak channel; no full exploit or data-only attack is claimed"
+  ]
+}

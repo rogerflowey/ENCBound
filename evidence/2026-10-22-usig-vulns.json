@@ -1,0 +1,165 @@
+{
+  "date": "2026-10-22",
+  "mode": "native ASan; SGX and Ed25519 stand-ins",
+  "target": {
+    "repository": "ibalajiarun/go-consensus",
+    "revision": "3a733ffd036a5b66d578f9002fca76ede40f8d47",
+    "archive_sha256": "c98a0b6ae8b5a5331501c2020c8bc019df4a628d15df88a61a24b017ee9870ef"
+  },
+  "source": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/source/enclaves/usig/enclave_usig",
+  "binary": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/vuln/native/usig-vuln-native",
+  "commands": [
+    {
+      "name": "harness",
+      "command": [
+        "clang-21",
+        "-std=c11",
+        "-O1",
+        "-g",
+        "-fsanitize=address",
+        "-fno-omit-frame-pointer",
+        "-DNDEBUG",
+        "-I",
+        "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/vuln/stubs",
+        "-I",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/source/enclaves/usig/enclave_usig/trusted",
+        "-I",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/source/enclaves/usig/enclave_usig/include",
+        "-I",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/include",
+        "-c",
+        "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/vuln/harness.c",
+        "-o",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/vuln/native/harness.o"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "standins",
+      "command": [
+        "clang++-21",
+        "-std=c++17",
+        "-O1",
+        "-g",
+        "-fsanitize=address",
+        "-fno-omit-frame-pointer",
+        "-DNDEBUG",
+        "-I",
+        "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/vuln/stubs",
+        "-I",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/source/enclaves/usig/enclave_usig/trusted",
+        "-I",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/source/enclaves/usig/enclave_usig/include",
+        "-I",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/include",
+        "-x",
+        "c++",
+        "-c",
+        "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/vuln/stubs/sgx_glue.c",
+        "-o",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/vuln/native/sgx_glue.o"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "enclave-source",
+      "command": [
+        "clang++-21",
+        "-std=c++17",
+        "-O1",
+        "-g",
+        "-fsanitize=address",
+        "-fno-omit-frame-pointer",
+        "-DNDEBUG",
+        "-I",
+        "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/vuln/stubs",
+        "-I",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/source/enclaves/usig/enclave_usig/trusted",
+        "-I",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/source/enclaves/usig/enclave_usig/include",
+        "-I",
+        "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk/include",
+        "-c",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/source/enclaves/usig/enclave_usig/trusted/usig_enclave.cpp",
+        "-o",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/vuln/native/usig_enclave.o"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "link",
+      "command": [
+        "clang++-21",
+        "-fsanitize=address",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/vuln/native/harness.o",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/vuln/native/sgx_glue.o",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/vuln/native/usig_enclave.o",
+        "-o",
+        "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/vuln/native/usig-vuln-native"
+      ],
+      "returncode": 0
+    }
+  ],
+  "cases": [
+    {
+      "case": "mackey-1025",
+      "expected": "native ASan: global-buffer-overflow, WRITE of size 1025, usig_enclave.cpp:129",
+      "returncode": 1,
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/vuln/native/mackey-1025.log",
+      "sha256": "153fe5f9f09928becbfae7e1da890f12f3c79d4084eb0a14f4b5617c647ec318",
+      "markers": [
+        "global-buffer-overflow",
+        "WRITE of size 1025",
+        "usig_enclave.cpp:129"
+      ]
+    },
+    {
+      "case": "edkey-1024",
+      "expected": "native ASan: global-buffer-overflow, WRITE of size 1, usig_enclave.cpp:134",
+      "returncode": 1,
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/vuln/native/edkey-1024.log",
+      "sha256": "90da30f85866c73010c631254b34645d9d15af0d29c1fa731e77a122081a113f",
+      "markers": [
+        "global-buffer-overflow",
+        "WRITE of size 1",
+        "usig_enclave.cpp:134"
+      ]
+    },
+    {
+      "case": "edkey-1060",
+      "expected": "native ASan: global-buffer-overflow, WRITE of size 1060, usig_enclave.cpp:132",
+      "returncode": 1,
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/vuln/native/edkey-1060.log",
+      "sha256": "94c7d5074e43be0783cc129a152d23d2f37b3932308fac584129a5370e03b0d2",
+      "markers": [
+        "global-buffer-overflow",
+        "WRITE of size 1060",
+        "usig_enclave.cpp:132"
+      ]
+    },
+    {
+      "case": "counter-oob",
+      "expected": "native ASan: heap-buffer-overflow, READ of size 8, usig_enclave.cpp:264",
+      "returncode": 1,
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/vuln/native/counter-oob.log",
+      "sha256": "2c6b511eb1a83a1fe7b3ad44dbea16df5a084f25d1639a4ebd1d55318d68bec6",
+      "markers": [
+        "heap-buffer-overflow",
+        "READ of size 8",
+        "usig_enclave.cpp:264"
+      ]
+    }
+  ],
+  "control": {
+    "returncode": 0,
+    "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/vuln/native/counter-in-range.log",
+    "sha256": "294687441d0fa34baed20f1678bfd1afe2fb16df749ef4b01429b4f99fe50682"
+  },
+  "inputs": {
+    "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/vuln/run.py": "3b0356517eb4ef15301575c5d1f3fc690dfb5df19032a13f08a1cff80be4e5b8",
+    "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/vuln/harness.c": "2555ccf567731eaf8996b03421c471a6a94710a20aa033d793941cc5fa4a8cea",
+    "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/vuln/stubs/usig_enclave_t.h": "fe1c039c8adeebee6bbbc94b956fbee03ad0b88ec9afc50dfb6bd8a798065979",
+    "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/vuln/stubs/sgx_glue.c": "3bb438864b4476510d28b290851672021f6767c91e40a6eadb931d6b62ae2c14",
+    "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/pins.json": "9c422f8f7e2fa2cc6734d9082e27962aacf4ad7e138c14f104c788ca7d5886c1"
+  }
+}

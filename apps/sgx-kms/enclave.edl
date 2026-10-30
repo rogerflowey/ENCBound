@@ -1,0 +1,6 @@
+/* Preserve all original SGX-KMS declarations; add pinned SDK-owned OCALLs
+ * needed by the SDK/runtime closure. No application call admission follows. */
+enclave {
+    from "isv_enclave.edl" import *;
+    from "sgx_tstdc.edl" import *;
+};

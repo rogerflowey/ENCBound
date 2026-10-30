@@ -1,0 +1,84 @@
+{
+  "archive": {
+    "url": "https://samate.nist.gov/SARD/downloads/test-suites/2017-10-01-juliet-test-suite-for-c-cplusplus-v1-3.zip",
+    "sha256": "ada9d7e1c323d283446df3f55bdee0d00bda1fed786785fe98764d58688f38eb"
+  },
+  "mode": "SDK_SIM",
+  "frontend": "-O0",
+  "codegen": "-O0",
+  "sdk": "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk",
+  "pinned_source": "/home/roger/project/TEE/ENCBound/.local/sgxbounds/intel-sgx-simulation-2.26",
+  "inputs": {
+    "tools/juliet.py": "25af319fb832c16b64f26820343d29f970c9c8f19204bc04fd1efc5b64e38e41",
+    "tests/juliet/Makefile": "c42fa46e0cb388706d83857b761c84f9f35b2c4048d0882b001c839a22fb01f7",
+    "tests/juliet/README.md": "18da724abc4def74d3ff3ff94ad070b4caf3938eef3032283e9805827640b33f",
+    "tests/juliet/entry.c": "c144226ef510bbb87f78f38e991a485ea19aa4477ee3a8e38faf7c33e7483740",
+    "tests/juliet/host.c": "0d1b3272771ae0b9a45e9f0cf819d2941143dabb89f9855e608b05eba0ca05a5",
+    "tests/juliet/juliet.edl": "211aef508f0fd44134aadc7527df90a5e5a76b245307e6f9d8d5a2447147c82f",
+    "tests/juliet/oracle_test.py": "5b6c3a49a450dec7570469dfa95d04b50fbfb20faa4c2ef3d6264592fd4f0004",
+    "tests/juliet/support.c": "cc2ff28ba825fa31bd650b4c969c1f6f493969a8091d60dea32c391299988519",
+    "tools/encbound-cc.sh": "b82087b00ca22aa40dffab5b2bccf59dd378b504e56073cc14bed8dcd8a1d327",
+    "tools/mark_appdata_sections.sh": "b8e968bba7bcc86068c8a8c95dfa315944ce2e3fe060ac6413276d491708ab3f",
+    "pass/encbound_pass.cpp": "5b82fafd29b29f1bcd93cddcdbae153aa71d7320bf7f1670efabbcdf792eb4a3",
+    "build/pass/encbound_pass.so": "2efdf78d693970e0342d78e134aeecfbcdcbc27078a25b971121cbfb1c0d73e6",
+    "sdk/platform_layout.c": "8d09c4b85a41b45866dc46a0b22fd46624d6fe9d7d348db790e946398933fee8",
+    "sdk/enclave_sections.lds": "24b51110e11b9fc68e2f3b6a26e1c169b6257cf7ab80eaceef4558a9cd04298c",
+    "sdk/enclave.lds": "35d8fa1a8a0ee564397a0aa8196dbaf0f108398d8e31e7eed67764de43338610",
+    "sdk/enclave.config.tmpl.xml": "48496a9445cc04994f964fb64e854e56fc0c76085445bdbdd8035a66d76889f2",
+    "runtime/adapters.c": "73c310c9a5eecf4d2848daee54febb4d820fc8c88d59c080c1578e60b8628747",
+    "runtime/allocations.c": "bb54a59c521d15a9f2a03c5c248135fe3b169357884f01f4b10df090137b214f",
+    "runtime/allocator.c": "e3da8e759942c78827e2797ce87d3992a987f11257802aef0af65660e617029a",
+    "runtime/capability.c": "fd165e5432d5070dca8490d1cd956cd7a44737180f2c5cf6186961997f85c1a5",
+    "runtime/encbound_internal.h": "f6fda479352697ec35ca8312739f8f821e0518e312d99c139a1ab113c11cda49",
+    "runtime/runtime.c": "f822565421d2908a4a06a2c95239de407e13f5b66a9642a47c1e7a2a7e6d0953",
+    "runtime/siphash.c": "b713ff7975c9f13015ea034f95da320e3cb4adace29215b5241f4110ba9483d6",
+    "include/encbound_common.h": "be87adc613dc67b73d1d67723a94171e0813140ee9bec28a9d54a5a42357cbc6",
+    "include/encbound_platform.h": "a7a977aecbc0feba7cbd2db350ab7af62f33ef1d7ab7fa28f27030ba11ae1be3",
+    "include/encbound_regions.h": "6cb7b2515c00d14ce802818b6f9d161e3a33c337af73f7327c13689750708ee8",
+    "include/encbound_runtime.h": "1a0598123e04d3645478b43e93c1b472c40adc4f6c3e771d17dd567c4475af62",
+    "include/encbound_siphash.h": "ccf24fb29fca17e915c0c552b68ef11329bcfd6e5ddd225eb540131f9b913acf"
+  },
+  "tools": {
+    "clang-21": {
+      "path": "/usr/bin/clang-21",
+      "sha256": "412bbe8c60571a1eb06f48fde89635033621caeb01a9b4ee76d46711bae8e932"
+    },
+    "opt-21": {
+      "path": "/usr/bin/opt-21",
+      "sha256": "f3a0c71473eb573797c003382bbe096e6a6468f4da5caf406246f2dbb5e86531"
+    },
+    "gcc": {
+      "path": "/usr/bin/gcc",
+      "sha256": "b5f1b773a7c733738352000c92a077dc5852a1a2fc6d836b1e411be1e9ec5f88"
+    },
+    "gdb": {
+      "path": "/usr/bin/gdb",
+      "sha256": "e5272927fc1b40345748dfa4133ec2a50caeb5f209a44099dd2c48679911c59c"
+    },
+    "objcopy": {
+      "path": "/usr/bin/objcopy",
+      "sha256": "05f4473d24f7330a9b13f43d007d619a2e792e33de453cd7533a2d97c30da770"
+    },
+    "ld": {
+      "path": "/usr/bin/ld",
+      "sha256": "97f48d93b8b076a92d2809ec29dcb17f0f37c8827358f832255e2ed22fef6075"
+    }
+  },
+  "artifacts": {
+    "BASELINE": {
+      "host": "8ccf6fc11709e374857571b655dd041c3293e17905c8de4f5e26daca4cdd0715",
+      "enclave.so": "9c0ac022b38b31779c04429f574eee8b6c987742574558d7d6588c63ad48df4d",
+      "enclave.signed.so": "ade49c5db17abe53eb4af01776d93c3d229a7e5baa87680eaaa74d791560e40b"
+    },
+    "RADIX_ONLY": {
+      "host": "0afd33c5230021076fd9a0d4d123c61a852d56b11d28e83536b5ad05cfbc9312",
+      "enclave.so": "5fc6ec79856e6cd2a2ffe2e73420d49a0978ef16db6aae2499dc1a21d802135f",
+      "enclave.signed.so": "d32fa333c5fd8c5a3b50587ec1bac211ddec9f5cf6cc5731896d6fd0ff0d3cd0"
+    },
+    "MAC27": {
+      "host": "07261644cd9fe07045817209ad8e8b07ffe16481d44d5d0f4b4049c1fc063c7b",
+      "enclave.so": "289a45348904dbb9adf25ca2504ed86602c29c44d35487962e0e2261ddd1d211",
+      "enclave.signed.so": "85918430062cead8806b02b14a4a62393cc4853f06c35ada1326d298ddcb847a"
+    }
+  }
+}

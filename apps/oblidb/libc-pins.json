@@ -1,0 +1,9 @@
+{
+  "math/e_log.c": "c16c1490c7903a738e706f64985d9572cb88a2b740e7d8ae8b934bca4d3638e8",
+  "math/e_log2.c": "fad75f72fd9235409c5d7ee0ff57e12f8689d9850b78dcf7e323b02e8aab0add",
+  "math/e_pow.c": "d42b9dc1867fef36d823f8bf4bd899dd270aa173e26ca53458602806218e3819",
+  "math/s_scalbn.c": "368c4596f481b2d238adfb2ab350ae077a492241a1bc17b9d8fbb8e8916f00cf",
+  "math/s_fabs.c": "b72cc999d658bc71ba1233af000fa4c8c2676ff77f347ebcbf66fdd6ff0482ac",
+  "math/e_sqrt.c": "3f01cc9f0102c8a5ed10f55c7097ee89367fdcc318e373b47c9729e11d58877f",
+  "math/s_copysign.c": "09bd46454d9688d1894d68fd44dff7aa6485a9eb4b9872d8226852bf0bda8f53"
+}

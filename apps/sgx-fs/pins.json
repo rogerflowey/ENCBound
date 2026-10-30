@@ -1,0 +1,19 @@
+{
+  "repository": "https://github.com/dburihabwa/sgx-fs",
+  "revision": "50c89eca582ad9b2fa28c19cac30d2b0b1da08b3",
+  "files": {
+    "Enclave/Enclave.cpp": "adef0d4647e1fa2b420225f6e2280a30a8ae272f03738f75d6d634b2c397eff6",
+    "Enclave/Enclave.edl": "4cb16900400738624cfb8c46f911f3c8799744bf3ab7a6b0221f4c07263b65ac",
+    "Enclave/Sealing/Sealing.cpp": "3b57f2eca89fa176fa2c8ba5a0e71f9d307b63db6fefc20d9d4cf003aec76be8",
+    "Enclave/Sealing/Sealing.edl": "288fb535c6658234a90d621a8d0e1004002005756bcb011c6f891290f3b86941",
+    "utils/filesystem.cpp": "d660ed291c7840396c6c3a65524383be9a6c326ffcad4f3ee974c16a8e78a045",
+    "utils/filesystem.hpp": "f67d4dda5c29bd15638bf4b8c4ec2a99fc25c94a2b34093b133cb32f62a10235",
+    "LICENSE": "2878d7203e4928cb23c98ce13e08240420c39251a50425eab28a459fb4e44557"
+  },
+  "math": {
+    "math/s_floorl.c": "53fc9f395c0e83debda531f00dacc851e8fc3b8b69aef462fb21766aa36749da",
+    "math/s_floor.c": "96455d87237336730919fc39ba60ec73d8ddbeb2598798406d9d6ce5fe7a6fd1",
+    "math/s_ceil.c": "e97dc3ee9d8e0ee4a75e88b41b213edab1df9b82d965ab410a5aedf242947970",
+    "math/math_private.h": "cc0716bdd53ad8208b35cc5c9c05ccaa80d94091aafc344f94b798c3b2886346"
+  }
+}

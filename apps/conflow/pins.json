@@ -1,0 +1,12 @@
+{
+  "repository": "https://github.com/conflow-dev/ConFlow",
+  "revision": "fd1904271e127980c1c2a7a813a1c506266f7372",
+  "archive_url": "https://codeload.github.com/conflow-dev/ConFlow/tar.gz/fd1904271e127980c1c2a7a813a1c506266f7372",
+  "archive_sha256": "d3c9e4a918af3d128d6ab871a7d5ada99df50a248fd94c56a15310693ef0ce46",
+  "files": {
+    "sgx_tf_ops/Enclave/Enclave.cpp": "a57781c526708d746646074685db65ab1e82c767ca8dbcfad8f1e9a136a66d4e",
+    "sgx_tf_ops/Enclave/Enclave.edl": "5f48c6ba6de4ed649dea19cc1f462aa62c7ea60d6faac17f2c7bc76a50e9b1e1",
+    "run.sh": "91d0f6cba749185713b8986ebf6ea2a014c2a7a16dedfb290dc32cfbf24e798b"
+  },
+  "license": "No LICENSE/COPYING file found in the pinned upstream tree; source is fetched into ignored build output, not vendored in this repository."
+}

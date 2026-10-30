@@ -1,0 +1,98 @@
+{
+  "archive": {
+    "url": "https://samate.nist.gov/SARD/downloads/test-suites/2017-10-01-juliet-test-suite-for-c-cplusplus-v1-3.zip",
+    "sha256": "ada9d7e1c323d283446df3f55bdee0d00bda1fed786785fe98764d58688f38eb"
+  },
+  "mode": "SDK_SIM",
+  "frontend": "-O0",
+  "codegen": "-O0",
+  "sdk": "/home/roger/project/TEE/ENCBound/.local/sgxbounds/sdk-2.26/sgxsdk",
+  "pinned_source": "/home/roger/project/TEE/ENCBound/.local/sgxbounds/intel-sgx-simulation-2.26",
+  "inputs": {
+    "tools/juliet.py": "e6096a0e4d318c583040c0c3ab540c15051ed22ca6be477de3771f57a921b68f",
+    "tests/juliet/EVALUATION.md": "5fa7a12ea52e9fe774574633cf7d13321130ee5622122306423ff60e754096ca",
+    "tests/juliet/Makefile": "23e7458d6c905ef3044e4087196ceb1432725836a2e2e5e49ae037a9a8ad3232",
+    "tests/juliet/README.md": "851e5aed0e99749dbc796f449b8227398cf8967ae4ddff5ae7581e1debdb599c",
+    "tests/juliet/entry.c": "c144226ef510bbb87f78f38e991a485ea19aa4477ee3a8e38faf7c33e7483740",
+    "tests/juliet/host.c": "0d1b3272771ae0b9a45e9f0cf819d2941143dabb89f9855e608b05eba0ca05a5",
+    "tests/juliet/juliet.edl": "211aef508f0fd44134aadc7527df90a5e5a76b245307e6f9d8d5a2447147c82f",
+    "tests/juliet/oracle_test.py": "5b6c3a49a450dec7570469dfa95d04b50fbfb20faa4c2ef3d6264592fd4f0004",
+    "tests/juliet/support.c": "cc2ff28ba825fa31bd650b4c969c1f6f493969a8091d60dea32c391299988519",
+    "tools/encbound-cc.sh": "92ab529dc0c03aec453e04264b01ef3cbd3e88c1f1cbe7ebe9fb37b897fe7bb0",
+    "tools/mark_appdata_sections.sh": "3bfeedb804f8b66555c3c32359ed307320b04c7b91b6f0f8e655e8b1051eb999",
+    "pass/encbound_pass.cpp": "eeca6b031ca19b4c2733c85861c03cbdf6b68aea85053356215ff96d1d02cc2d",
+    "build/pass/encbound_pass.so": "3b82b64ac8ac929ac83aec5c127b5f4666f1eb59856c7a477f3c4c1397d54b92",
+    "sdk/platform_layout.c": "049786625ff940f7f250b4be2aa5706c2cff884835305ad9022bc17cce15233a",
+    "sdk/enclave_sections.lds": "967bc502b9b1d7b5a9e9b38c5bdbae4d6ef3865b8e4bb1b082a9f102c70b2171",
+    "sdk/enclave.lds": "35d8fa1a8a0ee564397a0aa8196dbaf0f108398d8e31e7eed67764de43338610",
+    "sdk/enclave.config.tmpl.xml": "48496a9445cc04994f964fb64e854e56fc0c76085445bdbdd8035a66d76889f2",
+    "runtime/adapters.c": "f840efbe0f42fd5110e5eeda2b283e1d632032e827a0011c73aa36419fd65d2b",
+    "runtime/aes_cmac.h": "57dbdccab885297618497703c93e65aeb37b6c790e9a5e772115a6eeb37400c9",
+    "runtime/allocations.c": "021b88faebb70d9d241796a810e096b55d92c301b860a455714ec413e2f1bf4c",
+    "runtime/allocator.c": "22029d991a6c5ebcf4197b319fe6167423b7ae79d70880e879c4501a07d40e4f",
+    "runtime/capability.c": "847adc23a4d16b96b1d84bcb48b5781297c1831b1c4d67577bbf07f3bf5288f1",
+    "runtime/check_core.c": "b799756b85173911f79e376b1575b7f176a7c3a6f787d7e02739c7171fdc5b94",
+    "runtime/cxx_allocations.c": "b32227690b5567da12340969b5ec297bc153e47ce70ff1f9f0122832b2d95720",
+    "runtime/cxx_lifecycle.c": "242d9fd57f143d9ddc173c74608fcb8201e58e90d4239988d9c1be38414e0010",
+    "runtime/cxx_services.c": "0c90f960c75be984694838cdac29411a863e437d8adbfaedd3d75811fb969aa5",
+    "runtime/encbound_internal.h": "4c01d6edba520c14520bf91ddda640aae20e5205ac9332482caf608074868d83",
+    "runtime/runtime.c": "8d89c72a01f55c15e64035412a7bc3aea56a36258f141fa9eb962f0c91742685",
+    "runtime/siphash.c": "d8de382205919156fabd0e17d983d6aac40483044544cfb6b921eb1c46dc2e4f",
+    "include/encbound_app_errno.h": "1b850368affc1efbfdf7ec7d68cf91a7e7c169af64b7f671d8e2fc3db52e8b14",
+    "include/encbound_common.h": "be87adc613dc67b73d1d67723a94171e0813140ee9bec28a9d54a5a42357cbc6",
+    "include/encbound_platform.h": "a7a977aecbc0feba7cbd2db350ab7af62f33ef1d7ab7fa28f27030ba11ae1be3",
+    "include/encbound_regions.h": "bc29d3230768cf6f41c4309b1763544231bf3f1e597ec3197be5444bbc4e8c77",
+    "include/encbound_runtime.h": "cf53979faf5e21c3684bba1c5170a50b143b0af48385787f6907737b5b9cb1c1",
+    "include/encbound_siphash.h": "ccf24fb29fca17e915c0c552b68ef11329bcfd6e5ddd225eb540131f9b913acf"
+  },
+  "tools": {
+    "clang-21": {
+      "path": "/usr/bin/clang-21",
+      "sha256": "412bbe8c60571a1eb06f48fde89635033621caeb01a9b4ee76d46711bae8e932"
+    },
+    "opt-21": {
+      "path": "/usr/bin/opt-21",
+      "sha256": "f3a0c71473eb573797c003382bbe096e6a6468f4da5caf406246f2dbb5e86531"
+    },
+    "gcc": {
+      "path": "/usr/bin/gcc",
+      "sha256": "b5f1b773a7c733738352000c92a077dc5852a1a2fc6d836b1e411be1e9ec5f88"
+    },
+    "gdb": {
+      "path": "/usr/bin/gdb",
+      "sha256": "e5272927fc1b40345748dfa4133ec2a50caeb5f209a44099dd2c48679911c59c"
+    },
+    "objcopy": {
+      "path": "/usr/bin/objcopy",
+      "sha256": "05f4473d24f7330a9b13f43d007d619a2e792e33de453cd7533a2d97c30da770"
+    },
+    "ld": {
+      "path": "/usr/bin/ld",
+      "sha256": "97f48d93b8b076a92d2809ec29dcb17f0f37c8827358f832255e2ed22fef6075"
+    }
+  },
+  "artifacts": {
+    "BASELINE": {
+      "host": "b4ad85a5d3c7b7e8362b9abec89e5cb39279b02fa4927e8250acbc233bc1fda1",
+      "enclave.so": "902d9858cc2352972b827678cf9e3893339ca4c40d75138ff7e62a50278f33fe",
+      "enclave.signed.so": "966554961187a6924ab295386d94812fac4abe27ba728f9005d9d5a916f47153"
+    },
+    "RADIX_ONLY": {
+      "host": "70467c03cc47ce79121e61fc17c07e65e5d2c6b28c66ca84688a8bae4a2c43f2",
+      "enclave.so": "1bbc375f86ef27b43cb081108717af97781007d5c628b172528375f6bbd92d69",
+      "enclave.signed.so": "a30ae831151520f5a63811fc67373d2551c75d1d2d020e6409cc15437f6f1177"
+    },
+    "MAC27": {
+      "host": "81fea5e78077bc459ab79a38abb594a1e5f3df6de4d3be416009f07aa787572e",
+      "enclave.so": "690de3f48a64a24d9d47fca829f6666d8244b9adc5f3f193cfe7ba09c0e386ec",
+      "enclave.signed.so": "5e947326ffe6e873604b541ce5db736a99b9bac163c1f3d5582a95a61c242df5"
+    }
+  },
+  "application_pipeline": {
+    "plugin": "/home/roger/project/TEE/ENCBound-restart/build/paper-update-2026-10-30/ENCBound-paper/build/pass/encbound_pass.so",
+    "plugin_sha256": "3b82b64ac8ac929ac83aec5c127b5f4666f1eb59856c7a477f3c4c1397d54b92",
+    "opt": "opt-21",
+    "keep_gep_flags": "0",
+    "post_instcombine": "0"
+  }
+}

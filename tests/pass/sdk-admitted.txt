@@ -1,0 +1,15 @@
+# Test-only trusted observer; linked only in the SDK diagnostic fixture.
+probe_new_stack_slot
+forgery_report
+
+# C4 companion instrumented application unit (tests/pass/sdk_semantics_b.c),
+# called across a translation-unit boundary by the behavior-matrix fixture.
+semantics_cross_unit
+semantics_choose
+
+# E2 instrumented LZ4 round-trip fixture and its cross-translation-unit LZ4
+# entry points (apps/sgx-lz4/lz4). Admitted as written, not redirected.
+lz4_probe
+LZ4_compress_default
+LZ4_decompress_safe
+LZ4_compressBound

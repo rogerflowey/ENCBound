@@ -1,0 +1,7 @@
+enclave {
+    from "sgx_tstdc.edl" import *;
+    trusted {
+        public int bench_run(int which, int repetitions,
+            [out, size=output_size] uint8_t *output, size_t output_size);
+    };
+};

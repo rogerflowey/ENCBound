@@ -1,0 +1,6 @@
+/* Preserve every original application declaration. SDK-only event/CPUID
+ * proxies supply the checked runtime's SDK service closure. */
+enclave {
+    from "Enclave/Enclave.edl" import *;
+    from "sgx_tstdc.edl" import *;
+};

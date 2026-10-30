@@ -1,0 +1,20 @@
+# ENCBound step 5 admitted application/dependency externals for the sgx-wallet
+# candidate. One entry per line; "symbol = adapter" retargets instrumented
+# application call sites to the trusted checked adapter in wrappers/sdk_adapters.c.
+# See docs/legacy/steps/05-boundaries.md and docs/legacy/contracts/library-adapters.md.
+
+# Cross-translation-unit application function: defined in enclave/sealing.cpp,
+# called from enclave/enclave.cpp. Instrumented application code; admitted as
+# written, not redirected.
+seal_wallet
+unseal_wallet
+
+# Trusted SDK sealing API. The raw routines derive lengths from arguments or
+# from a host-controlled sealed header, so application call sites go through
+# range-checked adapters.
+sgx_seal_data = encbound_sgx_seal_data
+sgx_unseal_data = encbound_sgx_unseal_data
+
+# The four application OCALLs are admitted directly to the modified Intel
+# proxies. tools/modified_bridge.py derives their names from the admitted EDL;
+# the build merges its admitted-ocalls.txt. SDK-only proxies remain unadmitted.

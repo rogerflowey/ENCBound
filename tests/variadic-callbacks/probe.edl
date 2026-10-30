@@ -1,0 +1,8 @@
+enclave {
+ from "sgx_tstdc.edl" import *;
+ trusted {
+  public long indirect_case([user_check] unsigned char *p, int mode);
+  public unsigned long callback_target();
+ };
+};
+

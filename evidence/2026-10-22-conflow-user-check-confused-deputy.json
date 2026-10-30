@@ -1,0 +1,215 @@
+{
+  "date": "2026-10-22",
+  "observed_at": "2026-10-22T11:46:31.835760+00:00",
+  "application": "conflow-dev/ConFlow selected operators",
+  "pin": "fd1904271e127980c1c2a7a813a1c506266f7372",
+  "scope": "SDK SIM direct [user_check] pointer forgery; no hardware, unbounded exploit or full-workflow claim",
+  "finding": {
+    "edl": [
+      "sgx_tf_ops/Enclave/Enclave.edl:36 ecall_encrypt",
+      "sgx_tf_ops/Enclave/Enclave.edl:37 ecall_decrypt"
+    ],
+    "sink": "prepared/Enclave.cpp:49 output[i] = ... (upstream sgx_tf_ops/Enclave/Enclave.cpp:198)",
+    "primitive": "host-supplied [user_check] output/input pointer is dereferenced without an outside-enclave or range check",
+    "baseline": "writes 20 floats into an enclave-internal writable section and reads them back through the same raw pointer",
+    "protected": "RADIX_ONLY/MAC27 abort in encbound_require with ENCBOUND_ERR_POLICY (code=3) before the store"
+  },
+  "builds": [
+    {
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "build": "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-BASELINE-feO2-cgO2-rtO2-fused",
+      "log": "reused"
+    },
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "build": "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-RADIX_ONLY-feO2-cgO2-rtO2-fused",
+      "log": "reused"
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "build": "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused",
+      "log": "reused"
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "build": "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000",
+      "log": "reused"
+    }
+  ],
+  "sim": [
+    {
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "modes": {
+        "control": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-BASELINE-feO2-cgO2-rtO2-fused/host/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-BASELINE-feO2-cgO2-rtO2-fused/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/BASELINE-control.log",
+          "log_sha256": "e4aac3d747a70629fdadda0948b80d506cc474750d02042232caee0b8e0d91fb"
+        },
+        "cd": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-BASELINE-feO2-cgO2-rtO2-fused/host/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-BASELINE-feO2-cgO2-rtO2-fused/enclave/enclave.signed.so",
+            "cd"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/BASELINE-cd.log",
+          "log_sha256": "c0204554c11bdb0299bcdbf462ce487357809753f065a21d6a62f8e7f56e7c61"
+        }
+      }
+    },
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "modes": {
+        "control": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-RADIX_ONLY-feO2-cgO2-rtO2-fused/host/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-RADIX_ONLY-feO2-cgO2-rtO2-fused/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/RADIX_ONLY-control.log",
+          "log_sha256": "e4aac3d747a70629fdadda0948b80d506cc474750d02042232caee0b8e0d91fb"
+        },
+        "cd": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-RADIX_ONLY-feO2-cgO2-rtO2-fused/host/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-RADIX_ONLY-feO2-cgO2-rtO2-fused/enclave/enclave.signed.so",
+            "cd"
+          ],
+          "returncode": -4,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/RADIX_ONLY-cd.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "modes": {
+        "control": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/host/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/MAC27-control.log",
+          "log_sha256": "e4aac3d747a70629fdadda0948b80d506cc474750d02042232caee0b8e0d91fb"
+        },
+        "cd": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/host/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/enclave/enclave.signed.so",
+            "cd"
+          ],
+          "returncode": -4,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/MAC27-cd.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "modes": {
+        "control": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/host/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/MAC27-140000000-control.log",
+          "log_sha256": "e4aac3d747a70629fdadda0948b80d506cc474750d02042232caee0b8e0d91fb"
+        },
+        "cd": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/host/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/enclave/enclave.signed.so",
+            "cd"
+          ],
+          "returncode": -4,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/MAC27-140000000-cd.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ],
+  "gdb_attribution": [
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "abort_code": 3,
+      "source_line": "prepared/Enclave.cpp:49",
+      "script": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/attr-RADIX_ONLY-40000000.gdb",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/attr-RADIX_ONLY-40000000.log",
+      "log_sha256": "9927641c512a81dc23904c8cc6313b01a791beda1748228a1d6dcd6679c9d6cb",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x00000000400088dc in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x0000000040001524 in ecall_encrypt (input=0x7fffffffd320, N=<optimized out>, output=0x40043848 <mparams+40>) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-RADIX_ONLY-feO2-cgO2-rtO2-fused/prepared/Enclave.cpp:49",
+        "#3  0x0000000040006350 in sgx_ecall_encrypt (pms=0x7fffffffd290) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-RADIX_ONLY-feO2-cgO2-rtO2-fused/generated/Enclave_t.c:135",
+        "#4  sgx_ecall_encrypt (pms=0x7fffffffd290) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-RADIX_ONLY-feO2-cgO2-rtO2-fused/generated/Enclave_t.c:116",
+        "#11 0x000055555555616f in ecall_encrypt (eid=5450356448296962, input=0x7fffffffd320, N=4, output=0x40043848 <mparams+40>) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-RADIX_ONLY-feO2-cgO2-rtO2-fused/generated/Enclave_u.c:147"
+      ]
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "abort_code": 3,
+      "source_line": "prepared/Enclave.cpp:49",
+      "script": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/attr-MAC27-40000000.gdb",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/attr-MAC27-40000000.log",
+      "log_sha256": "4a728fe0ce0824bbfb9993084443254cf44e4d1adbbc99a4821286b744324891",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x0000000040008adc in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x0000000040001524 in ecall_encrypt (input=0x7fffffffd330, N=<optimized out>, output=0x40043848 <mparams+40>) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/prepared/Enclave.cpp:49",
+        "#3  0x0000000040006350 in sgx_ecall_encrypt (pms=0x7fffffffd2a0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_t.c:135",
+        "#4  sgx_ecall_encrypt (pms=0x7fffffffd2a0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_t.c:116",
+        "#11 0x000055555555616f in ecall_encrypt (eid=5450412282871810, input=0x7fffffffd330, N=4, output=0x40043848 <mparams+40>) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_u.c:147"
+      ]
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "abort_code": 3,
+      "source_line": "prepared/Enclave.cpp:49",
+      "script": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/attr-MAC27-140000000.gdb",
+      "log": "/home/roger/project/TEE/ENCBound-restart/build/conflow/confused-deputy/attr-MAC27-140000000.log",
+      "log_sha256": "8fa1082f747de2921ee5973c132c98d8224856bea05eacecd17d1ee403a180b7",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x0000000140008adc in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x0000000140001524 in ecall_encrypt (input=0x7fffffffd300, N=<optimized out>, output=0x140043848 <mparams+40>) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/prepared/Enclave.cpp:49",
+        "#3  0x0000000140006350 in sgx_ecall_encrypt (pms=0x7fffffffd270) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_t.c:135",
+        "#4  sgx_ecall_encrypt (pms=0x7fffffffd270) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_t.c:116",
+        "#11 0x000055555555616f in ecall_encrypt (eid=5450468117446658, input=0x7fffffffd300, N=4, output=0x140043848 <mparams+40>) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_u.c:147"
+      ]
+    }
+  ],
+  "notes": [
+    "The target address is read from the images own writable section table and checked against /proc/self/maps, not a fixed scratch offset.",
+    "Only BASELINE reaches the store. Protected profiles reject the raw enclave pointer before any write.",
+    "This demonstrates the pointer-forgery class on an operator that already had a separate softmax out-of-bounds result."
+  ],
+  "limits": [
+    "SDK SIM only; no SGX hardware.",
+    "No arbitrary-address sweep, secret extraction or code execution is claimed.",
+    "The enclave base is known to the host in SIM, as it is in a real SGX loader."
+  ]
+}

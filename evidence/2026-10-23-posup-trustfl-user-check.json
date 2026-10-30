@@ -1,0 +1,932 @@
+{
+  "date": "2026-10-23",
+  "observed_at": "2026-10-22T17:06:59.572629+00:00",
+  "application": [
+    "thanghoang/POSUP required ECALLs",
+    "zeyu-zh/TrustFL required ECALLs"
+  ],
+  "pin": [
+    "9a6e181763535fd927bca1749cd804e5d77f2f73",
+    "9e05a7e160bbf4fa1e7a426767f69158ea89b22d"
+  ],
+  "scope": "SDK SIM direct [user_check] pointer forgery; no hardware, unbounded exploit, secret extraction or full-workflow claim",
+  "finding": {
+    "edl": [
+      "POSUP Enclave/Enclave.edl:18 ecall_getPathID",
+      "POSUP Enclave/Enclave.edl:48 ecall_setFileIDs",
+      "TrustFL Enclave/Enclave.edl:17 ecall_data_preprocess"
+    ],
+    "sink": [
+      "POSUP prepared/Enclave.cpp:10 *output = pathID;",
+      "POSUP prepared/Enclave.cpp:19 memcpy(&tmp, &fid_arr[...], 4)",
+      "TrustFL prepared/Enclave.cpp:40 memcpy(p_data_label, p_datau, 784)",
+      "TrustFL prepared/Enclave.cpp:41 p_data_label[784] = *p_labelu",
+      "TrustFL prepared/Enclave.cpp:45 p_hmacu[i] = temp"
+    ],
+    "primitive": "host-supplied [user_check] pointers are dereferenced without an outside-enclave or range check; the host can name enclave-internal addresses for application reads and writes",
+    "baseline": "POSUP stores pathID over a .data word and reads a .data word pair; TrustFL reads 60,000 label bytes from image .text, writes 1,920,000 HMAC bytes into a mapped span, and reads a byte-verified 223,440-byte image prefix as training data (the fixed 47 MB loop then faults at the mapped-image boundary)",
+    "protected": "RADIX_ONLY/MAC27 abort in encbound_require/encbound_memcpy with ENCBOUND_ERR_POLICY (code=3) at the first raw enclave address"
+  },
+  "control_source": {
+    "host": "apps/posup-trustfl/confused_deputy_host.c",
+    "host_sha256": "f724147be610af1afc859f4b21a214211b0f7e1bf0d704b4e48b22db0c586470",
+    "runner": "apps/posup-trustfl/confused_deputy.py",
+    "runner_sha256": "0013f171f638a7cfaac6415cf5760e8155717b8d493e28b406e36925f3734de1"
+  },
+  "hosts": [
+    {
+      "app": "POSUP",
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "host": "build/posup-trustfl/confused-deputy/POSUP/BASELINE/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-POSUP-BASELINE.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/POSUP/BASELINE/enclave/enclave.signed.so",
+      "signed_sha256": "30211c7f9a2df7e850b83ee37375f78d5d8d4c4aec3eeda6070b05488e545f53",
+      "build_record_sha256": "bc583941afc241a6c900b2e6e61365ea8cc0292f5608221edae5fa3eb198bd22",
+      "prepared_sha256": "2ad1a63b7752ba080fcb154bb6ec4fd58bdeb3bea9734f51b40fb96c2759b2cc"
+    },
+    {
+      "app": "POSUP",
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "host": "build/posup-trustfl/confused-deputy/POSUP/RADIX_ONLY/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-POSUP-RADIX_ONLY.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/POSUP/RADIX_ONLY/enclave/enclave.signed.so",
+      "signed_sha256": "d31751a6c7c37584ade35b4fa5d9ef13462b5523f1734c8675bfb8099fae028e",
+      "build_record_sha256": "3f78e7c86f9b707c035ccfab9f27cfb1ec548431de0277f5f63b19f2abff6a1c",
+      "prepared_sha256": "2ad1a63b7752ba080fcb154bb6ec4fd58bdeb3bea9734f51b40fb96c2759b2cc"
+    },
+    {
+      "app": "POSUP",
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "host": "build/posup-trustfl/confused-deputy/POSUP/MAC27/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-POSUP-MAC27.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/POSUP/MAC27/enclave/enclave.signed.so",
+      "signed_sha256": "245c5ee12ada660804dc78fbee1246583f3510aaba9177e763a8ddb8c0267e99",
+      "build_record_sha256": "0899f21d9e01b859181003e683b46cff894324c1edd814d6fcf8968501260857",
+      "prepared_sha256": "2ad1a63b7752ba080fcb154bb6ec4fd58bdeb3bea9734f51b40fb96c2759b2cc"
+    },
+    {
+      "app": "POSUP",
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "host": "build/posup-trustfl/confused-deputy/POSUP/MAC27-high/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-POSUP-MAC27-high.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/POSUP/MAC27-high/enclave/enclave.signed.so",
+      "signed_sha256": "84f9c947e64724d46295c0c7e98162e3513ed5ce4fea038d4e8545ad1794434f",
+      "build_record_sha256": "5c92835bae5bc97c62d6bc7a53a620cb4a9c8fae71035625b428ad09a0036fcd",
+      "prepared_sha256": "2ad1a63b7752ba080fcb154bb6ec4fd58bdeb3bea9734f51b40fb96c2759b2cc"
+    },
+    {
+      "app": "TrustFL",
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "host": "build/posup-trustfl/confused-deputy/TrustFL/BASELINE/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-TrustFL-BASELINE.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/TrustFL/BASELINE/enclave/enclave.signed.so",
+      "signed_sha256": "34e637c52406e25257202d6132a57164f0412c4e60a0fb9b4b73fa3e4664b645",
+      "build_record_sha256": "68101949480f428d6c4c2d7eff6f721775586fca34272f4ce53829a1223f5d8c",
+      "prepared_sha256": "653da1fc52c840ab3ae44a22b6873ac5d68831cd54b95ed54df18c9b0dc01bb1"
+    },
+    {
+      "app": "TrustFL",
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "host": "build/posup-trustfl/confused-deputy/TrustFL/RADIX_ONLY/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-TrustFL-RADIX_ONLY.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/enclave/enclave.signed.so",
+      "signed_sha256": "741b92e1ab692f66543a72e67d7f6a51aa0f27b2f50fb658f74973494f1a0319",
+      "build_record_sha256": "e1c8b6a0aba0e9bcce0ca333a808ec8286f11e932c17c7a49eb6a3cfbb6060f2",
+      "prepared_sha256": "653da1fc52c840ab3ae44a22b6873ac5d68831cd54b95ed54df18c9b0dc01bb1"
+    },
+    {
+      "app": "TrustFL",
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "host": "build/posup-trustfl/confused-deputy/TrustFL/MAC27/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-TrustFL-MAC27.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/enclave/enclave.signed.so",
+      "signed_sha256": "68c30e59493b93b67e56582420f6a75b9ab94a7ee47b6350a2eb07670cb0abbf",
+      "build_record_sha256": "f26632ed9f5604bcc7f1c149fcdcd8714d89fd396a8bb65a12664888a66eb6fd",
+      "prepared_sha256": "653da1fc52c840ab3ae44a22b6873ac5d68831cd54b95ed54df18c9b0dc01bb1"
+    },
+    {
+      "app": "TrustFL",
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "host": "build/posup-trustfl/confused-deputy/TrustFL/MAC27-high/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-TrustFL-MAC27-high.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/enclave/enclave.signed.so",
+      "signed_sha256": "218e05a9961bac82a47c1936294b15b301469c285f1e1b95d9e4a5c5cf33a713",
+      "build_record_sha256": "17c3f13808af41002c775932dc29b7dce83fe367c0da21750a0d19766dd5d081",
+      "prepared_sha256": "653da1fc52c840ab3ae44a22b6873ac5d68831cd54b95ed54df18c9b0dc01bb1"
+    }
+  ],
+  "sim": [
+    {
+      "app": "POSUP",
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "host": "build/posup-trustfl/confused-deputy/POSUP/BASELINE/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-POSUP-BASELINE.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/POSUP/BASELINE/enclave/enclave.signed.so",
+      "signed_sha256": "30211c7f9a2df7e850b83ee37375f78d5d8d4c4aec3eeda6070b05488e545f53",
+      "build_record_sha256": "bc583941afc241a6c900b2e6e61365ea8cc0292f5608221edae5fa3eb198bd22",
+      "prepared_sha256": "2ad1a63b7752ba080fcb154bb6ec4fd58bdeb3bea9734f51b40fb96c2759b2cc",
+      "modes": {
+        "functional": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/BASELINE/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/BASELINE/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-BASELINE-functional.log",
+          "log_sha256": "2424fee3e506a31975dd03e7d6f9a2d45fce52ea2ba188ff7e9208b8957d58aa"
+        },
+        "control": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/POSUP/BASELINE/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/BASELINE/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-BASELINE-control.log",
+          "log_sha256": "2ff0ef91a39f372dfe56899d15c9cc318e871c8d77e3d21200265f7eeeea6d57",
+          "stdout": "{\"mode\":\"control\",\"status\":0,\"getPathID\":0,\"words\":1,\"readback\":\"PASS\"}"
+        },
+        "cd-read": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/POSUP/BASELINE/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/BASELINE/enclave/enclave.signed.so",
+            "cd-read"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-BASELINE-cd-read.log",
+          "log_sha256": "0ef1e0c468aae8720212abf3357825fed7eb3df68becbf366e439c1c31e181d6",
+          "stdout": "{\"mode\":\"cd-read\",\"status\":0,\"target\":\"0x40030010\",\"words\":\"1146377044,1599620947\",\"oracle\":\"1146377044,1599620947\",\"readback\":\"PASS\"}"
+        },
+        "cd-write": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/POSUP/BASELINE/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/BASELINE/enclave/enclave.signed.so",
+            "cd-write"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-BASELINE-cd-write.log",
+          "log_sha256": "2defb9cfcc089bcf8be45f61382fa3fd44916003dca90c46c68d0e7407e0c145",
+          "stdout": "{\"mode\":\"cd-write\",\"status\":0,\"target\":\"0x40030010\",\"before\":1599620947,\"after\":0,\"neighbor\":1146377044,\"write\":\"PASS\"}"
+        }
+      }
+    },
+    {
+      "app": "POSUP",
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "host": "build/posup-trustfl/confused-deputy/POSUP/RADIX_ONLY/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-POSUP-RADIX_ONLY.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/POSUP/RADIX_ONLY/enclave/enclave.signed.so",
+      "signed_sha256": "d31751a6c7c37584ade35b4fa5d9ef13462b5523f1734c8675bfb8099fae028e",
+      "build_record_sha256": "3f78e7c86f9b707c035ccfab9f27cfb1ec548431de0277f5f63b19f2abff6a1c",
+      "prepared_sha256": "2ad1a63b7752ba080fcb154bb6ec4fd58bdeb3bea9734f51b40fb96c2759b2cc",
+      "modes": {
+        "functional": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/RADIX_ONLY/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/RADIX_ONLY/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-RADIX_ONLY-functional.log",
+          "log_sha256": "e8b75df11c1dfd8d1e4f26acf5d783ff17a7b4f502b46cc507d8c4ee882875f4"
+        },
+        "control": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/POSUP/RADIX_ONLY/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/RADIX_ONLY/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-RADIX_ONLY-control.log",
+          "log_sha256": "1a8e31b0452f0035d8d7ce468c4e055c8804c5238df9c76c643fe27cb10a439e",
+          "stdout": "{\"mode\":\"control\",\"status\":0,\"getPathID\":0,\"words\":1,\"readback\":\"PASS\"}"
+        },
+        "cd-read": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/POSUP/RADIX_ONLY/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/RADIX_ONLY/enclave/enclave.signed.so",
+            "cd-read"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-RADIX_ONLY-cd-read.log",
+          "log_sha256": "cd4c1ae59aa3b3239286c81cf5c7260ad34a243d27511201409d2f417678f586",
+          "stdout": ""
+        },
+        "cd-write": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/POSUP/RADIX_ONLY/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/RADIX_ONLY/enclave/enclave.signed.so",
+            "cd-write"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-RADIX_ONLY-cd-write.log",
+          "log_sha256": "cd4c1ae59aa3b3239286c81cf5c7260ad34a243d27511201409d2f417678f586",
+          "stdout": ""
+        }
+      }
+    },
+    {
+      "app": "POSUP",
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "host": "build/posup-trustfl/confused-deputy/POSUP/MAC27/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-POSUP-MAC27.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/POSUP/MAC27/enclave/enclave.signed.so",
+      "signed_sha256": "245c5ee12ada660804dc78fbee1246583f3510aaba9177e763a8ddb8c0267e99",
+      "build_record_sha256": "0899f21d9e01b859181003e683b46cff894324c1edd814d6fcf8968501260857",
+      "prepared_sha256": "2ad1a63b7752ba080fcb154bb6ec4fd58bdeb3bea9734f51b40fb96c2759b2cc",
+      "modes": {
+        "functional": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-MAC27-functional.log",
+          "log_sha256": "e8b75df11c1dfd8d1e4f26acf5d783ff17a7b4f502b46cc507d8c4ee882875f4"
+        },
+        "control": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/POSUP/MAC27/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-MAC27-control.log",
+          "log_sha256": "1a8e31b0452f0035d8d7ce468c4e055c8804c5238df9c76c643fe27cb10a439e",
+          "stdout": "{\"mode\":\"control\",\"status\":0,\"getPathID\":0,\"words\":1,\"readback\":\"PASS\"}"
+        },
+        "cd-read": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/POSUP/MAC27/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27/enclave/enclave.signed.so",
+            "cd-read"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-MAC27-cd-read.log",
+          "log_sha256": "cd4c1ae59aa3b3239286c81cf5c7260ad34a243d27511201409d2f417678f586",
+          "stdout": ""
+        },
+        "cd-write": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/POSUP/MAC27/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27/enclave/enclave.signed.so",
+            "cd-write"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-MAC27-cd-write.log",
+          "log_sha256": "cd4c1ae59aa3b3239286c81cf5c7260ad34a243d27511201409d2f417678f586",
+          "stdout": ""
+        }
+      }
+    },
+    {
+      "app": "POSUP",
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "host": "build/posup-trustfl/confused-deputy/POSUP/MAC27-high/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-POSUP-MAC27-high.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/POSUP/MAC27-high/enclave/enclave.signed.so",
+      "signed_sha256": "84f9c947e64724d46295c0c7e98162e3513ed5ce4fea038d4e8545ad1794434f",
+      "build_record_sha256": "5c92835bae5bc97c62d6bc7a53a620cb4a9c8fae71035625b428ad09a0036fcd",
+      "prepared_sha256": "2ad1a63b7752ba080fcb154bb6ec4fd58bdeb3bea9734f51b40fb96c2759b2cc",
+      "modes": {
+        "functional": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27-high/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27-high/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-MAC27-high-functional.log",
+          "log_sha256": "e8b75df11c1dfd8d1e4f26acf5d783ff17a7b4f502b46cc507d8c4ee882875f4"
+        },
+        "control": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/POSUP/MAC27-high/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27-high/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-MAC27-high-control.log",
+          "log_sha256": "1a8e31b0452f0035d8d7ce468c4e055c8804c5238df9c76c643fe27cb10a439e",
+          "stdout": "{\"mode\":\"control\",\"status\":0,\"getPathID\":0,\"words\":1,\"readback\":\"PASS\"}"
+        },
+        "cd-read": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/POSUP/MAC27-high/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27-high/enclave/enclave.signed.so",
+            "cd-read"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-MAC27-high-cd-read.log",
+          "log_sha256": "cd4c1ae59aa3b3239286c81cf5c7260ad34a243d27511201409d2f417678f586",
+          "stdout": ""
+        },
+        "cd-write": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/POSUP/MAC27-high/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27-high/enclave/enclave.signed.so",
+            "cd-write"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/POSUP-MAC27-high-cd-write.log",
+          "log_sha256": "cd4c1ae59aa3b3239286c81cf5c7260ad34a243d27511201409d2f417678f586",
+          "stdout": ""
+        }
+      }
+    },
+    {
+      "app": "TrustFL",
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "host": "build/posup-trustfl/confused-deputy/TrustFL/BASELINE/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-TrustFL-BASELINE.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/TrustFL/BASELINE/enclave/enclave.signed.so",
+      "signed_sha256": "34e637c52406e25257202d6132a57164f0412c4e60a0fb9b4b73fa3e4664b645",
+      "build_record_sha256": "68101949480f428d6c4c2d7eff6f721775586fca34272f4ce53829a1223f5d8c",
+      "prepared_sha256": "653da1fc52c840ab3ae44a22b6873ac5d68831cd54b95ed54df18c9b0dc01bb1",
+      "modes": {
+        "functional": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/BASELINE/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/BASELINE/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-BASELINE-functional.log",
+          "log_sha256": "ea20d48d9f09bb6a0a3db23703c2f52eb1e2430322ae47a42c54a41137a614a5"
+        },
+        "control": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/BASELINE/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/BASELINE/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-BASELINE-control.log",
+          "log_sha256": "ae7f16c492dde2396a648da63b0120c6cc3f377ab7894d2a314e33d885320550",
+          "stdout": "{\"mode\":\"control\",\"status\":0,\"records\":60000,\"macs\":\"PASS\"}"
+        },
+        "cd-read": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/BASELINE/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/BASELINE/enclave/enclave.signed.so",
+            "cd-read"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-BASELINE-cd-read.log",
+          "log_sha256": "6d8baf63f47a46c4f1a40e5a495bc6e69c35e70af95329475c6b5a6cedcff83f",
+          "stdout": "{\"mode\":\"cd-read\",\"status\":0,\"target\":\"0x40001040\",\"label_bytes\":60000,\"records\":60000,\"macs\":\"PASS\"}"
+        },
+        "cd-write": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/BASELINE/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/BASELINE/enclave/enclave.signed.so",
+            "cd-write"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-BASELINE-cd-write.log",
+          "log_sha256": "99745e1e615db11d04adddee2c3bf312546d064238bf8fce1a59b2e72ad43a96",
+          "stdout": "{\"mode\":\"cd-write\",\"status\":0,\"target\":\"0x4219c400\",\"bytes\":1920000,\"records\":60000,\"macs\":\"PASS\"}"
+        },
+        "cd-read-data": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/BASELINE/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/BASELINE/enclave/enclave.signed.so",
+            "cd-read-data"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-BASELINE-cd-read-data.log",
+          "log_sha256": "c061b03b0ddcb59d7e45c23c6df03ff530ec0747d7855d7110641fec1495f171",
+          "stdout": "{\"mode\":\"cd-read-data\",\"status\":0,\"target\":\"0x40001040\",\"verified_records\":285,\"read_bytes\":223440,\"child_signal\":11,\"macs\":\"PASS\"}"
+        }
+      }
+    },
+    {
+      "app": "TrustFL",
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "host": "build/posup-trustfl/confused-deputy/TrustFL/RADIX_ONLY/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-TrustFL-RADIX_ONLY.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/enclave/enclave.signed.so",
+      "signed_sha256": "741b92e1ab692f66543a72e67d7f6a51aa0f27b2f50fb658f74973494f1a0319",
+      "build_record_sha256": "e1c8b6a0aba0e9bcce0ca333a808ec8286f11e932c17c7a49eb6a3cfbb6060f2",
+      "prepared_sha256": "653da1fc52c840ab3ae44a22b6873ac5d68831cd54b95ed54df18c9b0dc01bb1",
+      "modes": {
+        "functional": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-RADIX_ONLY-functional.log",
+          "log_sha256": "1e7c03c9c6a29ea0847c0f70b5fcc158d87d03b0e46318a64292995dd094c64e"
+        },
+        "control": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/RADIX_ONLY/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-RADIX_ONLY-control.log",
+          "log_sha256": "60e8300e54263b1b44a0e55add1dac3ced73fe7314a8a27aee1ddd30a3b7756f",
+          "stdout": "{\"mode\":\"control\",\"status\":0,\"records\":60000,\"macs\":\"PASS\"}"
+        },
+        "cd-read": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/RADIX_ONLY/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/enclave/enclave.signed.so",
+            "cd-read"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-RADIX_ONLY-cd-read.log",
+          "log_sha256": "c5c7906f82d2fc189bd0b54eb8a097e6da6d14728a7ce285172f93c7d4e9f263",
+          "stdout": ""
+        },
+        "cd-write": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/RADIX_ONLY/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/enclave/enclave.signed.so",
+            "cd-write"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-RADIX_ONLY-cd-write.log",
+          "log_sha256": "c5c7906f82d2fc189bd0b54eb8a097e6da6d14728a7ce285172f93c7d4e9f263",
+          "stdout": ""
+        },
+        "cd-read-data": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/RADIX_ONLY/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/enclave/enclave.signed.so",
+            "cd-read-data"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-RADIX_ONLY-cd-read-data.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout": ""
+        }
+      }
+    },
+    {
+      "app": "TrustFL",
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "host": "build/posup-trustfl/confused-deputy/TrustFL/MAC27/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-TrustFL-MAC27.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/enclave/enclave.signed.so",
+      "signed_sha256": "68c30e59493b93b67e56582420f6a75b9ab94a7ee47b6350a2eb07670cb0abbf",
+      "build_record_sha256": "f26632ed9f5604bcc7f1c149fcdcd8714d89fd396a8bb65a12664888a66eb6fd",
+      "prepared_sha256": "653da1fc52c840ab3ae44a22b6873ac5d68831cd54b95ed54df18c9b0dc01bb1",
+      "modes": {
+        "functional": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-MAC27-functional.log",
+          "log_sha256": "1e7c03c9c6a29ea0847c0f70b5fcc158d87d03b0e46318a64292995dd094c64e"
+        },
+        "control": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/MAC27/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-MAC27-control.log",
+          "log_sha256": "60e8300e54263b1b44a0e55add1dac3ced73fe7314a8a27aee1ddd30a3b7756f",
+          "stdout": "{\"mode\":\"control\",\"status\":0,\"records\":60000,\"macs\":\"PASS\"}"
+        },
+        "cd-read": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/MAC27/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/enclave/enclave.signed.so",
+            "cd-read"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-MAC27-cd-read.log",
+          "log_sha256": "c5c7906f82d2fc189bd0b54eb8a097e6da6d14728a7ce285172f93c7d4e9f263",
+          "stdout": ""
+        },
+        "cd-write": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/MAC27/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/enclave/enclave.signed.so",
+            "cd-write"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-MAC27-cd-write.log",
+          "log_sha256": "c5c7906f82d2fc189bd0b54eb8a097e6da6d14728a7ce285172f93c7d4e9f263",
+          "stdout": ""
+        },
+        "cd-read-data": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/MAC27/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/enclave/enclave.signed.so",
+            "cd-read-data"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-MAC27-cd-read-data.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout": ""
+        }
+      }
+    },
+    {
+      "app": "TrustFL",
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "host": "build/posup-trustfl/confused-deputy/TrustFL/MAC27-high/cd-host",
+      "host_build_log": "build/posup-trustfl/confused-deputy/build-TrustFL-MAC27-high.log",
+      "host_build_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed": "build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/enclave/enclave.signed.so",
+      "signed_sha256": "218e05a9961bac82a47c1936294b15b301469c285f1e1b95d9e4a5c5cf33a713",
+      "build_record_sha256": "17c3f13808af41002c775932dc29b7dce83fe367c0da21750a0d19766dd5d081",
+      "prepared_sha256": "653da1fc52c840ab3ae44a22b6873ac5d68831cd54b95ed54df18c9b0dc01bb1",
+      "modes": {
+        "functional": {
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-MAC27-high-functional.log",
+          "log_sha256": "1e7c03c9c6a29ea0847c0f70b5fcc158d87d03b0e46318a64292995dd094c64e"
+        },
+        "control": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/MAC27-high/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/enclave/enclave.signed.so",
+            "control"
+          ],
+          "returncode": 0,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-MAC27-high-control.log",
+          "log_sha256": "60e8300e54263b1b44a0e55add1dac3ced73fe7314a8a27aee1ddd30a3b7756f",
+          "stdout": "{\"mode\":\"control\",\"status\":0,\"records\":60000,\"macs\":\"PASS\"}"
+        },
+        "cd-read": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/MAC27-high/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/enclave/enclave.signed.so",
+            "cd-read"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-MAC27-high-cd-read.log",
+          "log_sha256": "c5c7906f82d2fc189bd0b54eb8a097e6da6d14728a7ce285172f93c7d4e9f263",
+          "stdout": ""
+        },
+        "cd-write": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/MAC27-high/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/enclave/enclave.signed.so",
+            "cd-write"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-MAC27-high-cd-write.log",
+          "log_sha256": "c5c7906f82d2fc189bd0b54eb8a097e6da6d14728a7ce285172f93c7d4e9f263",
+          "stdout": ""
+        },
+        "cd-read-data": {
+          "command": [
+            "build/posup-trustfl/confused-deputy/TrustFL/MAC27-high/cd-host",
+            "/home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/enclave/enclave.signed.so",
+            "cd-read-data"
+          ],
+          "returncode": -4,
+          "log": "build/posup-trustfl/confused-deputy/TrustFL-MAC27-high-cd-read-data.log",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout": ""
+        }
+      }
+    }
+  ],
+  "gdb_attribution": [
+    {
+      "app": "POSUP",
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "mode": "cd-read",
+      "abort_code": 3,
+      "adapter": "encbound_memcpy",
+      "source_line": "prepared/Enclave.cpp:19",
+      "script": "build/posup-trustfl/confused-deputy/attr-POSUP-RADIX_ONLY-cd-read.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-POSUP-RADIX_ONLY-cd-read.log",
+      "log_sha256": "9a33777e6bfe3b7845454d03146bb1aae10153bb3adfeb253793c125f0d4272c",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#2  0x0000000040002f79 in encbound_memcpy (dst=0x2000000000358a70, src=0x40044010 <sgx_tcxx_version>, n=4) at /home/roger/project/TEE/ENCBound-restart/runtime/adapters.c:28",
+        "#3  0x0000000040003168 in ecall_setFileIDs (fid_arr=0x40044010 <sgx_tcxx_version> \"SGX_TCXX_VERSION_2.26.100.0\", num_fileIDs=2) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/RADIX_ONLY/prepared/Enclave.cpp:19",
+        "#4  0x00000000400012c4 in sgx_ecall_setFileIDs (pms=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/RADIX_ONLY/generated/Enclave_t.c:119"
+      ]
+    },
+    {
+      "app": "POSUP",
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "mode": "cd-write",
+      "abort_code": 3,
+      "adapter": "encbound_require",
+      "source_line": "prepared/Enclave.cpp:10",
+      "script": "build/posup-trustfl/confused-deputy/attr-POSUP-RADIX_ONLY-cd-write.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-POSUP-RADIX_ONLY-cd-write.log",
+      "log_sha256": "8b49213ed6ae5d49006a409da3771b93eeb91f8d1cf77a88428c8a4d72f1cf7d",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x00000000400027ea in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at runtime/capability.c:186",
+        "#2  0x0000000040002fe8 in ecall_getPathID (output=0x40044010 <sgx_tcxx_version>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/RADIX_ONLY/prepared/Enclave.cpp:10",
+        "#3  0x0000000040001213 in sgx_ecall_getPathID (pms=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/RADIX_ONLY/generated/Enclave_t.c:94",
+        "#11 0x00005555555564dd in ecall_getPathID (eid=<optimized out>, output=output@entry=0x40044010 <sgx_tcxx_version>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/RADIX_ONLY/generated/Enclave_u.c:105"
+      ]
+    },
+    {
+      "app": "POSUP",
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "mode": "cd-read",
+      "abort_code": 3,
+      "adapter": "encbound_memcpy",
+      "source_line": "prepared/Enclave.cpp:19",
+      "script": "build/posup-trustfl/confused-deputy/attr-POSUP-MAC27-cd-read.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-POSUP-MAC27-cd-read.log",
+      "log_sha256": "3cecede645d0d17e2d1abefb121110a4023a3685b4fd4f6cac73a36ac78e65a6",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#2  0x0000000040003209 in encbound_memcpy (dst=0x2439e05800358a70, src=0x40044010 <sgx_tcxx_version>, n=4) at /home/roger/project/TEE/ENCBound-restart/runtime/adapters.c:28",
+        "#3  0x00000000400033f8 in ecall_setFileIDs (fid_arr=0x40044010 <sgx_tcxx_version> \"SGX_TCXX_VERSION_2.26.100.0\", num_fileIDs=2) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27/prepared/Enclave.cpp:19",
+        "#4  0x00000000400012c4 in sgx_ecall_setFileIDs (pms=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27/generated/Enclave_t.c:119"
+      ]
+    },
+    {
+      "app": "POSUP",
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "mode": "cd-write",
+      "abort_code": 3,
+      "adapter": "encbound_require",
+      "source_line": "prepared/Enclave.cpp:10",
+      "script": "build/posup-trustfl/confused-deputy/attr-POSUP-MAC27-cd-write.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-POSUP-MAC27-cd-write.log",
+      "log_sha256": "90a4a3774736a5fa57eade5a196ccdb89c12ec07b52747c5da0369c2a44fc7a6",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x0000000040002a7a in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at runtime/capability.c:186",
+        "#2  0x0000000040003278 in ecall_getPathID (output=0x40044010 <sgx_tcxx_version>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27/prepared/Enclave.cpp:10",
+        "#3  0x0000000040001213 in sgx_ecall_getPathID (pms=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27/generated/Enclave_t.c:94",
+        "#11 0x00005555555564dd in ecall_getPathID (eid=<optimized out>, output=output@entry=0x40044010 <sgx_tcxx_version>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27/generated/Enclave_u.c:105"
+      ]
+    },
+    {
+      "app": "POSUP",
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "mode": "cd-read",
+      "abort_code": 3,
+      "adapter": "encbound_memcpy",
+      "source_line": "prepared/Enclave.cpp:19",
+      "script": "build/posup-trustfl/confused-deputy/attr-POSUP-MAC27-high-cd-read.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-POSUP-MAC27-high-cd-read.log",
+      "log_sha256": "bdf38c54c29059ec9f36ba222b4940bdf5cca83cc06fb446147642411d0688f0",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#2  0x0000000140003209 in encbound_memcpy (dst=0x2422371500358a70, src=0x140044010 <sgx_tcxx_version>, n=4) at /home/roger/project/TEE/ENCBound-restart/runtime/adapters.c:28",
+        "#3  0x00000001400033f8 in ecall_setFileIDs (fid_arr=0x140044010 <sgx_tcxx_version> \"SGX_TCXX_VERSION_2.26.100.0\", num_fileIDs=2) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27-high/prepared/Enclave.cpp:19",
+        "#4  0x00000001400012c4 in sgx_ecall_setFileIDs (pms=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27-high/generated/Enclave_t.c:119"
+      ]
+    },
+    {
+      "app": "POSUP",
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "mode": "cd-write",
+      "abort_code": 3,
+      "adapter": "encbound_require",
+      "source_line": "prepared/Enclave.cpp:10",
+      "script": "build/posup-trustfl/confused-deputy/attr-POSUP-MAC27-high-cd-write.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-POSUP-MAC27-high-cd-write.log",
+      "log_sha256": "e3bc0d2442e5b11c1964e2ae91194bc2821c6f9906f33c718fd926c63d361f33",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x0000000140002a7a in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at runtime/capability.c:186",
+        "#2  0x0000000140003278 in ecall_getPathID (output=0x140044010 <sgx_tcxx_version>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27-high/prepared/Enclave.cpp:10",
+        "#3  0x0000000140001213 in sgx_ecall_getPathID (pms=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27-high/generated/Enclave_t.c:94",
+        "#11 0x00005555555564dd in ecall_getPathID (eid=<optimized out>, output=output@entry=0x140044010 <sgx_tcxx_version>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/POSUP/MAC27-high/generated/Enclave_u.c:105"
+      ]
+    },
+    {
+      "app": "TrustFL",
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "mode": "cd-read",
+      "abort_code": 3,
+      "adapter": "encbound_require",
+      "source_line": "prepared/Enclave.cpp:41",
+      "script": "build/posup-trustfl/confused-deputy/attr-TrustFL-RADIX_ONLY-cd-read.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-TrustFL-RADIX_ONLY-cd-read.log",
+      "log_sha256": "dc03e7ebc1e991bbabdc1e14eeeec7382e33dcb1ffca62ceda037f0e0405bd1e",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x00000000400023ba in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at runtime/capability.c:186",
+        "#2  0x0000000040002d1e in ecall_data_preprocess (p_datau=0x7ffff3b23020 \"\", data_length=<optimized out>, p_labelu=<optimized out>, label_length=<optimized out>, p_training_hmacu=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/prepared/Enclave.cpp:41",
+        "#3  0x00000000400011c3 in sgx_ecall_data_preprocess (pms=0x7fffffffd250) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/generated/Enclave_t.c:101",
+        "#11 0x0000555555556f7b in ecall_data_preprocess (eid=<optimized out>, retval=retval@entry=0x7fffffffd2b4, p_datau=p_datau@entry=0x7ffff3b23010 'U' <repeats 16 times>, data_length=data_length@entry=47040016, p_labelu=p_labelu@entry=0x40001038 \"\", label_length=label_length@entry=60008, p_training_hmacu=140737280008208) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/generated/Enclave_u.c:110"
+      ]
+    },
+    {
+      "app": "TrustFL",
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "mode": "cd-write",
+      "abort_code": 3,
+      "adapter": "encbound_require",
+      "source_line": "prepared/Enclave.cpp:45",
+      "script": "build/posup-trustfl/confused-deputy/attr-TrustFL-RADIX_ONLY-cd-write.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-TrustFL-RADIX_ONLY-cd-write.log",
+      "log_sha256": "318cc17dcfc03207a5738da959368bf06d0c41bc5af5cfc698378ad62a479130",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x00000000400023ba in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at runtime/capability.c:186",
+        "#2  0x0000000040002df0 in ecall_data_preprocess (p_datau=0x7ffff3b23020 \"\", data_length=<optimized out>, p_labelu=<optimized out>, label_length=<optimized out>, p_training_hmacu=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/prepared/Enclave.cpp:45",
+        "#3  0x00000000400011c3 in sgx_ecall_data_preprocess (pms=0x7fffffffd250) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/generated/Enclave_t.c:101",
+        "#11 0x0000555555556f7b in ecall_data_preprocess (eid=<optimized out>, retval=retval@entry=0x7fffffffd2b4, p_datau=p_datau@entry=0x7ffff3b23010 'U' <repeats 16 times>, data_length=data_length@entry=47040016, p_labelu=p_labelu@entry=0x555555589050 \"ffffffff\", label_length=label_length@entry=60008, p_training_hmacu=1109005312) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/generated/Enclave_u.c:110"
+      ]
+    },
+    {
+      "app": "TrustFL",
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "mode": "cd-read-data",
+      "abort_code": 3,
+      "adapter": "encbound_memcpy",
+      "source_line": "prepared/Enclave.cpp:40",
+      "script": "build/posup-trustfl/confused-deputy/attr-TrustFL-RADIX_ONLY-cd-read-data.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-TrustFL-RADIX_ONLY-cd-read-data.log",
+      "log_sha256": "1816b7d8666c44fdd1d33e033719647ab8b07b8ba0e75b8f5470567d27917a6e",
+      "excerpt": [
+        "#5  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#7  0x0000000040002a39 in encbound_memcpy (dst=0x5000000001000400, src=0x40001040 <encbound_abort>, n=784) at /home/roger/project/TEE/ENCBound-restart/runtime/adapters.c:28",
+        "#8  0x0000000040002d01 in ecall_data_preprocess (p_datau=0x40001040 <encbound_abort> \"\\211|$\\374\\213D$\\374\\017\\vf\\017\\037D\", data_length=<optimized out>, p_labelu=<optimized out>, label_length=<optimized out>, p_training_hmacu=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/prepared/Enclave.cpp:40",
+        "#9  0x00000000400011c3 in sgx_ecall_data_preprocess (pms=0x7fffffffd260) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/RADIX_ONLY/generated/Enclave_t.c:101"
+      ]
+    },
+    {
+      "app": "TrustFL",
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "mode": "cd-read",
+      "abort_code": 3,
+      "adapter": "encbound_require",
+      "source_line": "prepared/Enclave.cpp:41",
+      "script": "build/posup-trustfl/confused-deputy/attr-TrustFL-MAC27-cd-read.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-TrustFL-MAC27-cd-read.log",
+      "log_sha256": "f61affcdb668c520382774f984d745269e781bee7b6eae390ce51753436d55de",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x000000004000260a in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at runtime/capability.c:186",
+        "#2  0x0000000040002f6e in ecall_data_preprocess (p_datau=0x7ffff3b23020 \"\", data_length=<optimized out>, p_labelu=<optimized out>, label_length=<optimized out>, p_training_hmacu=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/prepared/Enclave.cpp:41",
+        "#3  0x00000000400011c3 in sgx_ecall_data_preprocess (pms=0x7fffffffd260) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/generated/Enclave_t.c:101",
+        "#11 0x0000555555556f7b in ecall_data_preprocess (eid=<optimized out>, retval=retval@entry=0x7fffffffd2c4, p_datau=p_datau@entry=0x7ffff3b23010 'U' <repeats 16 times>, data_length=data_length@entry=47040016, p_labelu=p_labelu@entry=0x40001038 \"\", label_length=label_length@entry=60008, p_training_hmacu=140737280008208) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/generated/Enclave_u.c:110"
+      ]
+    },
+    {
+      "app": "TrustFL",
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "mode": "cd-write",
+      "abort_code": 3,
+      "adapter": "encbound_require",
+      "source_line": "prepared/Enclave.cpp:45",
+      "script": "build/posup-trustfl/confused-deputy/attr-TrustFL-MAC27-cd-write.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-TrustFL-MAC27-cd-write.log",
+      "log_sha256": "f177d9859e07294c246abfff31425aeb323d3bab092032892bb48515a4a67096",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x000000004000260a in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at runtime/capability.c:186",
+        "#2  0x0000000040003040 in ecall_data_preprocess (p_datau=0x7ffff3b23020 \"\", data_length=<optimized out>, p_labelu=<optimized out>, label_length=<optimized out>, p_training_hmacu=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/prepared/Enclave.cpp:45",
+        "#3  0x00000000400011c3 in sgx_ecall_data_preprocess (pms=0x7fffffffd260) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/generated/Enclave_t.c:101",
+        "#11 0x0000555555556f7b in ecall_data_preprocess (eid=<optimized out>, retval=retval@entry=0x7fffffffd2c4, p_datau=p_datau@entry=0x7ffff3b23010 'U' <repeats 16 times>, data_length=data_length@entry=47040016, p_labelu=p_labelu@entry=0x555555589050 \"ffffffff\", label_length=label_length@entry=60008, p_training_hmacu=1109005312) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/generated/Enclave_u.c:110"
+      ]
+    },
+    {
+      "app": "TrustFL",
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "mode": "cd-read-data",
+      "abort_code": 3,
+      "adapter": "encbound_memcpy",
+      "source_line": "prepared/Enclave.cpp:40",
+      "script": "build/posup-trustfl/confused-deputy/attr-TrustFL-MAC27-cd-read-data.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-TrustFL-MAC27-cd-read-data.log",
+      "log_sha256": "b77a22fa40ca86001083753743298c777469daa64a31f7cb85a923ac050f790c",
+      "excerpt": [
+        "#5  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#7  0x0000000040002c89 in encbound_memcpy (dst=0x53e780d401000400, src=0x40001040 <encbound_abort>, n=784) at /home/roger/project/TEE/ENCBound-restart/runtime/adapters.c:28",
+        "#8  0x0000000040002f51 in ecall_data_preprocess (p_datau=0x40001040 <encbound_abort> \"\\211|$\\374\\213D$\\374\\017\\vf\\017\\037D\", data_length=<optimized out>, p_labelu=<optimized out>, label_length=<optimized out>, p_training_hmacu=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/prepared/Enclave.cpp:40",
+        "#9  0x00000000400011c3 in sgx_ecall_data_preprocess (pms=0x7fffffffd280) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27/generated/Enclave_t.c:101"
+      ]
+    },
+    {
+      "app": "TrustFL",
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "mode": "cd-read",
+      "abort_code": 3,
+      "adapter": "encbound_require",
+      "source_line": "prepared/Enclave.cpp:41",
+      "script": "build/posup-trustfl/confused-deputy/attr-TrustFL-MAC27-high-cd-read.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-TrustFL-MAC27-high-cd-read.log",
+      "log_sha256": "e9fde7648c0ad5d1b2d6e910d382499507a0933e4171bcb4e0febf5b16f59f61",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x000000014000260a in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at runtime/capability.c:186",
+        "#2  0x0000000140002f6e in ecall_data_preprocess (p_datau=0x7ffff3b23020 \"\", data_length=<optimized out>, p_labelu=<optimized out>, label_length=<optimized out>, p_training_hmacu=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/prepared/Enclave.cpp:41",
+        "#3  0x00000001400011c3 in sgx_ecall_data_preprocess (pms=0x7fffffffd250) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/generated/Enclave_t.c:101",
+        "#11 0x0000555555556f7b in ecall_data_preprocess (eid=<optimized out>, retval=retval@entry=0x7fffffffd2b4, p_datau=p_datau@entry=0x7ffff3b23010 'U' <repeats 16 times>, data_length=data_length@entry=47040016, p_labelu=p_labelu@entry=0x140001038 \"\", label_length=label_length@entry=60008, p_training_hmacu=140737280008208) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/generated/Enclave_u.c:110"
+      ]
+    },
+    {
+      "app": "TrustFL",
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "mode": "cd-write",
+      "abort_code": 3,
+      "adapter": "encbound_require",
+      "source_line": "prepared/Enclave.cpp:45",
+      "script": "build/posup-trustfl/confused-deputy/attr-TrustFL-MAC27-high-cd-write.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-TrustFL-MAC27-high-cd-write.log",
+      "log_sha256": "a383cf4af3ce79a9e621f47dcade493857ef4f41cf36b56647c29a3495974cba",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x000000014000260a in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at runtime/capability.c:186",
+        "#2  0x0000000140003040 in ecall_data_preprocess (p_datau=0x7ffff3b23020 \"\", data_length=<optimized out>, p_labelu=<optimized out>, label_length=<optimized out>, p_training_hmacu=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/prepared/Enclave.cpp:45",
+        "#3  0x00000001400011c3 in sgx_ecall_data_preprocess (pms=0x7fffffffd240) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/generated/Enclave_t.c:101",
+        "#11 0x0000555555556f7b in ecall_data_preprocess (eid=<optimized out>, retval=retval@entry=0x7fffffffd2a4, p_datau=p_datau@entry=0x7ffff3b23010 'U' <repeats 16 times>, data_length=data_length@entry=47040016, p_labelu=p_labelu@entry=0x555555589050 \"ffffffff\", label_length=label_length@entry=60008, p_training_hmacu=5403972608) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/generated/Enclave_u.c:110"
+      ]
+    },
+    {
+      "app": "TrustFL",
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "mode": "cd-read-data",
+      "abort_code": 3,
+      "adapter": "encbound_memcpy",
+      "source_line": "prepared/Enclave.cpp:40",
+      "script": "build/posup-trustfl/confused-deputy/attr-TrustFL-MAC27-high-cd-read-data.gdb",
+      "log": "build/posup-trustfl/confused-deputy/attr-TrustFL-MAC27-high-cd-read-data.log",
+      "log_sha256": "359dba54c6a1c3570944cd9e1c7782e8d96c6c39a7ee545bd3c167965b8b1539",
+      "excerpt": [
+        "#5  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#7  0x0000000140002c89 in encbound_memcpy (dst=0x5684bb0001000400, src=0x140001040 <encbound_abort>, n=784) at /home/roger/project/TEE/ENCBound-restart/runtime/adapters.c:28",
+        "#8  0x0000000140002f51 in ecall_data_preprocess (p_datau=0x140001040 <encbound_abort> \"\\211|$\\374\\213D$\\374\\017\\vf\\017\\037D\", data_length=<optimized out>, p_labelu=<optimized out>, label_length=<optimized out>, p_training_hmacu=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/prepared/Enclave.cpp:40",
+        "#9  0x00000001400011c3 in sgx_ecall_data_preprocess (pms=0x7fffffffd260) at /home/roger/project/TEE/ENCBound-restart/build/posup-trustfl/all-compat-v1-final/TrustFL/MAC27-high/generated/Enclave_t.c:101"
+      ]
+    }
+  ],
+  "notes": [
+    "POSUP targets a stable .data version-string word pair; the first .data word is the SDK g_is_first_ecall flag and is not used.",
+    "TrustFL label and training-data reads use image .text.  The fixed 47 MB training-data loop continues past the verified prefix and faults at the mapped-image boundary, so the child fault is isolated and every byte of the stable read-only prefix is checked.",
+    "TrustFL output targets the largest loaded read-write mapping inside the enclave extent (reserved memory); only BASELINE reaches the store."
+  ],
+  "limits": [
+    "SDK SIM only; no SGX hardware.",
+    "No arbitrary-address sweep, secret extraction or code execution is claimed.",
+    "The host knows the enclave base and image layout in SIM, as a loader does; this is a demonstration premise, not a production address leak.",
+    "The read primitive returns HMACs of enclave memory, not the plaintext bytes; it is an equality/verification oracle with the known pre-init key."
+  ]
+}

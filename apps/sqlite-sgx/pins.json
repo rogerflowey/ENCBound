@@ -1,0 +1,17 @@
+{
+  "revision": "c470f0a6afcbb2461a94faa6045df47450c3354b",
+  "files": {
+    "Enclave/Enclave.edl": "e19b417b8d710aa3849437c0d2d82efab8130c8a1338bc21a6773fde778012d3",
+    "Enclave/sqlite3.c": "16cfe7a6d35a7cb81ad1ca3ec21182d3f03525056944f21b8aafa7b66be54eaf",
+    "Enclave/Enclave.cpp": "621d9fdb2de2026a3581826e3d533a6838bd7d7c0b77bc75d6e110edca09ec0e",
+    "ocall_types.h": "6a86f7c1c71cf2db89a367036f83fe7dfc4d7f6c32e6ec4608fc1a10399dcef5",
+    "App/App.cpp": "c861f09a8fd17b20b627160ce641fc8e6043e52c312210c6ecbcaffa359bfcfb",
+    "App/ocalls.c": "d3f33b313041e42e5453c370fb24fb067268319bc5f307861a8978f530c1e9f2"
+  },
+  "tlibc": {
+    "string/strerror.c": "77171f4b3d73e010bc721d254e58225c653723fedaf2f9f848bee3bc1049347e",
+    "string/strerror_r.c": "84291326bbb9a469631950e38fc85a048af12077956d1771a027cd57f814c864",
+    "string/strlcpy.c": "a91e86ac40d37cd8a78c9ef3dd007424020a64c97ec349034f1657932dfd872e",
+    "gen/errlist.c": "522a7e8e21ae9b6d8ec3468c95470fd5d8fb7aa9e3a83728147889d3a7b8e2e8"
+  }
+}

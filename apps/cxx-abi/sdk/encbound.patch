@@ -1,0 +1,186 @@
+--- a/typeinfo.h
++++ b/typeinfo.h
+@@ -24,29 +24,44 @@
+  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
++#pragma once
+ #include <typeinfo>
+ #include "abi_namespace.h"
+ 
+ namespace ABI_NAMESPACE
+ {
++    struct __class_type_info;
++
++    // libc++ exposes only std::type_info's public prefix. Keep the SDK's
++    // internal virtual protocol in an application-owned derived shim instead
++    // of changing std::type_info or the application's public headers.
++    struct __shim_type_info : std::type_info
++    {
++        virtual ~__shim_type_info();
++        virtual bool __is_pointer_p() const { return false; }
++        virtual bool __is_function_p() const { return false; }
++        virtual bool __do_upcast(const __class_type_info *, void **) const { return false; }
++        virtual bool __do_catch(const __shim_type_info *, void **, unsigned) const;
++    };
++
+ 	/**
+ 	 * Primitive type info, for intrinsic types.
+ 	 */
+-	struct __fundamental_type_info : public std::type_info
++	struct __fundamental_type_info : public __shim_type_info
+ 	{
+ 		virtual ~__fundamental_type_info();
+ 	};
+ 	/**
+ 	 * Type info for arrays.  
+ 	 */
+-	struct __array_type_info : public std::type_info
++	struct __array_type_info : public __shim_type_info
+ 	{
+ 		virtual ~__array_type_info();
+ 	};
+ 	/**
+ 	 * Type info for functions.
+ 	 */
+-	struct __function_type_info : public std::type_info
++	struct __function_type_info : public __shim_type_info
+ 	{
+ 		virtual ~__function_type_info();
+ 		virtual bool __is_function_p() const { return true; }
+@@ -54,7 +69,7 @@
+ 	/**
+ 	 * Type info for enums.
+ 	 */
+-	struct __enum_type_info : public std::type_info
++	struct __enum_type_info : public __shim_type_info
+ 	{
+ 		virtual ~__enum_type_info();
+ 	};
+@@ -62,7 +77,7 @@
+ 	/**
+ 	 * Base class for class type info.  Used only for tentative definitions.
+ 	 */
+-	struct __class_type_info : public std::type_info
++	struct __class_type_info : public __shim_type_info
+ 	{
+ 		virtual ~__class_type_info();
+ 		/**
+@@ -177,7 +192,7 @@
+ 	/**
+ 	 * Base class used for both pointer and pointer-to-member type info.
+ 	 */
+-	struct __pbase_type_info : public std::type_info
++	struct __pbase_type_info : public __shim_type_info
+ 	{
+ 		virtual ~__pbase_type_info();
+ 		/**
+@@ -187,7 +202,7 @@
+ 		/**
+ 		 * The type info for the pointee.
+ 		 */
+-		const std::type_info *__pointee;
++		const __shim_type_info *__pointee;
+ 
+ 		/**
+ 		 * Masks used for qualifiers on the pointer.
+@@ -206,7 +221,7 @@
+ 			__incomplete_class_mask = 0x10
+ 		};
+ 		virtual bool __is_pointer_p() const { return true; }
+-		virtual bool __do_catch(const type_info *thrown_type,
++		virtual bool __do_catch(const __shim_type_info *thrown_type,
+ 		                        void **thrown_object,
+ 		                        unsigned outer) const;
+ 	};
+--- a/typeinfo.cc
++++ b/typeinfo.cc
+@@ -28,38 +28,12 @@
+ #include <string.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include "se_cdefs.h"
+-
+-SGX_ACCESS_VERSION(tcxx, 4)
+ 
+ using std::type_info;
+ 
+ type_info::~type_info() {}
+ 
+-bool type_info::operator==(const type_info &other) const
+-{
+-	return __type_name == other.__type_name;
+-}
+-bool type_info::operator!=(const type_info &other) const
+-{
+-	return __type_name != other.__type_name;
+-}
+-bool type_info::before(const type_info &other) const
+-{
+-	return __type_name < other.__type_name;
+-}
+-const char* type_info::name() const
+-{
+-	return __type_name;
+-}
+-type_info::type_info (const type_info& rhs)
+-{
+-	__type_name = rhs.__type_name;
+-}
+-type_info& type_info::operator= (const type_info& rhs) 
+-{
+-	return *new type_info(rhs);
+-}
++__cxxabiv1::__shim_type_info::~__shim_type_info() {}
+ 
+ __cxxabiv1::__fundamental_type_info::~__fundamental_type_info() {}
+ __cxxabiv1::__array_type_info::~__array_type_info() {}
+--- a/dynamic_cast.cc
++++ b/dynamic_cast.cc
+@@ -46,7 +46,7 @@
+  */
+ #define ADD_TO_PTR(x, off) (__typeof__(x))(((char*)x) + off)
+ 
+-bool std::type_info::__do_catch(std::type_info const *ex_type,
++bool __shim_type_info::__do_catch(__shim_type_info const *ex_type,
+                                 void **exception_object,
+                                 unsigned int outer) const
+ {
+@@ -63,7 +63,7 @@
+ 	return false;
+ }
+ 
+-bool __pbase_type_info::__do_catch(std::type_info const *ex_type,
++bool __pbase_type_info::__do_catch(__shim_type_info const *ex_type,
+                                    void **exception_object,
+                                    unsigned int outer) const
+ {
+@@ -163,7 +163,9 @@
+ 		// referenced (negative).'
+ 
+ 		void *obj = *thrown_object;
+-		if (info->isVirtual())
++		// A null derived pointer converts to a null base pointer; no virtual
++		// offset can or needs to be read from a nonexistent object.
++		if (obj && info->isVirtual())
+ 		{
+ 			// Object's vtable
+ 			ptrdiff_t *off = *(ptrdiff_t**)obj;
+@@ -171,7 +173,7 @@
+ 			off = ADD_TO_PTR(off, offset);
+ 			offset = *off;
+ 		}
+-		void *cast = ADD_TO_PTR(obj, offset);
++		void *cast = obj ? ADD_TO_PTR(obj, offset) : 0;
+ 
+ 		if (info->__base_type == target ||
+ 		    (info->__base_type->__do_upcast(target, &cast)))
+@@ -197,7 +199,7 @@
+  * that src is not a public base of dst, and -3 that src is a multiple public
+  * base type but never a virtual base type
+  */
+-extern "C" void* __dynamic_cast(const void *sub,
++extern "C" void* __encbound_app_dynamic_cast(const void *sub,
+                                 const __class_type_info *src,
+                                 const __class_type_info *dst,
+                                 ptrdiff_t src2dst_offset)

@@ -1,0 +1,256 @@
+{
+  "date": "2026-10-23",
+  "observed_at": "2026-10-23T14:46:30.143432+00:00",
+  "application": "crustio/crust-sworker selected ecall_safe_store2 (nontrivial-ingress-bugs C01)",
+  "pin": "a109e0a60a4ea256d884fde192b06b025e8bd6b1",
+  "scope": "SDK SIM hostile C01 two-call stateful buffer-pool control; no hardware, exploit, unbounded-write, restore-completion or full-deployment claim",
+  "sequence": {
+    "buffer_key": "0x434f3031",
+    "type": "ECALL_RESTORE_FROM_UPGRADE",
+    "first": {
+      "total_size": 256,
+      "partial_size": 1,
+      "offset": 0
+    },
+    "second": {
+      "total_size": 4096,
+      "partial_size": 1024,
+      "offset": 2048
+    },
+    "completion": false
+  },
+  "builds": "build/crust-selected/enclave-v1/all-compat-v1",
+  "tooling": {
+    "driver": "apps/crust-selected/hostile.c",
+    "driver_sha256": "dec10e7760664ad42dfbfaaab039f69c9a8766b32dcd2bded688e09822e858ed",
+    "runner_sha256": "930f47f24c6738f50f32460179b3765d6ee298067d584a40eb7f4604f9485a43"
+  },
+  "rows": [
+    {
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "mode": "SDK SIM",
+      "image": "build/crust-selected/enclave-v1/all-compat-v1/BASELINE-0x40000000/enclave.signed.so",
+      "image_sha256": "b1779afee7b4609648baa211bbe312bbbae649e6f1697ff788047b3b5aea2b95",
+      "build_manifest": "build/crust-selected/enclave-v1/all-compat-v1/BASELINE-0x40000000/build.json",
+      "build_manifest_sha256": "f00a2dffee48d45bfd1f75e0b34ace0b846bc468720dd4acffbab51943737433",
+      "driver": "build/crust-selected/c01-hostile-v1/BASELINE-0x40000000/hostile",
+      "run": {
+        "command": [
+          "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/BASELINE-0x40000000/hostile",
+          "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/enclave-v1/all-compat-v1/BASELINE-0x40000000/enclave.signed.so"
+        ],
+        "returncode": 0,
+        "stdout": "{\"mode\":\"hostile\",\"first\":[0,0],\"second\":[0,0],\"total_size\":4096,\"partial_size\":1024,\"offset\":2048}\n",
+        "stderr": "first transport=0 app=0\nsecond transport=0 app=0\n",
+        "log": "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/BASELINE-0x40000000/BASELINE-0x40000000-hostile.log",
+        "log_sha256": "9ef87435f91201075f825118bb9d23a6ae71f29df1bc003eeb20d4e09ac34895"
+      },
+      "expected": "both calls return CRUST_SUCCESS; unchecked write executes",
+      "response": {
+        "mode": "hostile",
+        "first": [
+          0,
+          0
+        ],
+        "second": [
+          0,
+          0
+        ],
+        "total_size": 4096,
+        "partial_size": 1024,
+        "offset": 2048
+      },
+      "attribution": {
+        "mode": "return",
+        "application_memcpy": {
+          "n": 1024,
+          "call_site": "ecall_safe_store2",
+          "destination": "0x400378d0",
+          "source": "0x40037220",
+          "before_bytes": [
+            "00",
+            "00",
+            "00",
+            "00",
+            "00",
+            "00",
+            "00",
+            "00"
+          ],
+          "after_bytes": [
+            "03",
+            "0a",
+            "11",
+            "18",
+            "1f",
+            "26",
+            "2d",
+            "34"
+          ]
+        },
+        "script": "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/BASELINE-0x40000000/BASELINE-0x40000000-attribution.gdb",
+        "log": "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/BASELINE-0x40000000/BASELINE-0x40000000-attribution.log",
+        "log_sha256": "495e43a6941c5a18fdced4360c1a3be53a2fb3fa97a8ead31fe2b7320fb0a193",
+        "excerpt": [
+          "application memcpy n=1024 dst=0x400378d0 src=0x40037220",
+          "0x400378d0:\t0x00\t0x00\t0x00\t0x00\t0x00\t0x00\t0x00\t0x00",
+          "0x40037220:\t0x03\t0x0a\t0x11\t0x18\t0x1f\t0x26\t0x2d\t0x34",
+          "#0  0x0000000040010e30 in memcpy ()",
+          "#1  0x000000004000a294 in ecall_safe_store2 ()",
+          "#2  0x0000000040001486 in sgx_ecall_safe_store2 (pms=0x7fffffffcf30) at /home/roger/project/TEE/ENCBound-restart/build/crust-selected/enclave-v1/all-compat-v1/BASELINE-0x40000000/generated/enclave_t.c:127",
+          "#3  0x000000004000b4e3 in do_ecall ()",
+          "#4  0x000000004002688c in enter_enclave ()",
+          "0x000000004000a294 in ecall_safe_store2 ()",
+          "after application memcpy:",
+          "0x400378d0:\t0x03\t0x0a\t0x11\t0x18\t0x1f\t0x26\t0x2d\t0x34",
+          "second transport=0 app=0"
+        ]
+      }
+    },
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "mode": "SDK SIM",
+      "image": "build/crust-selected/enclave-v1/all-compat-v1/RADIX_ONLY-0x40000000/enclave.signed.so",
+      "image_sha256": "a40652e9599ef889f9174a2acfdb3c2ae80f744fe6e4c3a55c176fa95ca2bf1d",
+      "build_manifest": "build/crust-selected/enclave-v1/all-compat-v1/RADIX_ONLY-0x40000000/build.json",
+      "build_manifest_sha256": "c42f50d907d19549237302d6d3b46cd23f8bcc1dd6ac79ecfae82d4080673ddc",
+      "driver": "build/crust-selected/c01-hostile-v1/RADIX_ONLY-0x40000000/hostile",
+      "run": {
+        "command": [
+          "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/RADIX_ONLY-0x40000000/hostile",
+          "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/enclave-v1/all-compat-v1/RADIX_ONLY-0x40000000/enclave.signed.so"
+        ],
+        "returncode": -4,
+        "stdout": "",
+        "stderr": "first transport=0 app=0\n",
+        "log": "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/RADIX_ONLY-0x40000000/RADIX_ONLY-0x40000000-hostile.log",
+        "log_sha256": "124b3df797043b3296e2126a06398f439b3bfe035462aaef19110a8500a0bf7d"
+      },
+      "expected": "SIGILL at the checked destination range",
+      "attribution": {
+        "mode": "SIGILL",
+        "abort_code": 4,
+        "width": 1024,
+        "access": "write",
+        "n": 1024,
+        "script": "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/RADIX_ONLY-0x40000000/RADIX_ONLY-0x40000000-attribution.gdb",
+        "slot_radix": 8,
+        "slot_bytes": 256,
+        "destination_offset": 16779520,
+        "log": "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/RADIX_ONLY-0x40000000/RADIX_ONLY-0x40000000-attribution.log",
+        "log_sha256": "b01a523c404137809f6ac892789f043d3fad28d32246c9adead66c8eba95383f",
+        "excerpt": [
+          "encbound_abort (code=4) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+          "#0  encbound_abort (code=4) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+          "#1  0x0000000040002fcc in encbound_require (capability=capability@entry=4611686018444167424, width=width@entry=1024, kind=kind@entry=2) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+          "#2  0x0000000040003943 in encbound_memcpy (dst=0x4000000001000900, src=0x5000000001000400, n=1024) at /home/roger/project/TEE/ENCBound-restart/runtime/adapters.c:27",
+          "#3  0x000000004001c495 in ecall_safe_store2 ()",
+          "#4  0x000000004000182f in sgx_ecall_safe_store2 (pms=0x7fffffffcf20) at /home/roger/project/TEE/ENCBound-restart/build/crust-selected/enclave-v1/all-compat-v1/RADIX_ONLY-0x40000000/generated/enclave_t.c:133",
+          "first transport=0 app=0"
+        ]
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "mode": "SDK SIM",
+      "image": "build/crust-selected/enclave-v1/all-compat-v1/MAC27-0x40000000/enclave.signed.so",
+      "image_sha256": "dd545632d73da10686a52cec3511da2942aa88f2bac2454658b2b8903be732c4",
+      "build_manifest": "build/crust-selected/enclave-v1/all-compat-v1/MAC27-0x40000000/build.json",
+      "build_manifest_sha256": "7ce7f010f2045c1ed155b011d303549825ae6ed2f9c2dbddcc64daaeaa4a3123",
+      "driver": "build/crust-selected/c01-hostile-v1/MAC27-0x40000000/hostile",
+      "run": {
+        "command": [
+          "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/MAC27-0x40000000/hostile",
+          "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/enclave-v1/all-compat-v1/MAC27-0x40000000/enclave.signed.so"
+        ],
+        "returncode": -4,
+        "stdout": "",
+        "stderr": "first transport=0 app=0\n",
+        "log": "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/MAC27-0x40000000/MAC27-0x40000000-hostile.log",
+        "log_sha256": "124b3df797043b3296e2126a06398f439b3bfe035462aaef19110a8500a0bf7d"
+      },
+      "expected": "SIGILL at the checked destination range",
+      "attribution": {
+        "mode": "SIGILL",
+        "abort_code": 4,
+        "width": 1024,
+        "access": "write",
+        "n": 1024,
+        "script": "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/MAC27-0x40000000/MAC27-0x40000000-attribution.gdb",
+        "slot_radix": 8,
+        "slot_bytes": 256,
+        "destination_offset": 16779520,
+        "log": "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/MAC27-0x40000000/MAC27-0x40000000-attribution.log",
+        "log_sha256": "28cbcc42ae18fd0ceedc2980053631a5c97596815371b5e3e1551b42c8afcb1e",
+        "excerpt": [
+          "encbound_abort (code=4) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+          "#0  encbound_abort (code=4) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+          "#1  0x00000000400030fc in encbound_require (capability=capability@entry=4821620029848029440, width=width@entry=1024, kind=kind@entry=2) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+          "#2  0x0000000040003c43 in encbound_memcpy (dst=0x42e9d5df01000900, src=0x5185bfc601000400, n=1024) at /home/roger/project/TEE/ENCBound-restart/runtime/adapters.c:27",
+          "#3  0x000000004001c795 in ecall_safe_store2 ()",
+          "#4  0x000000004000182f in sgx_ecall_safe_store2 (pms=0x7fffffffcf40) at /home/roger/project/TEE/ENCBound-restart/build/crust-selected/enclave-v1/all-compat-v1/MAC27-0x40000000/generated/enclave_t.c:133",
+          "first transport=0 app=0"
+        ]
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "mode": "SDK SIM",
+      "image": "build/crust-selected/enclave-v1/all-compat-v1/MAC27-0x140000000/enclave.signed.so",
+      "image_sha256": "742c4d6092d8fd8ce8a6acec5a397c3eceb745eaa8bd71a729f0a401fe14ad98",
+      "build_manifest": "build/crust-selected/enclave-v1/all-compat-v1/MAC27-0x140000000/build.json",
+      "build_manifest_sha256": "93fbe29f24d55007bb8d837f9328d2fe851ad45629a45a9cd0eaa6a7cc103d7a",
+      "driver": "build/crust-selected/c01-hostile-v1/MAC27-0x140000000/hostile",
+      "run": {
+        "command": [
+          "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/MAC27-0x140000000/hostile",
+          "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/enclave-v1/all-compat-v1/MAC27-0x140000000/enclave.signed.so"
+        ],
+        "returncode": -4,
+        "stdout": "",
+        "stderr": "first transport=0 app=0\n",
+        "log": "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/MAC27-0x140000000/MAC27-0x140000000-hostile.log",
+        "log_sha256": "124b3df797043b3296e2126a06398f439b3bfe035462aaef19110a8500a0bf7d"
+      },
+      "expected": "SIGILL at the checked destination range",
+      "attribution": {
+        "mode": "SIGILL",
+        "abort_code": 4,
+        "width": 1024,
+        "access": "write",
+        "n": 1024,
+        "script": "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/MAC27-0x140000000/MAC27-0x140000000-attribution.gdb",
+        "slot_radix": 8,
+        "slot_bytes": 256,
+        "destination_offset": 16779520,
+        "log": "/home/roger/project/TEE/ENCBound-restart/build/crust-selected/c01-hostile-v1/MAC27-0x140000000/MAC27-0x140000000-attribution.log",
+        "log_sha256": "f72ab773d9b588f6772aac2dda575a34eb35ff6bec19d9beefba93703eeff5ba",
+        "excerpt": [
+          "encbound_abort (code=4) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+          "#0  encbound_abort (code=4) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+          "#1  0x00000001400030fc in encbound_require (capability=capability@entry=5105595897295669504, width=width@entry=1024, kind=kind@entry=2) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+          "#2  0x0000000140003c43 in encbound_memcpy (dst=0x46dab86b01000900, src=0x511008cc01000400, n=1024) at /home/roger/project/TEE/ENCBound-restart/runtime/adapters.c:27",
+          "#3  0x000000014001c795 in ecall_safe_store2 ()",
+          "#4  0x000000014000182f in sgx_ecall_safe_store2 (pms=0x7fffffffcf30) at /home/roger/project/TEE/ENCBound-restart/build/crust-selected/enclave-v1/all-compat-v1/MAC27-0x140000000/generated/enclave_t.c:133",
+          "first transport=0 app=0"
+        ]
+      }
+    }
+  ],
+  "result": {
+    "baseline": "both calls return CRUST_SUCCESS; gdb observes the raw 1,024-byte memcpy from ecall_safe_store2 at the second call's offset 0x800 and the destination changes from zeros to the payload",
+    "protected": "RADIX_ONLY/MAC27 at both image bases terminate with SIGILL; gdb attributes to encbound_abort(code=4), encbound_require width=1024 kind=2, encbound_memcpy n=1024 and ecall_safe_store2; the rejected capability has radix 8 (256-byte slot) and destination offset 0x1000900 = first-call buffer + 0x800",
+    "callback": "not reached because offset+partial_size < total_size in both calls"
+  },
+  "limits": [
+    "SDK simulation only; no SGX hardware result.",
+    "The 0x400-byte write is a bounded control. Its later heap effects are not characterized and no secret reachability, crash or exploit is claimed.",
+    "The terminal restore stub remains in place; completed-transfer cleanup and real restore are outside this control.",
+    "The control is serial with one TCS and the recorded no-op mutex stubs; no concurrent or reentrant workload is admitted.",
+    "Same-key reuse and the 256-byte slot are established by the pinned source and the protected width-1024 rejection, not by exporting pointers."
+  ]
+}

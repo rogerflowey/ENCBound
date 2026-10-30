@@ -1,0 +1,580 @@
+{
+  "date": "2026-10-22",
+  "application": "conflow-dev/ConFlow selected operators",
+  "observed_at": "2026-10-21T17:02:58.576947+00:00",
+  "scope": "SDK SIM plus native controls; no hardware or exploit claim",
+  "pins": {
+    "repository": "https://github.com/conflow-dev/ConFlow",
+    "revision": "fd1904271e127980c1c2a7a813a1c506266f7372",
+    "archive_url": "https://codeload.github.com/conflow-dev/ConFlow/tar.gz/fd1904271e127980c1c2a7a813a1c506266f7372",
+    "archive_sha256": "d3c9e4a918af3d128d6ab871a7d5ada99df50a248fd94c56a15310693ef0ce46",
+    "files": {
+      "sgx_tf_ops/Enclave/Enclave.cpp": "a57781c526708d746646074685db65ab1e82c767ca8dbcfad8f1e9a136a66d4e",
+      "sgx_tf_ops/Enclave/Enclave.edl": "5f48c6ba6de4ed649dea19cc1f462aa62c7ea60d6faac17f2c7bc76a50e9b1e1",
+      "run.sh": "91d0f6cba749185713b8986ebf6ea2a014c2a7a16dedfb290dc32cfbf24e798b"
+    },
+    "license": "No LICENSE/COPYING file found in the pinned upstream tree; source is fetched into ignored build output, not vendored in this repository."
+  },
+  "sharing": {
+    "Ne": 5,
+    "Nt": 6,
+    "insert": 4,
+    "indexs": [
+      1,
+      2,
+      0,
+      3,
+      1,
+      0
+    ]
+  },
+  "finding": {
+    "kind": "application heap out-of-bounds access (CWE-787/CWE-125)",
+    "ecalls": [
+      "ecall_softmax",
+      "ecall_softmax_grad"
+    ],
+    "conditions": [
+      "host-supplied N < M*C: index past the scratch allocation",
+      "host-supplied negative C with M>1: negative index before the scratch allocation (for example N=4,M=2,C=-1)"
+    ],
+    "affected_upstream_lines": {
+      "ecall_softmax": {
+        "positive": 2213,
+        "negative": 2211
+      },
+      "ecall_softmax_grad": {
+        "positive": 2290,
+        "negative": 2288
+      }
+    },
+    "note": "scratch is allocated from N and indexed as M rows of C; no validation ties N, M and C together or rejects signed negative dimensions"
+  },
+  "functional_recheck": [
+    {
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "returncode": 0,
+      "functional": {
+        "result": "PASS",
+        "calls": 384,
+        "comparisons": 2520,
+        "max_absolute_error": 2.384185791015625e-07,
+        "rounds": 3,
+        "fixtures": 8
+      }
+    },
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "returncode": 0,
+      "functional": {
+        "result": "PASS",
+        "calls": 384,
+        "comparisons": 2520,
+        "max_absolute_error": 2.384185791015625e-07,
+        "rounds": 3,
+        "fixtures": 8
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "returncode": 0,
+      "functional": {
+        "result": "PASS",
+        "calls": 384,
+        "comparisons": 2520,
+        "max_absolute_error": 4.76837158203125e-07,
+        "rounds": 3,
+        "fixtures": 8
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "returncode": 0,
+      "functional": {
+        "result": "PASS",
+        "calls": 384,
+        "comparisons": 2520,
+        "max_absolute_error": 4.76837158203125e-07,
+        "rounds": 3,
+        "fixtures": 8
+      }
+    }
+  ],
+  "functional_recheck_note": "Fresh run of the unchanged functional host after the Makefile/source additions; the application and prepared bodies were unchanged.",
+  "sim": [
+    {
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "modes": {
+        "softmax-valid": {
+          "returncode": 0,
+          "log": "build/conflow/vuln/BASELINE-softmax-valid.log",
+          "log_sha256": "26e02796eb854ae27d6ae8110a33bf482c6157464b754a61f22807f25a59f3f1"
+        },
+        "softmax-shape": {
+          "returncode": -11,
+          "log": "build/conflow/vuln/BASELINE-softmax-shape.log",
+          "log_sha256": "0345f5fc437fed3839dd6d281cbffbd85b1c6e6c45490e8fb948371a6d115336"
+        },
+        "softmax-shape-large": {
+          "returncode": -11,
+          "log": "build/conflow/vuln/BASELINE-softmax-shape-large.log",
+          "log_sha256": "0345f5fc437fed3839dd6d281cbffbd85b1c6e6c45490e8fb948371a6d115336"
+        },
+        "softmax-negative-c": {
+          "returncode": 0,
+          "log": "build/conflow/vuln/BASELINE-softmax-negative-c.log",
+          "log_sha256": "c579c74bc350135bc50d758f503908c1a1a56c922367f5c3e326944e8601ab81"
+        },
+        "softmax-grad-valid": {
+          "returncode": 0,
+          "log": "build/conflow/vuln/BASELINE-softmax-grad-valid.log",
+          "log_sha256": "bf8558889ff9954ce87d9d4de0acd09f508e9a13f956c95a9bc7821b7edd4ae3"
+        },
+        "softmax-grad-shape": {
+          "returncode": -11,
+          "log": "build/conflow/vuln/BASELINE-softmax-grad-shape.log",
+          "log_sha256": "0345f5fc437fed3839dd6d281cbffbd85b1c6e6c45490e8fb948371a6d115336"
+        },
+        "softmax-grad-negative-c": {
+          "returncode": 0,
+          "log": "build/conflow/vuln/BASELINE-softmax-grad-negative-c.log",
+          "log_sha256": "90a66b004cb5f38513c734bfb27f684186fb081ed43784fe3465f644a16ac7c2"
+        }
+      }
+    },
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "modes": {
+        "softmax-valid": {
+          "returncode": 0,
+          "log": "build/conflow/vuln/RADIX_ONLY-softmax-valid.log",
+          "log_sha256": "247cf20ae08a2434ca969348d778e5d93c8fcf0836c1c6f82d63b34f99870b38"
+        },
+        "softmax-shape": {
+          "returncode": 0,
+          "log": "build/conflow/vuln/RADIX_ONLY-softmax-shape.log",
+          "log_sha256": "e006e9ff8213d6bb828f54303e5adbfcddf2015f56f456983a00978fd23539f9"
+        },
+        "softmax-shape-large": {
+          "returncode": 0,
+          "log": "build/conflow/vuln/RADIX_ONLY-softmax-shape-large.log",
+          "log_sha256": "d5f57598996b59f68f9a6bb755011cc47b3b89c3402a209642cbeca88d5f7d17"
+        },
+        "softmax-negative-c": {
+          "returncode": -4,
+          "log": "build/conflow/vuln/RADIX_ONLY-softmax-negative-c.log",
+          "log_sha256": "ba4eea53e35f116a113b34e3c8ae5877c7a423b0c80bc6cfaab1707d88212a46"
+        },
+        "softmax-grad-valid": {
+          "returncode": 0,
+          "log": "build/conflow/vuln/RADIX_ONLY-softmax-grad-valid.log",
+          "log_sha256": "a8b83e3c6ce954ed62ecc93989ae7ca8c65c2362b3d8dfd3d232bc8d715d890d"
+        },
+        "softmax-grad-shape": {
+          "returncode": 0,
+          "log": "build/conflow/vuln/RADIX_ONLY-softmax-grad-shape.log",
+          "log_sha256": "6fca3f66eca737af09812758c5834f1106bb73ebb191fa4f947a40151fc0a7f0"
+        },
+        "softmax-grad-negative-c": {
+          "returncode": -4,
+          "log": "build/conflow/vuln/RADIX_ONLY-softmax-grad-negative-c.log",
+          "log_sha256": "ba4eea53e35f116a113b34e3c8ae5877c7a423b0c80bc6cfaab1707d88212a46"
+        }
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "modes": {
+        "softmax-valid": {
+          "returncode": 0,
+          "log": "build/conflow/vuln/MAC27-softmax-valid.log",
+          "log_sha256": "247cf20ae08a2434ca969348d778e5d93c8fcf0836c1c6f82d63b34f99870b38"
+        },
+        "softmax-shape": {
+          "returncode": -4,
+          "log": "build/conflow/vuln/MAC27-softmax-shape.log",
+          "log_sha256": "ba4eea53e35f116a113b34e3c8ae5877c7a423b0c80bc6cfaab1707d88212a46"
+        },
+        "softmax-shape-large": {
+          "returncode": -4,
+          "log": "build/conflow/vuln/MAC27-softmax-shape-large.log",
+          "log_sha256": "ba4eea53e35f116a113b34e3c8ae5877c7a423b0c80bc6cfaab1707d88212a46"
+        },
+        "softmax-negative-c": {
+          "returncode": -4,
+          "log": "build/conflow/vuln/MAC27-softmax-negative-c.log",
+          "log_sha256": "ba4eea53e35f116a113b34e3c8ae5877c7a423b0c80bc6cfaab1707d88212a46"
+        },
+        "softmax-grad-valid": {
+          "returncode": 0,
+          "log": "build/conflow/vuln/MAC27-softmax-grad-valid.log",
+          "log_sha256": "a8b83e3c6ce954ed62ecc93989ae7ca8c65c2362b3d8dfd3d232bc8d715d890d"
+        },
+        "softmax-grad-shape": {
+          "returncode": -4,
+          "log": "build/conflow/vuln/MAC27-softmax-grad-shape.log",
+          "log_sha256": "ba4eea53e35f116a113b34e3c8ae5877c7a423b0c80bc6cfaab1707d88212a46"
+        },
+        "softmax-grad-negative-c": {
+          "returncode": -4,
+          "log": "build/conflow/vuln/MAC27-softmax-grad-negative-c.log",
+          "log_sha256": "ba4eea53e35f116a113b34e3c8ae5877c7a423b0c80bc6cfaab1707d88212a46"
+        }
+      }
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "modes": {
+        "softmax-valid": {
+          "returncode": 0,
+          "log": "build/conflow/vuln/MAC27-140000000-softmax-valid.log",
+          "log_sha256": "247cf20ae08a2434ca969348d778e5d93c8fcf0836c1c6f82d63b34f99870b38"
+        },
+        "softmax-shape": {
+          "returncode": -4,
+          "log": "build/conflow/vuln/MAC27-140000000-softmax-shape.log",
+          "log_sha256": "ba4eea53e35f116a113b34e3c8ae5877c7a423b0c80bc6cfaab1707d88212a46"
+        },
+        "softmax-shape-large": {
+          "returncode": -4,
+          "log": "build/conflow/vuln/MAC27-140000000-softmax-shape-large.log",
+          "log_sha256": "ba4eea53e35f116a113b34e3c8ae5877c7a423b0c80bc6cfaab1707d88212a46"
+        },
+        "softmax-negative-c": {
+          "returncode": -4,
+          "log": "build/conflow/vuln/MAC27-140000000-softmax-negative-c.log",
+          "log_sha256": "ba4eea53e35f116a113b34e3c8ae5877c7a423b0c80bc6cfaab1707d88212a46"
+        },
+        "softmax-grad-valid": {
+          "returncode": 0,
+          "log": "build/conflow/vuln/MAC27-140000000-softmax-grad-valid.log",
+          "log_sha256": "a8b83e3c6ce954ed62ecc93989ae7ca8c65c2362b3d8dfd3d232bc8d715d890d"
+        },
+        "softmax-grad-shape": {
+          "returncode": -4,
+          "log": "build/conflow/vuln/MAC27-140000000-softmax-grad-shape.log",
+          "log_sha256": "ba4eea53e35f116a113b34e3c8ae5877c7a423b0c80bc6cfaab1707d88212a46"
+        },
+        "softmax-grad-negative-c": {
+          "returncode": -4,
+          "log": "build/conflow/vuln/MAC27-140000000-softmax-grad-negative-c.log",
+          "log_sha256": "ba4eea53e35f116a113b34e3c8ae5877c7a423b0c80bc6cfaab1707d88212a46"
+        }
+      }
+    }
+  ],
+  "gdb_attribution": [
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "mode": "softmax-shape",
+      "abort_code": 5,
+      "source_line": "Enclave.cpp:359",
+      "excerpt": [
+        "encbound_abort (code=5) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=5) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x0000000040008adc in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x00000000400045e2 in ecall_softmax (input=<optimized out>, N=4, M=1, C=5, output=0x7fffffffce54) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/prepared/Enclave.cpp:359",
+        "#3  0x0000000040006618 in sgx_ecall_softmax (pms=0x7fffffffc3e0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_t.c:293",
+        "#4  sgx_ecall_softmax (pms=0x7fffffffc3e0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_t.c:274",
+        "#11 0x0000555555556621 in ecall_softmax (eid=5309172283342850, input=0x7fffffffc450, N=4, M=1, C=5, output=0x7fffffffce54) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_u.c:217"
+      ],
+      "log": "build/conflow/vuln/attr-40000000-softmax-shape.log",
+      "log_sha256": "5b87c958001194b9de02fc7eea455f91165970f7f55467030315057d26f8b6ad"
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "mode": "softmax-grad-shape",
+      "abort_code": 5,
+      "source_line": "Enclave.cpp:436",
+      "excerpt": [
+        "encbound_abort (code=5) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=5) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x0000000040008adc in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x0000000040005242 in ecall_softmax_grad (input=<optimized out>, grad=<optimized out>, N=4, M=1, C=5, output=0x7fffffffce44) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/prepared/Enclave.cpp:436",
+        "#3  0x0000000040005fd1 in sgx_ecall_softmax_grad (pms=0x7fffffffc3c0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_t.c:320",
+        "#4  sgx_ecall_softmax_grad (pms=0x7fffffffc3c0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_t.c:300",
+        "#11 0x00005555555566c3 in ecall_softmax_grad (eid=5309228117917698, input=0x7fffffffc440, grad=0x7fffffffc940, N=4, M=1, C=5, output=0x7fffffffce44) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_u.c:231"
+      ],
+      "log": "build/conflow/vuln/attr-40000000-softmax-grad-shape.log",
+      "log_sha256": "37882f94d963d098253f0ba00fca3a1385d64a0e21eaf18563417d2763c18cf2"
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "mode": "softmax-negative-c",
+      "abort_code": 3,
+      "source_line": "Enclave.cpp:357",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x0000000040008adc in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x00000000400045a9 in ecall_softmax (input=<optimized out>, N=4, M=2, C=-1, output=0x7fffffffce44) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/prepared/Enclave.cpp:357",
+        "#3  0x0000000040006618 in sgx_ecall_softmax (pms=0x7fffffffc3d0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_t.c:293",
+        "#4  sgx_ecall_softmax (pms=0x7fffffffc3d0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_t.c:274",
+        "#11 0x0000555555556621 in ecall_softmax (eid=5309283952492546, input=0x7fffffffc440, N=4, M=2, C=-1, output=0x7fffffffce44) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_u.c:217"
+      ],
+      "log": "build/conflow/vuln/attr-40000000-softmax-negative-c.log",
+      "log_sha256": "3e27e13033bd9ac1160cab29d7db075ac1c2b829ef7461bff5f021d20ac48d34"
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "mode": "softmax-grad-negative-c",
+      "abort_code": 3,
+      "source_line": "Enclave.cpp:434",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x0000000040008adc in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x0000000040005201 in ecall_softmax_grad (input=<optimized out>, grad=<optimized out>, N=4, M=2, C=-1, output=0x7fffffffce44) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/prepared/Enclave.cpp:434",
+        "#3  0x0000000040005fd1 in sgx_ecall_softmax_grad (pms=0x7fffffffc3c0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_t.c:320",
+        "#4  sgx_ecall_softmax_grad (pms=0x7fffffffc3c0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_t.c:300",
+        "#11 0x00005555555566c3 in ecall_softmax_grad (eid=5309339787067394, input=0x7fffffffc440, grad=0x7fffffffc940, N=4, M=2, C=-1, output=0x7fffffffce44) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/generated/Enclave_u.c:231"
+      ],
+      "log": "build/conflow/vuln/attr-40000000-softmax-grad-negative-c.log",
+      "log_sha256": "fadb63830efe4da56b294c47b89bad0e1f93be1db08a8269db28128fa0dbe947"
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "mode": "softmax-shape",
+      "abort_code": 5,
+      "source_line": "Enclave.cpp:359",
+      "excerpt": [
+        "encbound_abort (code=5) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=5) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x0000000140008adc in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x00000001400045e2 in ecall_softmax (input=<optimized out>, N=4, M=1, C=5, output=0x7fffffffce14) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/prepared/Enclave.cpp:359",
+        "#3  0x0000000140006618 in sgx_ecall_softmax (pms=0x7fffffffc3a0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_t.c:293",
+        "#4  sgx_ecall_softmax (pms=0x7fffffffc3a0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_t.c:274",
+        "#11 0x0000555555556621 in ecall_softmax (eid=5309395621642242, input=0x7fffffffc410, N=4, M=1, C=5, output=0x7fffffffce14) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_u.c:217"
+      ],
+      "log": "build/conflow/vuln/attr-140000000-softmax-shape.log",
+      "log_sha256": "180c656a85ef635ab6441af814b8f205fac16712451da8e8f2bd12e35955c5f5"
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "mode": "softmax-grad-shape",
+      "abort_code": 5,
+      "source_line": "Enclave.cpp:436",
+      "excerpt": [
+        "encbound_abort (code=5) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=5) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x0000000140008adc in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x0000000140005242 in ecall_softmax_grad (input=<optimized out>, grad=<optimized out>, N=4, M=1, C=5, output=0x7fffffffce14) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/prepared/Enclave.cpp:436",
+        "#3  0x0000000140005fd1 in sgx_ecall_softmax_grad (pms=0x7fffffffc390) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_t.c:320",
+        "#4  sgx_ecall_softmax_grad (pms=0x7fffffffc390) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_t.c:300",
+        "#11 0x00005555555566c3 in ecall_softmax_grad (eid=5309451456217090, input=0x7fffffffc410, grad=0x7fffffffc910, N=4, M=1, C=5, output=0x7fffffffce14) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_u.c:231"
+      ],
+      "log": "build/conflow/vuln/attr-140000000-softmax-grad-shape.log",
+      "log_sha256": "45332a44385d90ac18bc9a6a5d816df6120be1dd6ec1d0beec7188a1b3491ae3"
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "mode": "softmax-negative-c",
+      "abort_code": 3,
+      "source_line": "Enclave.cpp:357",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x0000000140008adc in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x00000001400045a9 in ecall_softmax (input=<optimized out>, N=4, M=2, C=-1, output=0x7fffffffce14) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/prepared/Enclave.cpp:357",
+        "#3  0x0000000140006618 in sgx_ecall_softmax (pms=0x7fffffffc3a0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_t.c:293",
+        "#4  sgx_ecall_softmax (pms=0x7fffffffc3a0) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_t.c:274",
+        "#11 0x0000555555556621 in ecall_softmax (eid=5309507290791938, input=0x7fffffffc410, N=4, M=2, C=-1, output=0x7fffffffce14) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_u.c:217"
+      ],
+      "log": "build/conflow/vuln/attr-140000000-softmax-negative-c.log",
+      "log_sha256": "25b73f243aae3dc94fff78124ff1da0678135c94b30eda3bff88619498dd17a2"
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x140000000",
+      "mode": "softmax-grad-negative-c",
+      "abort_code": 3,
+      "source_line": "Enclave.cpp:434",
+      "excerpt": [
+        "encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#0  encbound_abort (code=3) at /home/roger/project/TEE/ENCBound-restart/sdk/platform_layout.c:459",
+        "#1  0x0000000140008adc in encbound_require (capability=<optimized out>, width=<optimized out>, kind=<optimized out>) at /home/roger/project/TEE/ENCBound-restart/runtime/capability.c:186",
+        "#2  0x0000000140005201 in ecall_softmax_grad (input=<optimized out>, grad=<optimized out>, N=4, M=2, C=-1, output=0x7fffffffce04) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/prepared/Enclave.cpp:434",
+        "#3  0x0000000140005fd1 in sgx_ecall_softmax_grad (pms=0x7fffffffc380) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_t.c:320",
+        "#4  sgx_ecall_softmax_grad (pms=0x7fffffffc380) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_t.c:300",
+        "#11 0x00005555555566c3 in ecall_softmax_grad (eid=5309563125366786, input=0x7fffffffc400, grad=0x7fffffffc900, N=4, M=2, C=-1, output=0x7fffffffce04) at /home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused-base140000000/generated/Enclave_u.c:231"
+      ],
+      "log": "build/conflow/vuln/attr-140000000-softmax-grad-negative-c.log",
+      "log_sha256": "d64fb9c8560b230bd7174971e2dd25c4b0a16d39e633e0b851eab8a715e5818d"
+    }
+  ],
+  "asan": [
+    {
+      "mode": "softmax",
+      "returncode": -6,
+      "log": "build/conflow/vuln/asan-softmax.log",
+      "log_sha256": "c926b0b108f9d197a74dc6a139bf2c97ab23b6f5a12187c7a44966e97d83f4bf",
+      "first_lines": [
+        "=================================================================",
+        "==1236235==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x77c3059e0020 at pc 0x607f236d7b7d bp 0x7ffeb9315090 sp 0x7ffeb9315088",
+        "READ of size 4 at 0x77c3059e0020 thread T0",
+        "    #0 0x607f236d7b7c in ecall_softmax /home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/asan.cpp:364:42",
+        "    #1 0x607f236d8d4d in main /home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/asan.cpp",
+        "    #2 0x7ba30682a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16",
+        "    #3 0x7ba30682a717 in __libc_start_main csu/../csu/libc-start.c:360:3",
+        "    #4 0x607f235e93a4 in _start (/home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/asan+0x2d3a4) (BuildId: e4fcef82b662068b3a0b9a1e3e7d6ccc1ac4b2bc)",
+        "",
+        "0x77c3059e0020 is located 0 bytes after 16-byte region [0x77c3059e0010,0x77c3059e0020)"
+      ]
+    },
+    {
+      "mode": "grad",
+      "returncode": -6,
+      "log": "build/conflow/vuln/asan-grad.log",
+      "log_sha256": "cffa9b0a60dc439f7b56811d8c81779505ab9054b292a3530d8b5f30079bad74",
+      "first_lines": [
+        "=================================================================",
+        "==1236237==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x762e041e0020 at pc 0x55f0eedc5a53 bp 0x7ffc155c3250 sp 0x7ffc155c3248",
+        "READ of size 4 at 0x762e041e0020 thread T0",
+        "    #0 0x55f0eedc5a52 in ecall_softmax_grad /home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/asan.cpp:441:38",
+        "    #1 0x55f0eedc5d6b in main /home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/asan.cpp",
+        "    #2 0x7a0e0502a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16",
+        "    #3 0x7a0e0502a717 in __libc_start_main csu/../csu/libc-start.c:360:3",
+        "    #4 0x55f0eecd63a4 in _start (/home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/asan+0x2d3a4) (BuildId: e4fcef82b662068b3a0b9a1e3e7d6ccc1ac4b2bc)",
+        "",
+        "0x762e041e0020 is located 0 bytes after 16-byte region [0x762e041e0010,0x762e041e0020)"
+      ]
+    },
+    {
+      "mode": "neg",
+      "returncode": -6,
+      "log": "build/conflow/vuln/asan-neg.log",
+      "log_sha256": "e78aeaee50843f06de62d467cc5300159c6a7ba8ba74179b754a9b1d59c96604",
+      "first_lines": [
+        "=================================================================",
+        "==1236239==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x70fca95e000c at pc 0x63baa04e663d bp 0x7ffe0887ffd0 sp 0x7ffe0887ffc8",
+        "READ of size 4 at 0x70fca95e000c thread T0",
+        "    #0 0x63baa04e663c in ecall_softmax /home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/asan.cpp:362:29",
+        "    #1 0x63baa04e7d4d in main /home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/asan.cpp",
+        "    #2 0x74dcaa42a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16",
+        "    #3 0x74dcaa42a717 in __libc_start_main csu/../csu/libc-start.c:360:3",
+        "    #4 0x63baa03f83a4 in _start (/home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/asan+0x2d3a4) (BuildId: e4fcef82b662068b3a0b9a1e3e7d6ccc1ac4b2bc)",
+        "",
+        "0x70fca95e000c is located 4 bytes before 16-byte region [0x70fca95e0010,0x70fca95e0020)"
+      ]
+    },
+    {
+      "mode": "neg-grad",
+      "returncode": -6,
+      "log": "build/conflow/vuln/asan-neg-grad.log",
+      "log_sha256": "0eb49a3d3e2d6462e8e8818db12914b008de6838d91ade8418ca5076083fec0b",
+      "first_lines": [
+        "=================================================================",
+        "==1236241==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7b9920fe000c at pc 0x5e927420e22a bp 0x7ffdbeb426f0 sp 0x7ffdbeb426e8",
+        "READ of size 4 at 0x7b9920fe000c thread T0",
+        "    #0 0x5e927420e229 in ecall_softmax_grad /home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/asan.cpp:439:25",
+        "    #1 0x5e927420ed6b in main /home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/asan.cpp",
+        "    #2 0x7f7921e2a600 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:59:16",
+        "    #3 0x7f7921e2a717 in __libc_start_main csu/../csu/libc-start.c:360:3",
+        "    #4 0x5e927411f3a4 in _start (/home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/asan+0x2d3a4) (BuildId: e4fcef82b662068b3a0b9a1e3e7d6ccc1ac4b2bc)",
+        "",
+        "0x7b9920fe000c is located 4 bytes before 16-byte region [0x7b9920fe0010,0x7b9920fe0020)"
+      ]
+    }
+  ],
+  "native_checked": [
+    {
+      "profile": "RADIX_ONLY",
+      "modes": {
+        "softmax-valid": {
+          "expected": "ACCEPTED",
+          "returncode": 0,
+          "output": "ACCEPTED out0=0.033022169",
+          "log": "build/conflow/vuln/native-RADIX_ONLY-softmax-valid.log"
+        },
+        "softmax-shape": {
+          "expected": "ACCEPTED",
+          "returncode": 0,
+          "output": "ACCEPTED out0=0.0135661941",
+          "log": "build/conflow/vuln/native-RADIX_ONLY-softmax-shape.log"
+        },
+        "softmax_grad-valid": {
+          "expected": "ACCEPTED",
+          "returncode": 0,
+          "output": "ACCEPTED out0=-0.0395560674",
+          "log": "build/conflow/vuln/native-RADIX_ONLY-softmax_grad-valid.log"
+        },
+        "softmax_grad-shape": {
+          "expected": "ACCEPTED",
+          "returncode": 0,
+          "output": "ACCEPTED out0=0.0453925207",
+          "log": "build/conflow/vuln/native-RADIX_ONLY-softmax_grad-shape.log"
+        }
+      }
+    },
+    {
+      "profile": "MAC27",
+      "modes": {
+        "softmax-valid": {
+          "expected": "ACCEPTED",
+          "returncode": 0,
+          "output": "ACCEPTED out0=0.0355229713",
+          "log": "build/conflow/vuln/native-MAC27-softmax-valid.log"
+        },
+        "softmax-shape": {
+          "expected": "ABORT code=5",
+          "returncode": 0,
+          "output": "ABORT code=5",
+          "log": "build/conflow/vuln/native-MAC27-softmax-shape.log"
+        },
+        "softmax_grad-valid": {
+          "expected": "ACCEPTED",
+          "returncode": 0,
+          "output": "ACCEPTED out0=-0.0293668713",
+          "log": "build/conflow/vuln/native-MAC27-softmax_grad-valid.log"
+        },
+        "softmax_grad-shape": {
+          "expected": "ABORT code=5",
+          "returncode": 0,
+          "output": "ABORT code=5",
+          "log": "build/conflow/vuln/native-MAC27-softmax_grad-shape.log"
+        }
+      }
+    }
+  ],
+  "inputs": {
+    "/home/roger/project/TEE/ENCBound-restart/apps/conflow/vuln.py": "1c2cecd0c8ab02f741be100d94b7ca333076ab6c414b530d0d2c223e37d90b1b",
+    "/home/roger/project/TEE/ENCBound-restart/apps/conflow/vuln_host.c": "ac7d9b5303c3552e60ca3e4bac45892891fe168a3796c99b35247565f8a36b36",
+    "/home/roger/project/TEE/ENCBound-restart/apps/conflow/vuln_native_driver.cpp": "befe3ec2df214f9863e55e6fecc6065ef87235e1b2f884a668ff943db387587d",
+    "/home/roger/project/TEE/ENCBound-restart/apps/conflow/Makefile": "c8e5b0fd3052802c51442f7291cfc4c1b23121ef8944a7b32ad02db1f26883fa",
+    "/home/roger/project/TEE/ENCBound-restart/apps/conflow/prepare.py": "36a019f805ed61cd8e7fd7ee9033ec98e6ad298d2ead0874497689646336b169",
+    "/home/roger/project/TEE/ENCBound-restart/apps/conflow/pins.json": "cd260a4a61bf19532e91ce5cdcc76daeb973353228027eeacaa2e8069053c330"
+  },
+  "artifacts": {
+    "asan_source": "/home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/asan.cpp",
+    "asan_source_sha256": "faf14d6f5d9a99ad634228fda285b6f17a98a08ca524d294553eaa345b533c01",
+    "native_source": "/home/roger/project/TEE/ENCBound-restart/build/conflow/vuln/native-app.cpp",
+    "native_source_sha256": "f9d9f896ea8e7c955bb69150c8367be9c7fd49113bd990d1e7a6da2e865798b1",
+    "prepared": "/home/roger/project/TEE/ENCBound-restart/build/conflow/SIM-MAC27-feO2-cgO2-rtO2-fused/prepared/Enclave.cpp",
+    "prepared_sha256": "89fc9a49720a25e8f4ea3891d425a4801c1927137c5c24b182f33db1c7899f75",
+    "upstream": "/home/roger/project/TEE/ENCBound-restart/build/conflow/source/sgx_tf_ops/Enclave/Enclave.cpp",
+    "upstream_sha256": "a57781c526708d746646074685db65ab1e82c767ca8dbcfad8f1e9a136a66d4e"
+  },
+  "limits": [
+    "The complete input and gradient arrays are passed; only N, M and C disagree.",
+    "The selected positive case N=4,C=5 crosses a 16-byte protected slot. Smaller sub-slot overruns can remain in slot padding.",
+    "The negative-C case reads before the 16-byte allocation and is rejected as POLICY because the preceding slot base is outside the protected heap region in these runs; that category can depend on allocation placement.",
+    "RADIX_ONLY accepts the positive same-radix adjacent-slot access but rejects the negative underflow; MAC27 authenticates the slot and rejects both. This is the existing authentication contrast, not a new mechanism.",
+    "BASELINE dies with SIGSEGV on the positive shape after heap corruption; the negative-C shape returns success after a silent out-of-bounds read. Native ASan independently identifies both out-of-object accesses.",
+    "No hardware, exploit, information-leak, TensorFlow/DeepCrossing or full-ConFlow claim is made."
+  ]
+}

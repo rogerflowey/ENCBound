@@ -1,0 +1,952 @@
+--- a/CodeGen.ml
++++ b/CodeGen.ml
+@@ -68,6 +68,17 @@
+ let g_use_prefix = ref false
+ let g_untrusted_dir = ref "."
+ let g_trusted_dir = ref "."
++
++(* Selection follows native AST admission. No-config mode remains stock. *)
++let encbound_ecalls = ref []
++let encbound_guarded_ecalls = ref []
++let encbound_ocalls = ref []
++let encbound_active = ref false
++let encbound_cap name = "_encbound_cap_" ^ name
++let encbound_allocate name len =
++  if !encbound_active then
++    sprintf "encbound_bridge_alloc(%s, &%s)" len (encbound_cap name)
++  else sprintf "malloc(%s)" len
+ 
+ let empty_ec =
+   { file_shortnm = "";
+@@ -688,6 +699,49 @@
+ #include <string.h>\n\
+ #include \"sgx_edger8r.h\" /* for sgx_status_t etc. */\n" in
+     grd_hdr ^ inc_exp ^ "\n" ^ inclist ^ "\n" ^ common_macros
++
++(* Keep every value record out of the trusted/application machine ABI. These
++ * generated application functions are compiled through the ordinary pass;
++ * Clang and normalizeAggregateABI own scalar/byval classification and names. *)
++let encbound_record_arg name = "_encbound_record_" ^ name
++let encbound_record_parm (pt,d) =
++  if EncboundAdmission.value_record pt then
++    sprintf "const %s* %s" (get_param_tystr pt) (encbound_record_arg d.Ast.identifier)
++  else gen_parm_str (pt,d)
++let encbound_gateway_proto ocall fd =
++  let params = List.map encbound_record_parm fd.Ast.plist in
++  let params = if ocall && fd.Ast.rtype <> Ast.Void then gen_parm_retval fd.Ast.rtype :: params else params in
++  sprintf "%s %s(%s)" (if ocall then "sgx_status_t SGX_CDECL" else get_ret_tystr fd)
++    (if ocall then EncboundAdmission.trusted_proxy fd else EncboundAdmission.application_entry fd)
++    (if params=[] then "void" else String.concat ", " params)
++let gen_encbound_application (ec: enclave_content) =
++  if EncboundAdmission.enabled then (
++    let ecalls = List.filter (fun tf -> List.mem tf.Ast.tf_fdecl.Ast.fname !encbound_ecalls &&
++      EncboundAdmission.record_function tf.Ast.tf_fdecl) ec.tfunc_decls in
++    let ocalls = List.filter (fun uf -> List.mem uf.Ast.uf_fdecl.Ast.fname !encbound_ocalls &&
++      EncboundAdmission.record_function uf.Ast.uf_fdecl) ec.ufunc_decls in
++    let header = ec.file_shortnm ^ "_app.h" in
++    let guard = String.uppercase_ascii ec.enclave_name ^ "_APP_H__" in
++    let prototypes = List.map (fun tf -> encbound_gateway_proto false tf.Ast.tf_fdecl ^ ";\n") ecalls @
++      List.map (fun uf -> encbound_gateway_proto true uf.Ast.uf_fdecl ^ ";\n") ocalls in
++    EncboundAdmission.write (Filename.concat !g_trusted_dir header)
++      (sprintf "/* Generated record gateways; application side requires ENCBound. */\n#ifndef %s\n#define %s\n#include \"%s_t.h\"\n#ifdef __cplusplus\nextern \"C\" {\n#endif\n%s#ifdef __cplusplus\n}\n#endif\n#endif\n"
++        guard guard ec.file_shortnm (String.concat "" prototypes));
++    let entry tf =
++      let fd = tf.Ast.tf_fdecl in
++      let args = List.map (fun (pt,d) -> if EncboundAdmission.value_record pt
++        then "*" ^ encbound_record_arg d.Ast.identifier else d.Ast.identifier) fd.Ast.plist in
++      sprintf "__attribute__((noinline,disable_tail_calls))\n%s\n{\n\t%s%s(%s);\n}\n"
++        (encbound_gateway_proto false fd) (if fd.Ast.rtype=Ast.Void then "" else "return ")
++        fd.Ast.fname (String.concat ", " args) in
++    let proxy uf =
++      let fd = uf.Ast.uf_fdecl in
++      let args = List.map (fun (pt,d) -> (if EncboundAdmission.value_record pt then "&" else "") ^ d.Ast.identifier) fd.Ast.plist in
++      let args = if fd.Ast.rtype=Ast.Void then args else "retval"::args in
++      sprintf "__attribute__((noinline,disable_tail_calls))\n%s\n{\n\treturn %s(%s);\n}\n"
++        (gen_tproxy_proto fd) (EncboundAdmission.trusted_proxy fd) (String.concat ", " args) in
++    EncboundAdmission.write (Filename.concat !g_trusted_dir (ec.file_shortnm ^ "_app.c"))
++      ("#include \"" ^ header ^ "\"\n\n" ^ String.concat "\n" (List.map entry ecalls @ List.map proxy ocalls)))
+ 
+ let ms_writer out_chan ec =
+   let ms_struct_ecall = List.map gen_ecall_marshal_struct ec.tfunc_decls in
+@@ -1301,7 +1355,7 @@
+               ]
+               @ check_size @
+               [
+-              sprintf "\t%s = (%s)malloc(%s);" in_ptr_name in_ptr_type len_var;
++              sprintf "\t%s = (%s)%s;" in_ptr_name in_ptr_type (encbound_allocate name len_var);
+               sprintf "\tif (%s == NULL) {" in_ptr_name;
+               "\t\tstatus = SGX_ERROR_OUT_OF_MEMORY;";
+               "\t\tgoto err;";
+@@ -1345,7 +1399,7 @@
+               ]
+               @ check_size @
+               [
+-              sprintf "\tif ((%s = (%s)malloc(%s)) == NULL) {" in_ptr_name in_ptr_type len_var;
++              sprintf "\tif ((%s = (%s)%s) == NULL) {" in_ptr_name in_ptr_type (encbound_allocate name len_var);
+               "\t\tstatus = SGX_ERROR_OUT_OF_MEMORY;";
+               "\t\tgoto err;";
+               "\t}\n";
+@@ -1488,7 +1542,7 @@
+   let has_inout_p (attr: Ast.ptr_attr): bool =
+     attr.Ast.pa_direction <> Ast.PtrNoDirection
+   in
+-    if fd.rtype <> Ast.Void || List.exists (fun (pt, name) ->
++    if fd.rtype <> Ast.Void || (!encbound_active && EncboundAdmission.record_function fd) || List.exists (fun (pt, name) ->
+                       match pt with
+                           Ast.PTVal _        -> false
+                         | Ast.PTPtr(_, attr) -> has_inout_p attr) fd.plist
+@@ -1517,15 +1571,19 @@
+                         else ""
+                   | _ -> ""
+             in
+-            sprintf "\tif (%s) free(%s);\n%s" in_ptr_name in_ptr_dst_name struct_free
++            if !encbound_active then sprintf "\tencbound_boundary_free(%s);\n" (encbound_cap name)
++            else sprintf "\tif (%s) free(%s);\n%s" in_ptr_name in_ptr_dst_name struct_free
+         | Ast.PtrInOut | Ast.PtrOut ->
+-                  sprintf "\tif (%s) free(%s);\n" in_ptr_name in_ptr_name
++                  if !encbound_active then sprintf "\tencbound_boundary_free(%s);\n" (encbound_cap name)
++                  else sprintf "\tif (%s) free(%s);\n" in_ptr_name in_ptr_name
+         | _ -> ""
+   in
+   List.fold_left
+       (fun acc (pty, declr) ->
+           match pty with
+-              Ast.PTVal _          -> acc
++              Ast.PTVal _ when !encbound_active && EncboundAdmission.value_record pty ->
++                acc ^ sprintf "\tencbound_boundary_free(%s);\n" (encbound_cap declr.Ast.identifier)
++            | Ast.PTVal _          -> acc
+             | Ast.PTPtr (ty, attr) -> acc ^ copy_and_free ty attr declr) "" plist
+ 
+ (* It is used to save the parameters used as the value of size/count attribute. *)
+@@ -1594,7 +1652,14 @@
+   else mk_parm_name_ext pt declr
+ 
+ let mk_parm_name_tbridge (pt: Ast.parameter_type) (declr: Ast.declarator) =
+-  add_foreign_array_ptrref (tbridge_mk_parm_name_ext pt declr) pt
++  if !encbound_active && EncboundAdmission.value_record pt then
++    sprintf "(const %s*)%s" (get_param_tystr pt) (encbound_cap declr.Ast.identifier)
++  else if !encbound_active && ptr_has_direction pt then
++    (* Reuse Intel's array/typedef/qualifier conversion in an unevaluated
++     * expression; substitute only the application-visible pointer value. *)
++    let raw = add_foreign_array_ptrref (tbridge_mk_parm_name_ext pt declr) pt in
++    sprintf "(__typeof__(%s))%s" raw (encbound_cap declr.Ast.identifier)
++  else add_foreign_array_ptrref (tbridge_mk_parm_name_ext pt declr) pt
+ 
+ (* Generate local variables required for the trusted bridge. *)
+ let gen_tbridge_local_vars (plist: Ast.pdecl list) =
+@@ -1612,7 +1677,8 @@
+     let in_ptr =
+       match attr.Ast.pa_direction with
+           Ast.PtrNoDirection -> ""
+-        | _ -> sprintf "\t%s %s = NULL;\n" (Ast.get_tystr ty) (mk_in_var name)
++        | _ -> sprintf "\t%s %s = NULL;\n%s" (Ast.get_tystr ty) (mk_in_var name)
++                 (if !encbound_active then sprintf "\tvoid *%s = NULL;\n" (encbound_cap name) else "")
+     in
+     let in_ptr_struct_var =
+       if not attr.Ast.pa_chkptr then ""
+@@ -1633,7 +1699,8 @@
+     in
+     let len_var = sprintf "\tsize_t %s = sizeof(%s);\n" (mk_len_var name) tystr
+     in
+-    let in_ptr = sprintf "\t%s* %s = NULL;\n" tystr (mk_in_var name)
++    let in_ptr = sprintf "\t%s* %s = NULL;\n%s" tystr (mk_in_var name)
++      (if !encbound_active then sprintf "\tvoid *%s = NULL;\n" (encbound_cap name) else "")
+     in
+       match attr.Ast.pa_direction with
+         Ast.PtrNoDirection -> ""
+@@ -1642,7 +1709,10 @@
+   let gen_local_var (pd: Ast.pdecl) =
+     let (pty, declr) = pd in
+       match pty with
+-          Ast.PTVal _          -> ("", false)
++          Ast.PTVal _ when !encbound_active && EncboundAdmission.value_record pty ->
++            (sprintf "\t%s* %s = NULL;\n\tvoid* %s = NULL;\n"
++              (get_param_tystr pty) (mk_in_var declr.Ast.identifier) (encbound_cap declr.Ast.identifier), false)
++        | Ast.PTVal _          -> ("", false)
+         | Ast.PTPtr (ty, attr) ->
+             if is_foreign_array pty
+             then (gen_local_var_for_foreign_array ty attr declr.Ast.identifier, false)
+@@ -1658,6 +1728,8 @@
+ 
+ (* It generates trusted bridge code for a trusted function. *)
+ let gen_func_tbridge (fd: Ast.func_decl) (dummy_var: string) =
++  encbound_active := List.mem fd.Ast.fname !encbound_ecalls;
++  let guarded_entry = List.mem fd.Ast.fname !encbound_guarded_ecalls in
+   let func_open = sprintf "static sgx_status_t SGX_CDECL %s(void* %s)\n{\n"
+                           (mk_tbridge_name fd.Ast.fname)
+                           ms_ptr_name in
+@@ -1665,7 +1737,7 @@
+                    if fd.rtype <> Ast.Void
+                      then sprintf "\t%s %s;\n" (Ast.get_tystr fd.rtype) (mk_in_var retval_name)
+                      else "" in
+-  let func_close = "\treturn status;\n}\n" in
++  let func_close = (if guarded_entry then "\tencbound_boundary_release();\n" else "") ^ "\treturn status;\n}\n" in
+ 
+   let ms_struct_name = mk_ms_struct_name fd.Ast.fname in
+   let declare_ms_ptr = sprintf "%s* %s = SGX_CAST(%s*, %s);"
+@@ -1689,7 +1761,16 @@
+     in 
+     List.fold_left (fun acc s -> acc ^ "\t" ^ s ^ "\n") "" code_template in
+ 
+-  let invoke_func   = gen_func_invoking fd mk_parm_name_tbridge in
++  let invocation_fd = if !encbound_active && EncboundAdmission.record_function fd then
++    {fd with Ast.fname=EncboundAdmission.application_entry fd} else fd in
++  let invocation_fd = if EncboundAdmission.cxx_eh && List.mem fd.Ast.fname !(EncboundAdmission.ecalls)
++    then {invocation_fd with Ast.fname="__encbound_eh_entry_" ^ invocation_fd.Ast.fname} else invocation_fd in
++  let invoke_func = gen_func_invoking invocation_fd mk_parm_name_tbridge in
++  let record_copies = if not !encbound_active then "" else
++    List.fold_left (fun acc (pt,d) -> if not (EncboundAdmission.value_record pt) then acc else
++      let n = d.Ast.identifier and ty = get_param_tystr pt in
++      acc ^ sprintf "\t%s = (%s*)encbound_bridge_alloc(sizeof(%s), &%s);\n\tif (!%s) { status = SGX_ERROR_OUT_OF_MEMORY; goto err; }\n\tif (memcpy_s(%s, sizeof(%s), &%s, sizeof(%s))) { status = SGX_ERROR_UNEXPECTED; goto err; }\n"
++        (mk_in_var n) ty ty (encbound_cap n) (mk_in_var n) (mk_in_var n) ty (mk_in_parm_accessor n) ty) "" fd.Ast.plist in
+   
+   let update_retval =
+     let code_template =[
+@@ -1710,7 +1791,10 @@
+       let check_pms =
+         sprintf "if (%s != NULL) return SGX_ERROR_INVALID_PARAMETER;" ms_ptr_name
+       in
+-        sprintf "%s%s%s\t%s\n\t%s\n%s" func_open local_vars dummy_var check_pms invoke_func func_close
++        sprintf "%s%s%s\t%s\n%s\t%s\n%s" func_open local_vars dummy_var check_pms
++          (if guarded_entry then
++            "\tstatus = encbound_bridge_enter();\n\tif (status != SGX_SUCCESS) return status;\n" else "")
++          invoke_func func_close
+     else
+       sprintf "%s%s\t%s\n\t%s\n%s%s\n%s%s\n%s%s%s\n%s\n%s%s"
+         func_open
+@@ -1721,7 +1805,9 @@
+         local_vars
+         (gen_check_tbridge_length_overflow fd.Ast.plist)
+         (gen_check_tbridge_ptr_parms fd.Ast.plist)
+-        (gen_parm_ptr_direction_pre fd.Ast.plist)
++        ((if guarded_entry then
++            "\tstatus = encbound_bridge_enter();\n\tif (status != SGX_SUCCESS) return status;\n"
++          else "") ^ gen_parm_ptr_direction_pre fd.Ast.plist ^ record_copies)
+         (if fd.rtype <> Ast.Void then update_retval else sprintf "\t%s\n" invoke_func)
+         (gen_parm_ptr_direction_post fd.Ast.plist)
+         (gen_err_mark fd)
+@@ -2101,11 +2187,57 @@
+      List.fold_left (fun acc s -> acc ^ s) s2 do_gen_ocalloc_block
+ 
+ (* Generate trusted proxy code for a given untrusted function. *)
++(* Only scanning needs conversion before Intel computes lengths. Keep the
++ * capability so the later direction/range check uses Intel's actual _len_. *)
++let encbound_proxy_prepare (fd: Ast.func_decl) =
++  let retval = if fd.Ast.rtype = Ast.Void then "" else
++    "\tretval = (__typeof__(retval))encbound_bridge_range(retval, sizeof(*retval), ENCBOUND_ACCESS_WRITE);\n" in
++  retval ^ List.fold_left (fun acc (pt, declr) ->
++    match pt with
++    | Ast.PTVal _ -> acc
++    | Ast.PTPtr (_, attr) ->
++      let name = declr.Ast.identifier in
++      if attr.Ast.pa_isstr || attr.Ast.pa_iswstr then
++        acc ^ sprintf "\tconst void *%s = %s;\n\t%s = (__typeof__(%s))encbound_bridge_string(%s, %s);\n"
++          (encbound_cap name) name name name name
++          (if attr.Ast.pa_iswstr then "sizeof(wchar_t)" else "1")
++      else acc) "" fd.Ast.plist
++
++(* All ordinary buffers share Intel's normalized declarations and computed
++ * size_t lengths: no second interpretation of size/count/array attributes. *)
++let encbound_proxy_decode (fd: Ast.func_decl) =
++  List.fold_left (fun acc (pt, declr) ->
++    match pt with
++    | Ast.PTVal _ -> acc
++    (* Intel marshals only the pointer value for user_check. There is no
++     * pointee access or extent to validate/decode, including for opaque
++     * capability values. Ordinary buffers and retval retain their checks. *)
++    | Ast.PTPtr (_, attr) when not attr.Ast.pa_chkptr -> acc
++    | Ast.PTPtr (_, attr) ->
++        let name = declr.Ast.identifier in
++        let kind = match attr.Ast.pa_direction with
++          | Ast.PtrIn -> "ENCBOUND_ACCESS_READ"
++          | Ast.PtrOut -> "ENCBOUND_ACCESS_WRITE"
++          | Ast.PtrInOut -> "ENCBOUND_ACCESS_READWRITE"
++          | _ -> failwith "ENCBound: unsupported OCALL direction" in
++        let cap = if attr.Ast.pa_isstr || attr.Ast.pa_iswstr then encbound_cap name else name in
++        acc ^ sprintf "\t%s = (__typeof__(%s))encbound_bridge_range(%s, %s, %s);\n"
++          name name cap (mk_len_var name) kind) "" (List.map conv_array_to_ptr fd.Ast.plist)
++
+ let gen_func_tproxy (ufunc: Ast.untrusted_func) (idx: int) =
+   let fd = ufunc.Ast.uf_fdecl in
+   let propagate_errno = ufunc.Ast.uf_propagate_errno in
+-  let func_open = sprintf "%s\n{\n" (gen_tproxy_proto fd) in
+-  let local_vars = gen_tproxy_local_vars fd.Ast.plist in
++  let adapted = List.mem fd.Ast.fname !encbound_ocalls && EncboundAdmission.record_function fd in
++  let record_copies = if not adapted then "" else
++    List.fold_left (fun acc (pt,d) -> if not (EncboundAdmission.value_record pt) then acc else
++      let n=d.Ast.identifier in
++      acc ^ sprintf "\t%s %s;\n\tmemcpy(&%s, encbound_boundary_read(%s, sizeof(%s)), sizeof(%s));\n"
++        (get_param_tystr pt) n n (encbound_record_arg n) n n) "" fd.Ast.plist in
++  let func_open = sprintf "%s\n{\n%s%s"
++    (if adapted then encbound_gateway_proto true fd else gen_tproxy_proto fd) record_copies
++    (if List.mem fd.Ast.fname !encbound_ocalls then encbound_proxy_prepare fd else "") in
++  let local_vars = gen_tproxy_local_vars fd.Ast.plist ^
++    (if List.mem fd.Ast.fname !encbound_ocalls then encbound_proxy_decode fd else "") in
+   let ocalloc_ms_struct = gen_ocalloc_block fd.Ast.fname fd.Ast.plist ufunc.Ast.uf_is_switchless in
+   let ocalloc_struct_deep_copy = gen_ocalloc_block_struct_deep_copy fd.Ast.fname fd.Ast.plist in
+   let sgx_ocfree_fn = get_sgx_fname SGX_OCFREE ufunc.Ast.uf_is_switchless in
+@@ -2239,6 +2371,12 @@
+                       "\t\t\treturn SGX_ERROR_UNEXPECTED;"
+                       "\t\t}"
+                   else "" in
++  (* Preserve Intel's copy/error ordering and SDK-private errno. Only after
++   * its guarded copy succeeds, pass the copied integer to application code.
++   * Do not reread the untrusted marshaling cell or expose SDK errno's address. *)
++  let set_errno = set_errno ^
++    (if EncboundAdmission.enabled && List.mem fd.Ast.fname !(EncboundAdmission.errno_ocalls)
++     then "\t\t__encbound_app_errno_store(errno);\n" else "") in
+   let func_close = sprintf "%s%s%s\n%s%s\n"
+                            (handle_out_ptr fd.Ast.plist)
+                            set_errno
+@@ -2358,6 +2496,17 @@
+                       (Util.mk_seq 0 (List.length ec.ufunc_decls - 1)) in
+   let out_chan = open_out code_fname in
+     output_string out_chan (include_hd ^ "\n");
++    if EncboundAdmission.enabled && !(EncboundAdmission.errno_ocalls) <> [] then
++      output_string out_chan ("#ifdef ENCBOUND_APP_LIBC_ERRNO_H\n" ^
++        "#error Application errno headers must not be used for the trusted bridge\n#endif\n" ^
++        "#include \"encbound_app_errno.h\"\n\n");
++    if !encbound_guarded_ecalls <> [] || !encbound_ocalls <> [] then
++      output_string out_chan ("#include \"modified_bridge.h\"\n#include \"" ^ ec.file_shortnm ^ "_app.h\"\n\n");
++    if EncboundAdmission.cxx_eh then List.iter (fun fd ->
++      let name = if List.mem fd.Ast.fname !encbound_ecalls && EncboundAdmission.record_function fd
++        then EncboundAdmission.application_entry fd else fd.Ast.fname in
++      output_string out_chan (sprintf "extern __typeof__(%s) __encbound_eh_entry_%s;\n" name name))
++      (List.filter (fun fd -> List.mem fd.Ast.fname !(EncboundAdmission.ecalls)) trusted_fds);
+     ms_writer out_chan ec;
+     List.iter (fun s -> output_string out_chan (s ^ "\n")) tbridge_list;
+     output_string out_chan (ecall_table ^ "\n");
+@@ -2388,6 +2537,7 @@
+   in
+     try
+       let fullpath = Util.get_file_path fname in
++      if EncboundAdmission.enabled then EncboundAdmission.remember fullpath;
+       let preprocessed =
+         save_file fullpath;  Preprocessor.processor_macro(fullpath) in
+       let lexbuf = 
+@@ -2500,7 +2650,9 @@
+     List.fold_left(join_one) ec1 ec2
+   in
+   let parse_import_file fname =
+-    parse_enclave_ast (start_parsing fname)
++    let imported = parse_enclave_ast (start_parsing fname) in
++    EncboundAdmission.observe_import fname (Util.get_file_path fname) imported;
++    imported
+   in
+   let check_funs funcs (ec: enclave_content list) =
+     (* Check whether `funcs' are listed in head of `ec'.  It returns a
+@@ -2565,7 +2717,15 @@
+ 
+ (* Generate the Enclave code. *)
+ let gen_enclave_code (e: Ast.enclave) (ep: edger8r_params) =
+-  let ec = reduce_import (parse_enclave_ast e) in
++  let root = parse_enclave_ast e in
++  let ec = reduce_import root in
++    EncboundAdmission.validate root ec
++      (gen_include_list (ec.include_list @ !trusted_headers) ^
++       String.concat "\n" (List.map gen_comp_def ec.comp_defs));
++    if EncboundAdmission.enabled && EncboundAdmission.profile <> "BASELINE" then (
++      encbound_ecalls := !(EncboundAdmission.ecalls);
++      encbound_guarded_ecalls := !(EncboundAdmission.ecalls) @ !(EncboundAdmission.sdk_ecalls);
++      encbound_ocalls := !(EncboundAdmission.ocalls));
+     g_use_prefix := ep.use_prefix;
+     g_untrusted_dir := ep.untrusted_dir;
+     g_trusted_dir := ep.trusted_dir;
+@@ -2575,9 +2735,14 @@
+     check_structure ec;
+     check_allow_list ec;
+     (if not ep.header_only then check_priv_funcs ec);
++    EncboundAdmission.emit ec
++      (String.concat "\n" (List.map (fun tf -> "extern " ^ gen_func_proto tf.Ast.tf_fdecl ^ ";") ec.tfunc_decls @
++        List.filter_map (fun uf -> if List.mem uf.Ast.uf_fdecl.Ast.fname !(EncboundAdmission.ocalls)
++          then Some ("extern " ^ gen_tproxy_proto uf.Ast.uf_fdecl ^ ";") else None) ec.ufunc_decls));
+     if Plugin.available() then
+       Plugin.gen_edge_routines ec ep
+     else (
+       (if ep.gen_untrusted then (gen_untrusted_header ec; if not ep.header_only then gen_untrusted_source ec));
+-      (if ep.gen_trusted then (gen_trusted_header ec; if not ep.header_only then gen_trusted_source ec))
++      (if ep.gen_trusted then (gen_trusted_header ec; gen_encbound_application ec;
++        if not ep.header_only then gen_trusted_source ec))
+     )
+--- a/Parser.mly
++++ b/Parser.mly
+@@ -80,6 +80,10 @@
+  * and they cannot be used with only an 'out' attribute.
+  *)
+ let get_ptr_attr (attr_list: (string * Ast.attr_value) list) =
++  if EncboundAdmission.enabled then (
++    let keys = List.map fst attr_list in
++    if List.length keys <> List.length (List.sort_uniq String.compare keys)
++    then failwith "ENCBound: duplicate pointer attribute");
+   let get_new_dir (cds: string) (cda: Ast.ptr_direction) (old: Ast.ptr_direction) =
+     if old = Ast.PtrNoDirection then cda
+     else if old = Ast.PtrInOut  then failwithf "duplicated attribute: `%s'" cds
+@@ -99,6 +103,8 @@
+     else new_value
+   in
+   let update_attr (key: string) (value: Ast.attr_value) (res: Ast.ptr_attr) =
++    if EncboundAdmission.enabled && key <> "size" && key <> "count" && value <> Ast.AString ""
++    then failwithf "ENCBound: unexpected attribute value: %s" key;
+     match key with
+         "size"     ->
+         { res with Ast.pa_size = { res.Ast.pa_size with Ast.ps_size  = Some(get_new_size value res.Ast.pa_size)}}
+--- a/Preprocessor.ml
++++ b/Preprocessor.ml
+@@ -51,6 +51,12 @@
+ 
+ (*Return None if gcc not found, caller should handle it*)
+ let processor_macro ( full_path : string) : string option=
++  if EncboundAdmission.enabled then (
++    (* Use the same preprocessor, retaining actual consumed dependencies. *)
++    let dep = Filename.temp_file ~temp_dir:(Sys.getenv "ENCBOUND_BRIDGE_WORK") "edl-preprocess-" ".d" in
++    Some (EncboundAdmission.run_capture ["gcc"; "-x"; "c"; "-E"; "-P";
++      "-MMD"; "-MF"; dep; full_path]))
++  else
+   let gcc_path = snd (read_process "which gcc") in
+   if not (String.contains gcc_path  '/' ) then
+     (eprintf "warning: preprocessor is not found\n"; None)
+--- /dev/null
++++ b/EncboundAdmission.ml
+@@ -0,0 +1,427 @@
++(* Application-interface admission on Intel's AST, before any bridge emission.
++ * Generated bridges remain trusted. SDK imports retain their raw ABI. *)
++open Ast
++module J = EncboundJson
++let fail s = failwith ("ENCBound: " ^ s)
++let getenv k fallback = try Sys.getenv k with Not_found -> fallback
++let enabled = getenv "ENCBOUND_BRIDGE_CONFIG" "" <> ""
++let config = lazy (J.load (Sys.getenv "ENCBOUND_BRIDGE_CONFIG"))
++let profile = getenv "ENCBOUND_BRIDGE_PROFILE" ""
++let cxx_eh = getenv "ENCBOUND_BRIDGE_CXX_EH" "0" = "1"
++let ecalls = ref [] and ocalls = ref [] and sdk_names = ref []
++let sdk_ecalls = ref []
++let sdk_ecall_origins = ref []
++let errno_ocalls = ref []
++let errno_symbols = ["__encbound_app_errno_location"; "__encbound_app_errno_store"]
++let dependencies = ref [] and imported = ref []
++let application_tnames = ref [] and application_unames = ref []
++let import_origins = ref []
++let remember p = let p = Unix.realpath p in
++  if not (List.mem p !dependencies) then dependencies := p :: !dependencies
++let write p s = let c = open_out_bin p in
++  Fun.protect ~finally:(fun () -> close_out c) (fun () -> output_string c s)
++let run_capture args =
++  let out = Filename.temp_file "encbound-tool-" ".out" in
++  Fun.protect ~finally:(fun () -> Sys.remove out) (fun () ->
++    let fd = Unix.openfile out [Unix.O_WRONLY; Unix.O_TRUNC] 0o600 in
++    let pid = Unix.create_process (List.hd args) (Array.of_list args) Unix.stdin fd Unix.stderr in
++    Unix.close fd;
++    (match snd (Unix.waitpid [] pid) with Unix.WEXITED 0 -> () | _ -> fail ("tool failed: " ^ List.hd args));
++    J.read_file out)
++let sha256 p = let line = run_capture ["sha256sum"; "--"; p] in String.sub line 0 64
++let names ec = List.map (fun f -> f.tf_fdecl.fname) ec.tfunc_decls @
++  List.map (fun f -> f.uf_fdecl.fname) ec.ufunc_decls
++let observe_application ec =
++  application_tnames := List.sort_uniq String.compare
++    (!application_tnames @ List.map (fun f -> f.tf_fdecl.fname) ec.tfunc_decls);
++  application_unames := List.sort_uniq String.compare
++    (!application_unames @ List.map (fun f -> f.uf_fdecl.fname) ec.ufunc_decls)
++let observe_import name path ec = if enabled then (
++  let policies = J.get "sdk_only_imports" (Lazy.force config) |> J.obj in
++  let path = Unix.realpath path in
++  let hash = sha256 path in
++  let domain = match List.assoc_opt name policies with
++    | None -> observe_application ec; "application"
++    | Some p ->
++      let declared = J.get "symbols" p |> J.arr |> List.map J.str |> List.sort_uniq String.compare in
++      if J.get "domain" p <> J.String "sdk" || J.get "sha256" p <> J.String hash ||
++         declared <> List.sort_uniq String.compare (names ec) || ec.import_exprs <> []
++      then fail ("SDK import identity, domain or symbol set changed: " ^ name);
++      if ec.tfunc_decls <> [] then (
++        (* A workload policy cannot promote arbitrary enclave code to TRUSTED.
++         * Only exact, separately pinned SDK entry contracts have a raw lane. *)
++        let contracts_path = Sys.getenv "ENCBOUND_BRIDGE_SDK_ECALLS" in
++        remember contracts_path;
++        let contract = J.get name (J.load contracts_path) in
++        if contract = J.Null || J.get "sha256" contract <> J.String hash ||
++           (J.get "symbols" contract |> J.arr |> List.map J.str |> List.sort_uniq String.compare) <> declared ||
++           ec.ufunc_decls <> [] || List.exists (fun f -> f.tf_is_priv || f.tf_is_switchless) ec.tfunc_decls
++        then fail ("SDK import identity or unsupported trusted-entry contract: " ^ name);
++        if not (List.mem name !sdk_ecall_origins) then sdk_ecall_origins := name :: !sdk_ecall_origins);
++      imported := name :: !imported;
++      sdk_names := List.sort_uniq String.compare (!sdk_names @ names ec);
++      "sdk" in
++  let strings xs = J.Array (List.map (fun s -> J.String s) xs) in
++  let origin = J.Object ["name",J.String name;"path",J.String path;
++    "sha256",J.String hash;"domain",J.String domain;
++    "declared_ecalls",strings (List.map (fun f -> f.tf_fdecl.fname) ec.tfunc_decls);
++    "declared_ocalls",strings (List.map (fun f -> f.uf_fdecl.fname) ec.ufunc_decls)] in
++  if not (List.mem origin !import_origins) then import_origins := origin :: !import_origins;
++  remember path)
++
++(* Clang classifies actual transport types. Only value-record adapters need
++ * modeled field layouts, independently checked against the bridge header. *)
++let scalar_layout = function
++  | "char" | "signed char" | "unsigned char" | "_Bool" | "bool" | "int8_t" | "uint8_t" -> Some (1,1)
++  | "short" | "short int" | "unsigned short" | "unsigned short int" | "int16_t" | "uint16_t" -> Some (2,2)
++  | "int" | "unsigned" | "unsigned int" | "float" | "wchar_t" | "int32_t" | "uint32_t" | "sgx_status_t" -> Some (4,4)
++  | "long" | "long int" | "unsigned long" | "unsigned long int" | "long long" | "long long int"
++  | "unsigned long long" | "unsigned long long int" | "double" | "size_t" | "ssize_t"
++  | "intptr_t" | "uintptr_t" | "int64_t" | "uint64_t" -> Some (8,8)
++  | _ -> None
++let flags () = J.load (Sys.getenv "ENCBOUND_BRIDGE_FLAGS") |> J.arr |> List.map J.str
++let layouts = Hashtbl.create 16
++let scalar_types = Hashtbl.create 16
++let copied_types = Hashtbl.create 16
++let incomplete_buffers = Hashtbl.create 4
++let generated_names = ref []
++let pointer_results = Hashtbl.create 4
++let user_types = Hashtbl.create 16
++let void_buffers = Hashtbl.create 4
++let scalar t = Hashtbl.mem scalar_types (Ast.get_tystr t)
++let buffer_type t a d =
++  if d.array_dims <> [] || a.pa_isary then Ast.get_tystr t
++  else match t with
++    | Ptr base -> Ast.get_tystr base
++    | Foreign _ when a.pa_isptr -> "__typeof__(*((" ^ Ast.get_tystr t ^ ")0))"
++    | _ -> fail "opaque pointer typedef requires isptr/isary"
++let transport_type t d = Ast.get_tystr t ^ (if d.array_dims = [] then "" else " *")
++let assertions = ref []
++let assert_c s = assertions := s :: !assertions
++let check_types ec preamble =
++  let policy = J.get "records" (Lazy.force config) |> J.obj in
++  let functions = List.filter_map (fun f -> if List.mem f.tf_fdecl.fname !sdk_names then None else Some f.tf_fdecl) ec.tfunc_decls @
++    List.filter_map (fun f -> if List.mem f.uf_fdecl.fname !sdk_names then None else Some f.uf_fdecl) ec.ufunc_decls in
++  (* Intel traverses EDL members carrying size/count attributes. Shallow C
++   * pointer fields do not request that operation. Keep deep copy explicit. *)
++  let deep_names = List.filter_map (function
++    | StructDef s when List.exists (function
++        | PTPtr (_,a),_ -> a.pa_size <> empty_ptr_size | _ -> false) s.smlist -> Some s.sname
++    | _ -> None) ec.comp_defs in
++  let rec deep_type = function Ptr t -> deep_type t
++    | Struct n | Foreign n -> List.mem n deep_names | _ -> false in
++  List.iter (fun fd -> List.iter (function
++    | PTPtr (t,a),_ when a.pa_chkptr && deep_type t -> fail "EDL deep copy unsupported"
++    | _ -> ()) fd.plist) functions;
++  let scalars = ref [] and buffers = ref [] and results = ref [] and users = ref [] in
++  let add_scalar t = if t <> Void && not (List.mem_assoc (Ast.get_tystr t) policy)
++    then scalars := Ast.get_tystr t :: !scalars in
++  List.iter (fun fd ->
++    if fd.rtype <> Void && not (List.mem_assoc (Ast.get_tystr fd.rtype) policy)
++    then results := Ast.get_tystr fd.rtype :: !results;
++    List.iter (fun (p,d) -> match p with
++      | PTVal t -> add_scalar t
++      | PTPtr (t,a) when a.pa_chkptr ->
++          let ty = buffer_type t a d in
++          if ty <> "void" then buffers := (ty,a.pa_isary) :: !buffers
++      | PTPtr (t,a) -> users := (transport_type t d,a.pa_isary) :: !users) fd.plist) functions;
++  let scalars = List.sort_uniq String.compare !scalars in
++  let buffers = List.sort_uniq compare !buffers in
++  let results = List.sort_uniq String.compare !results in
++  let users = List.sort_uniq compare !users in
++  let probes = List.sort_uniq String.compare
++      (scalars @ results @ List.map fst buffers @ List.map fst users) |>
++    List.mapi (fun i ty -> ty, Printf.sprintf "_encbound_type_probe_%d" i) in
++  if policy <> [] || probes <> [] then (
++    let headers = List.map (fun (_,p) -> J.get "header" p |> J.str) policy |>
++      List.filter (fun h -> not (List.mem h ec.include_list)) |> List.sort_uniq String.compare in
++    let probe = Filename.concat (Sys.getenv "ENCBOUND_BRIDGE_WORK") "record-probe.c" in
++    write probe ("#include <stddef.h>\n#include <stdint.h>\n#include <stdbool.h>\n#include <wchar.h>\n#include <sgx_edger8r.h>\n" ^
++      String.concat "" (List.map (fun h -> "#include " ^ J.quote h ^ "\n") headers) ^
++      preamble ^ "\n" ^
++      String.concat "" (List.map (fun (n,_) -> if not (Util.is_c_identifier n) then fail "invalid record name";
++        n ^ " encbound_record_probe_" ^ n ^ ";\n") policy) ^
++      String.concat "" (List.map (fun (ty,n) -> "typedef " ^ ty ^ " " ^ n ^ ";\n") probes));
++    let text = run_capture ([getenv "ENCBOUND_BRIDGE_LAYOUT_CC" "clang-21";
++      "-Xclang"; "-ast-dump=json"; "-fsyntax-only"; "-MMD"; "-MF"; probe ^ ".d"; probe] @ flags () @
++      (if profile="BASELINE" then [] else ["-DENCBOUND_PROTECTED"])) in
++    let typedefs = Hashtbl.create 32 and records = Hashtbl.create 32 in
++    let typedef_nodes = Hashtbl.create 32 and record_ids = Hashtbl.create 32 in
++    let redeclarations = Hashtbl.create 16 in
++    let children node = match J.get "inner" node with J.Array xs -> xs | _ -> [] in
++    let rec collect node =
++      let kind = J.get "kind" node and name = J.get "name" node in
++      (* Function-local names do not participate in file-scope bridge types. *)
++      if kind <> J.String "FunctionDecl" && kind <> J.String "BlockDecl" then (
++        (match kind,name with
++         | J.String "TypedefDecl", J.String n ->
++             let typ = J.get "type" node in
++             let ty = match J.get "desugaredQualType" typ with J.String _ as t -> t | _ -> J.get "qualType" typ in
++             (match ty with J.String s -> Hashtbl.replace typedefs n s | _ -> ());
++             Hashtbl.replace typedef_nodes n node
++         | J.String "RecordDecl", _ ->
++             let id = J.get "id" node |> J.str in
++             Hashtbl.replace record_ids id node;
++             (match J.get "previousDecl" node with J.String prev ->
++               Hashtbl.replace redeclarations prev id | _ -> ());
++             (match name with J.String n when J.get "completeDefinition" node = J.Bool true ->
++               Hashtbl.replace records n node | _ -> ())
++         | _ -> ());
++        List.iter collect (children node)) in
++    collect (J.parse text);
++    let unqual ty =
++      String.split_on_char ' ' (String.trim ty) |>
++      List.filter (fun s -> s <> "const" && s <> "volatile" && s <> "restrict") |>
++      String.concat " " in
++    let rec resolve seen ty =
++      let ty = unqual ty in
++      if Hashtbl.mem typedefs ty then (
++        if List.mem ty seen then fail ("recursive type alias: " ^ ty);
++        resolve (ty::seen) (Hashtbl.find typedefs ty)) else ty in
++    let arithmetic ty = match scalar_layout ty with Some _ -> true | None ->
++      String.starts_with ~prefix:"enum " ty &&
++      not (String.exists (fun c -> List.mem c ['*';'[';'(']) ty) in
++    (* Follow Clang's type nodes, rather than printed anonymous names or local
++     * tag spellings. typeof probes can also contain expression children. *)
++    let rec core node =
++      let kind = J.get "kind" node |> J.str in
++      if List.mem kind ["TypedefDecl";"TypedefType";"ElaboratedType";
++          "ParenType";"TypeOfExprType";"TypeOfType";"AttributedType";"QualType"] then
++        match List.filter (fun n -> match J.get "kind" n with
++          | J.String k -> String.ends_with ~suffix:"Type" k | _ -> false) (children node) |> List.rev with
++        | n::_ -> core n | [] -> fail ("missing Clang type node: " ^ kind)
++      else node in
++    let probe_node ty = core (Hashtbl.find typedef_nodes (List.assoc ty probes)) in
++    let probe_type ty = J.get "qualType" (J.get "type" (probe_node ty)) |> J.str |> unqual in
++    let kind node = J.get "kind" node |> J.str in
++    let is_array node = List.mem (kind node) ["ConstantArrayType";"IncompleteArrayType"] in
++    let data_pointer node = kind node = "PointerType" &&
++      match children node with
++      | [pointee] -> not (List.mem (kind (core pointee)) ["FunctionProtoType";"FunctionNoProtoType"])
++      | _ -> false in
++    let rec latest_record id =
++      if Hashtbl.mem redeclarations id then latest_record (Hashtbl.find redeclarations id) else id in
++    let rec record_definition id =
++      let node = Hashtbl.find record_ids id in
++      if J.get "completeDefinition" node = J.Bool true then node
++      else match J.get "previousDecl" node with
++        | J.String prev -> record_definition prev | _ -> node in
++    let record_node id = record_definition (latest_record id) in
++    let rec complete node = match kind node with
++      | "RecordType" -> J.get "completeDefinition"
++          (record_node (J.get "id" (J.get "decl" node) |> J.str)) = J.Bool true
++      | "IncompleteArrayType" -> false
++      | "ConstantArrayType" -> (match children node with [n] -> complete (core n) | _ -> false)
++      | "BuiltinType" -> probe_type_of_node node <> "void"
++      | "FunctionProtoType" | "FunctionNoProtoType" -> fail "function buffer unsupported"
++      | _ -> true
++    and probe_type_of_node node = J.get "qualType" (J.get "type" node) |> J.str |> unqual in
++    List.iter (fun ty ->
++      if not (arithmetic (probe_type ty)) then fail ("unsupported value type: " ^ ty);
++      Hashtbl.replace scalar_types ty ()) scalars;
++    List.iter (fun ty ->
++      if arithmetic (probe_type ty) then Hashtbl.replace scalar_types ty ()
++      else if data_pointer (probe_node ty) then (
++        Hashtbl.replace pointer_results ty ();
++        assert_c (Printf.sprintf "_Static_assert(sizeof(%s)==8 && _Alignof(%s)==8,\"pointer result ABI\");" ty ty))
++      else fail ("unsupported return ABI: " ^ ty)) results;
++    List.iter (fun (ty,isary) ->
++      let node = probe_node ty in
++      if (isary && not (is_array node)) ||
++         not (data_pointer node || (isary && is_array node)) then fail "unsupported user_check shape";
++      Hashtbl.replace user_types ty ()) users;
++    List.iter (fun (ty,isary) ->
++      let node = probe_node ty in
++      if isary && not (is_array node) then fail "isary requires an array typedef";
++      if probe_type ty = "void" then Hashtbl.replace void_buffers ty ()
++      else if complete node then
++        assert_c (Printf.sprintf "_Static_assert(_Alignof(%s)<=16,\"copied buffer alignment\");" ty)
++      else Hashtbl.replace incomplete_buffers ty ();
++      Hashtbl.replace copied_types ty ()) buffers;
++    let visiting = ref [] in
++    let round n a = (n+a-1)/a*a in
++    let rec member ty =
++      let ty = String.trim ty in
++      (* Resolve typedefs before recognizing scalar spellings: a header-defined
++       * alias such as ssize_t can itself hide a pointer. Only file-scope declarations
++       * participate; unrelated function-local declarations cannot replace them. *)
++      if Hashtbl.mem typedefs ty then (
++        let target = resolve [] ty in
++        if target = ty then fail ("unresolved value-record alias: " ^ ty);
++        member target)
++      else
++      match scalar_layout ty with Some x -> x | None ->
++      if String.contains ty '*' || String.contains ty '(' then fail ("pointer/unsupported record member: " ^ ty);
++      if String.ends_with ~suffix:"]" ty then (
++        let k = try String.rindex ty '[' with _ -> fail "bad record array" in
++        let count = try int_of_string (String.sub ty (k+1) (String.length ty-k-2)) with _ -> fail "nonconstant record array" in
++        if count <= 0 then fail "nonpositive record array";
++        let s,a = member (String.sub ty 0 k) in
++        if count > max_int / s then fail "record array overflow"; s*count,a)
++      else if String.starts_with ~prefix:"struct " ty then record ty (String.sub ty 7 (String.length ty-7))
++      else fail ("unknown record member: " ^ ty)
++    and record ctype tag =
++      if List.mem tag !visiting then fail "recursive record";
++      let node = try Hashtbl.find records tag with Not_found -> fail ("incomplete record: " ^ tag) in
++      if J.get "tagUsed" node <> J.String "struct" then fail "only pointer-free structs are supported";
++      visiting := tag :: !visiting;
++      let offset = ref 0 and alignment = ref 1 and fields = ref 0 in
++      let children = match J.get "inner" node with J.Array xs -> xs | _ -> [] in
++      List.iter (fun field -> match J.get "kind" field with
++        | J.String "FieldDecl" ->
++          if J.get "isBitfield" field = J.Bool true then fail "record bitfields unsupported";
++          let name = J.get "name" field |> J.str in
++          let ty = J.get "qualType" (J.get "type" field) |> J.str in
++          let s,a = member ty in offset := round !offset a;
++          assert_c (Printf.sprintf "_Static_assert(offsetof(%s,%s)==%d,\"record offset\");" ctype name !offset);
++          if s > max_int - !offset then fail "record size overflow";
++          offset := !offset+s; alignment := max !alignment a; incr fields
++        | J.String "PackedAttr" | J.String "AlignedAttr" -> fail "custom record alignment unsupported"
++        | _ -> ()) children;
++      if !fields = 0 then fail "empty record unsupported";
++      visiting := List.tl !visiting;
++      let size = round !offset !alignment in
++      assert_c (Printf.sprintf "_Static_assert(sizeof(%s)==%d && _Alignof(%s)==%d,\"record layout\");" ctype size ctype !alignment);
++      Hashtbl.replace layouts ctype (size,!alignment); size,!alignment in
++    List.iter (fun (n,_) ->
++      let ty = try Hashtbl.find typedefs n with _ -> fail ("record is not a struct typedef: " ^ n) in
++      if not (String.starts_with ~prefix:"struct " ty) then fail ("record is not a struct: " ^ n);
++      let s,a = member ty in Hashtbl.replace layouts n (s,a)) policy)
++let value_record = function
++  | PTVal t -> Hashtbl.mem layouts (Ast.get_tystr t)
++  | _ -> false
++let record_function fd = List.exists (fun (p,_) -> value_record p) fd.plist
++let application_entry fd = "__encbound_edl_app_" ^ fd.fname
++let trusted_proxy fd = "__encbound_edl_proxy_" ^ fd.fname
++let validate_function fd =
++  let rec check_scalar_type = function
++    | Ptr t -> check_scalar_type t
++    | t when scalar t ->
++      let ty = get_tystr t in
++      (match scalar_layout ty with Some (s,a) ->
++        assert_c (Printf.sprintf "_Static_assert(sizeof(%s)==%d && _Alignof(%s)==%d,\"scalar ABI\");" ty s ty a)
++       | None -> assert_c (Printf.sprintf "_Static_assert(sizeof(%s)<=8 && _Alignof(%s)<=8,\"scalar ABI\");" ty ty));
++      (match t with
++       | Int8 | Int16 | Int32 | Int64 -> assert_c (Printf.sprintf "_Static_assert((%s)-1 < 0,\"signed scalar\");" ty)
++       | UInt8 | UInt16 | UInt32 | UInt64 | SizeT -> assert_c (Printf.sprintf "_Static_assert((%s)-1 > 0,\"unsigned scalar\");" ty)
++       | Foreign "bool" | Foreign "_Bool" -> assert_c (Printf.sprintf "_Static_assert(__builtin_types_compatible_p(%s,_Bool),\"bool ABI\");" ty)
++       | _ -> ())
++    | _ -> () in
++  check_scalar_type fd.rtype;
++  List.iter (fun (p,_) -> check_scalar_type (get_param_atype p)) fd.plist;
++  let reserved n = List.exists (fun p -> String.starts_with ~prefix:p n) ["encbound_";"__encbound_"] in
++  if reserved fd.fname || List.mem fd.fname !sdk_names || List.mem fd.fname !generated_names ||
++     List.mem fd.fname ["sgx_ecall";"sgx_ecall_switchless";"sgx_ocall";"sgx_ocall_switchless";
++       "sgx_ocalloc";"sgx_ocfree";"sgx_is_outside_enclave";"sgx_is_within_enclave";"sgx_lfence"] then fail ("reserved interface name: " ^ fd.fname);
++  if not (fd.rtype = Void || scalar fd.rtype || Hashtbl.mem pointer_results (get_tystr fd.rtype))
++  then fail "unsupported return ABI";
++  let seen = ref [] in
++  List.iter (fun (pt,d) ->
++    if List.mem d.identifier !seen then fail "duplicate parameter"; seen := d.identifier :: !seen;
++    if String.starts_with ~prefix:"_encbound_" d.identifier then fail "reserved generated parameter name";
++    ignore (List.fold_left (fun n dim ->
++      if dim <= 0 || n > max_int / dim then fail "invalid/overflowing array dimensions";
++      n*dim) 1 d.array_dims);
++    match pt with
++    | PTVal t ->
++      if scalar t then ()
++      else if Hashtbl.mem layouts (get_tystr t) then ()
++      else fail ("unsupported value type: " ^ get_tystr t)
++    | PTPtr (t,a) ->
++      if not a.pa_chkptr then (
++        if a.pa_direction <> PtrNoDirection || a.pa_isstr || a.pa_iswstr ||
++           a.pa_size <> empty_ptr_size || not (Hashtbl.mem user_types (transport_type t d)) then fail "unsupported user_check shape")
++      else (
++        let ty = buffer_type t a d in
++        if ty <> "void" && not (Hashtbl.mem copied_types ty) then fail ("unknown pointer element: " ^ ty);
++        if a.pa_direction = PtrNoDirection then fail "copied pointer requires direction";
++        if a.pa_rdonly && (a.pa_direction = PtrOut || a.pa_direction = PtrInOut) then fail "const output pointer";
++        if a.pa_isstr || a.pa_iswstr then (
++          if not (List.mem a.pa_direction [PtrIn;PtrInOut]) || a.pa_size <> empty_ptr_size ||
++             (if a.pa_iswstr then t <> Ptr WChar else match t with Ptr (Char _) -> false | _ -> true)
++          then fail "unsupported string shape")
++        else (
++          if (ty = "void" || Hashtbl.mem void_buffers ty || Hashtbl.mem incomplete_buffers ty) &&
++             a.pa_size.ps_size = None then fail "void/incomplete buffer needs a byte size";
++          List.iter (function
++           | None -> ()
++           | Some (ANumber n) -> if n < 0 then fail "negative extent"
++           | Some (AString n) ->
++             let length = try List.find (fun (_,d) -> d.identifier=n) fd.plist with _ -> fail "extent is not a parameter" in
++             match fst length with
++             | PTVal t when scalar t ->
++                 let ty = get_tystr t in
++                 assert_c (Printf.sprintf "_Static_assert(__builtin_classify_type((%s)0)==1,\"integer extent parameter\");" ty)
++             | _ -> fail "extent requires an integer value parameter")
++            [a.pa_size.ps_size;a.pa_size.ps_count]))) fd.plist
++let validate root ec preamble = if enabled then (
++  if not (List.mem profile ["BASELINE";"RADIX_ONLY";"MAC27"]) then fail "missing protection profile";
++  let cfg = Lazy.force config in
++  if List.sort String.compare (List.map fst (J.obj cfg)) <> ["records";"sdk_only_imports"] then fail "unknown interface metadata";
++  let declared = J.get "sdk_only_imports" cfg |> J.obj |> List.map fst |> List.sort_uniq String.compare in
++  if declared <> List.sort_uniq String.compare !imported then fail "unused SDK import metadata";
++  (* Preserve declaration origin even for selective imports. An app declaration
++   * cannot acquire a raw SDK proxy merely by reusing an unselected SDK name. *)
++  observe_application root;
++  List.iter (fun name -> if List.mem name !sdk_names
++    then fail ("application ECALL shadows SDK import: " ^ name)) !application_tnames;
++  List.iter (fun name -> if List.mem name !sdk_names
++    then fail ("application OCALL shadows SDK import: " ^ name)) !application_unames;
++  generated_names := List.map (fun tf -> "sgx_" ^ tf.tf_fdecl.fname) ec.tfunc_decls;
++  check_types ec preamble;
++  List.iter (fun tf -> if tf.tf_is_priv || tf.tf_is_switchless then fail "private/switchless ECALL unsupported";
++    if not (List.mem tf.tf_fdecl.fname !sdk_names) then validate_function tf.tf_fdecl) ec.tfunc_decls;
++  let app_ecalls = List.filter (fun tf -> not (List.mem tf.tf_fdecl.fname !sdk_names)) ec.tfunc_decls in
++  let app_ocalls = List.filter (fun uf -> not (List.mem uf.uf_fdecl.fname !sdk_names)) ec.ufunc_decls in
++  List.iter (fun uf -> if uf.uf_is_switchless || uf.uf_allow_list <> [] ||
++    not (List.mem uf.uf_fattr.fa_convention [CC_NONE;CC_CDECL]) || uf.uf_fattr.fa_dllimport then fail "unsupported OCALL mode";
++    validate_function uf.uf_fdecl) app_ocalls;
++  ecalls := List.map (fun f -> f.tf_fdecl.fname) app_ecalls;
++  sdk_ecalls := List.filter_map (fun f -> if List.mem f.tf_fdecl.fname !sdk_names
++    then Some f.tf_fdecl.fname else None) ec.tfunc_decls;
++  ocalls := List.map (fun f -> f.uf_fdecl.fname) app_ocalls;
++  (* BASELINE also consumes the application-libc environment. Keep this list
++   * independent of the protected-only marshaling selections in CodeGen. *)
++  errno_ocalls := List.filter_map (fun f ->
++    if f.uf_propagate_errno then Some f.uf_fdecl.fname else None) app_ocalls)
++let emit ec prototypes = if enabled then (
++  let dir = Sys.getenv "ENCBOUND_BRIDGE_WORK" in
++  let strings xs = J.Array (List.map (fun s -> J.String s) xs) in
++  let user_checks functions = List.filter_map (fun fd ->
++    let ps = List.filter_map (fun (p,d) -> match p with PTPtr (_,a) when not a.pa_chkptr -> Some d.identifier | _ -> None) fd.plist in
++    if ps=[] then None else Some (fd.fname,strings ps)) functions in
++  let adapted_ecalls = if profile="BASELINE" then [] else
++    List.filter (fun f -> List.mem f.tf_fdecl.fname !ecalls && record_function f.tf_fdecl) ec.tfunc_decls in
++  let adapted_ocalls = if profile="BASELINE" then [] else
++    List.filter (fun f -> List.mem f.uf_fdecl.fname !ocalls && record_function f.uf_fdecl) ec.ufunc_decls in
++  let app_definitions = List.map (fun f -> application_entry f.tf_fdecl) adapted_ecalls @
++    List.map (fun f -> f.uf_fdecl.fname) adapted_ocalls in
++  let trusted_ocalls = List.map (fun f ->
++    if List.exists (fun a -> a.uf_fdecl.fname=f.uf_fdecl.fname) adapted_ocalls
++    then trusted_proxy f.uf_fdecl else f.uf_fdecl.fname)
++    (List.filter (fun f -> List.mem f.uf_fdecl.fname !ocalls) ec.ufunc_decls) in
++  let eh_entries = if not cxx_eh then [] else List.map (fun f ->
++    if profile<>"BASELINE" && record_function f.tf_fdecl then application_entry f.tf_fdecl
++    else f.tf_fdecl.fname) (List.filter (fun f -> List.mem f.tf_fdecl.fname !ecalls) ec.tfunc_decls) in
++  let manifest = J.Object ["ecalls",strings (List.map (fun f -> f.tf_fdecl.fname) ec.tfunc_decls);
++    "application_ecalls",strings !ecalls;"sdk_ecalls",strings !sdk_ecalls;
++    "sdk_ecall_imports",strings (List.sort_uniq String.compare !sdk_ecall_origins);
++    "ocalls",strings !ocalls;
++    "propagate_errno_ocalls",strings !errno_ocalls;
++    "required_application_symbols",strings (if !errno_ocalls=[] then [] else errno_symbols);
++    "eh_entries",strings eh_entries;
++    "application_definitions",strings app_definitions;"trusted_ocalls",strings trusted_ocalls;
++    "record_ecalls",strings (List.map (fun f -> f.tf_fdecl.fname) adapted_ecalls);
++    "record_ocalls",strings (List.map (fun f -> f.uf_fdecl.fname) adapted_ocalls);
++    "sdk_only",strings !sdk_names;
++    "imports",J.Array (List.rev !import_origins);
++    "user_check_ecalls",J.Object (user_checks (List.map (fun f -> f.tf_fdecl) ec.tfunc_decls));
++    "user_check_ocalls",J.Object (user_checks (List.filter_map (fun f ->
++      if List.mem f.uf_fdecl.fname !ocalls then Some f.uf_fdecl else None) ec.ufunc_decls));
++    "dependencies",strings (List.sort_uniq String.compare !dependencies)] in
++  write (Filename.concat dir "edger8r-admission.json") (J.show manifest ^ "\n");
++  write (Filename.concat dir "admitted-ocalls.txt") (String.concat "\n" trusted_ocalls ^ "\n");
++  write (Filename.concat dir "admitted-app.txt") (String.concat "\n" app_definitions ^ "\n");
++  write (Filename.concat dir "eh-entries.txt") (String.concat "\n" eh_entries ^ "\n");
++  write (Filename.concat dir "bridge-abi.c") ("#include \"" ^ ec.file_shortnm ^ "_t.h\"\n#include <stddef.h>\n" ^
++    String.concat "\n" (List.rev !assertions) ^ "\n" ^ prototypes ^ "\n"))
+--- /dev/null
++++ b/EncboundJson.ml
+@@ -0,0 +1,94 @@
++(* Small JSON reader for generator configuration and Clang's record AST.
++ * EDL is parsed exclusively by Intel's parser. No external OCaml packages. *)
++type t = Object of (string * t) list | Array of t list | String of string
++       | Number of string | Bool of bool | Null
++let fail s = failwith ("ENCBound JSON: " ^ s)
++let read_file p = let c = open_in_bin p in
++  Fun.protect ~finally:(fun () -> close_in c)
++    (fun () -> really_input_string c (in_channel_length c))
++let parse s =
++  let i = ref 0 and n = String.length s in
++  let rec space () = while !i < n && List.mem s.[!i] [' '; '\n'; '\r'; '\t'] do incr i done
++  and expect c = if !i >= n || s.[!i] <> c then fail "unexpected token" else incr i
++  and string () =
++    expect '"'; let b = Buffer.create 32 in
++    let utf8 v =
++      let add x = Buffer.add_char b (Char.chr x) in
++      if v < 128 then add v else if v < 2048 then (add (192 lor (v lsr 6)); add (128 lor (v land 63)))
++      else if v < 65536 then (add (224 lor (v lsr 12)); add (128 lor ((v lsr 6) land 63)); add (128 lor (v land 63)))
++      else (add (240 lor (v lsr 18)); add (128 lor ((v lsr 12) land 63)); add (128 lor ((v lsr 6) land 63)); add (128 lor (v land 63))) in
++    let hex () = if !i + 4 > n then fail "short unicode escape";
++      let v = try int_of_string ("0x" ^ String.sub s !i 4) with _ -> fail "bad unicode escape" in i := !i + 4; v in
++    let rec loop () =
++      if !i >= n then fail "unterminated string";
++      let c = s.[!i] in incr i;
++      if c = '"' then Buffer.contents b else (
++        if c = '\\' then (
++          if !i >= n then fail "short escape";
++          let e = s.[!i] in incr i;
++          match e with
++          | '"' | '\\' | '/' -> Buffer.add_char b e
++          | 'n' -> Buffer.add_char b '\n' | 'r' -> Buffer.add_char b '\r'
++          | 't' -> Buffer.add_char b '\t' | 'b' -> Buffer.add_char b '\b'
++          | 'f' -> Buffer.add_char b (Char.chr 12)
++          | 'u' -> let v = hex () in
++            if v >= 0xd800 && v <= 0xdbff then (
++              expect '\\'; expect 'u'; let w = hex () in
++              if w < 0xdc00 || w > 0xdfff then fail "bad surrogate";
++              utf8 (0x10000 + ((v - 0xd800) lsl 10) + w - 0xdc00))
++            else if v >= 0xdc00 && v <= 0xdfff then fail "bad surrogate" else utf8 v
++          | _ -> fail "unknown escape")
++        else if Char.code c < 32 then fail "control character" else Buffer.add_char b c;
++        loop ()) in loop ()
++  and value () =
++    space (); if !i >= n then fail "missing value";
++    match s.[!i] with
++    | '"' -> String (string ())
++    | '{' -> incr i; space ();
++      let rec fields acc =
++        space (); let k = string () in
++        if List.mem_assoc k acc then fail ("duplicate key " ^ k);
++        space (); expect ':'; let v = value () in space ();
++        if !i < n && s.[!i] = ',' then (incr i; fields ((k,v)::acc))
++        else (expect '}'; Object (List.rev ((k,v)::acc))) in
++      if !i < n && s.[!i] = '}' then (incr i; Object []) else fields []
++    | '[' -> incr i; space ();
++      let rec items acc = let v = value () in space ();
++        if !i < n && s.[!i] = ',' then (incr i; items (v::acc))
++        else (expect ']'; Array (List.rev (v::acc))) in
++      if !i < n && s.[!i] = ']' then (incr i; Array []) else items []
++    | 't' | 'f' | 'n' ->
++      let literal, v = match s.[!i] with 't' -> "true", Bool true | 'f' -> "false", Bool false | _ -> "null", Null in
++      let l = String.length literal in
++      if !i+l > n || String.sub s !i l <> literal then fail "bad literal";
++      i := !i+l; v
++    | '-' | '0'..'9' ->
++      let start = !i in
++      if s.[!i] = '-' then incr i;
++      if !i >= n then fail "bad number";
++      if s.[!i] = '0' then incr i else (
++        if s.[!i] < '1' || s.[!i] > '9' then fail "bad number";
++        while !i < n && s.[!i] >= '0' && s.[!i] <= '9' do incr i done);
++      let digits () = let start = !i in
++        while !i < n && s.[!i] >= '0' && s.[!i] <= '9' do incr i done;
++        if start = !i then fail "bad number" in
++      if !i < n && s.[!i] = '.' then (incr i; digits ());
++      if !i < n && (s.[!i] = 'e' || s.[!i] = 'E') then (
++        incr i; if !i < n && (s.[!i] = '+' || s.[!i] = '-') then incr i; digits ());
++      Number (String.sub s start (!i-start))
++    | _ -> fail "unexpected value"
++  in let v = value () in space (); if !i <> n then fail "trailing content"; v
++let load p = parse (read_file p)
++let obj = function Object v -> v | _ -> fail "expected object"
++let arr = function Array v -> v | _ -> fail "expected array"
++let str = function String v -> v | _ -> fail "expected string"
++let get k = function Object xs -> (try List.assoc k xs with Not_found -> Null) | _ -> Null
++let quote s = let b = Buffer.create 32 in Buffer.add_char b '"';
++  String.iter (fun c -> match c with
++    | '"' -> Buffer.add_string b "\\\"" | '\\' -> Buffer.add_string b "\\\\"
++    | c when Char.code c < 32 -> Buffer.add_string b (Printf.sprintf "\\u%04x" (Char.code c))
++    | c -> Buffer.add_char b c) s; Buffer.add_char b '"'; Buffer.contents b
++let rec show = function
++  | Object xs -> "{" ^ String.concat "," (List.map (fun (k,v) -> quote k ^ ":" ^ show v) xs) ^ "}"
++  | Array xs -> "[" ^ String.concat "," (List.map show xs) ^ "]"
++  | String s -> quote s | Number n -> n | Bool true -> "true" | Bool false -> "false" | Null -> "null"
+--- /dev/null
++++ b/sdk-ecalls.json
+@@ -0,0 +1,15 @@
++{
++  "sgx_tkey_exchange.edl": {
++    "origin": "Intel SGX SDK 2.26, SDK-owned remote-attestation ECALLs",
++    "license": "Intel BSD-3-Clause; original EDL and SDK archive retained unchanged",
++    "sha256": "4979fd015c36e18744bbfdebdc652153bbaf3bdc81d037bff0a67d3aa83677be",
++    "symbols": [
++      "sgx_ra_get_ga",
++      "sgx_ra_proc_msg2_trusted",
++      "sgx_ra_get_msg3_trusted"
++    ],
++    "archive": "libsgx_tkey_exchange.a",
++    "archive_sha256": "92b7e61d9e8ea4119609682434d377a8ba86bfafce5e277dd756ae9ac4c69843",
++    "member": "tkey_exchange.o"
++  }
++}

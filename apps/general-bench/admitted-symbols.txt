@@ -1,0 +1,6 @@
+# Cross-unit application functions. Every definition is instrumented.
+test_lists
+benchmark_heapsort
+kernel_atax
+kernel_gemm
+kernel_jacobi_2d

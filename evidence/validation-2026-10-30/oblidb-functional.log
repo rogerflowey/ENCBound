@@ -1,0 +1,2 @@
+loaded app page permissions: PASS (6 ranges; zero means not applicable)
+{"result":"PASS","calls":1117,"byte_comparisons":336384,"reads":666,"writes":648,"structures":9,"tamper_recoveries":9}

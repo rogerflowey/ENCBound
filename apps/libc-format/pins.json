@@ -1,0 +1,21 @@
+{
+  "gdtoa/arith.h": "e6b1d824d230b13aeb097834600024d8b143bafe47c5a5fa19cf5aac7802ec39",
+  "gdtoa/dmisc.c": "af359434f6082c9fdceb2525321fe38211ba2c98fe9b137f3ec94fd7bab6c8d3",
+  "gdtoa/dtoa.c": "c67c7abf83b93b927c7dd2e93b31cf2a5272f726dd46321d2c4b7e4e931b8e4a",
+  "gdtoa/gd_qnan.h": "d4fb7e16495261bfbd9fbba23fbfbdfa89633ba1e8593166c22e4f5c3031dfe1",
+  "gdtoa/gdtoa.h": "2fed42b990a46b88c519ca0232d3c5035604cb15e3722d9a16de3721f0d1132e",
+  "gdtoa/gdtoaimp.h": "e3d6fb776a7e88565f4a49012ad99d353b90f3f708475a54d7a47fd9becee4cd",
+  "gdtoa/hdtoa.c": "5a5fb96a62249371a0eaed2a7169ab58341ed4b9ac0da2a8383b25e9e1bf9ac2",
+  "gdtoa/misc.c": "ee182f4fbec53d80306137ee81a0ac91b3b931e24798398776c0e6cde57aa451",
+  "gen/fpclassify.c": "2b0db816dd5383038af3c34479f59de32931063f7b3d2f6299f12070df07f5bb",
+  "locale/multibyte_citrus_none.c": "571648a29cc7d1b081407e8c700ad09331cf710ea2eb6e44e69d9a0322597b2e",
+  "stdio/fileext.h": "1a95dd6ac06b8143cb3dfa0c52ab47e07ac7e7fdb7dc31a5455b0d972d9c942e",
+  "stdio/floatio.h": "581b93597df098615d348c87b384500d10a35ee0fabcdef4d55582ed48208408",
+  "stdio/fvwrite.c": "8bee789c24a9f932489c5004a23813514ff3cda174195b60f9a69975d7fd7597",
+  "stdio/fvwrite.h": "12b25d327bff13fc1243209f603c4dd245fa9c19b21a134f3253335c5d65b8f6",
+  "stdio/local.h": "532e01e8ef6a3d5277d4a69ec9cb3ecf35a27c42be88f4e718b8c51e2cbb6f0b",
+  "stdio/snprintf.c": "1d867e25eba0a550b331f6668e7a9f0924c1f311f4113516fe8baa68e02354a6",
+  "stdio/vfprintf.c": "8cb57677380dbbd8bd1752f1378e86ddb94e27b5d15e99aaef74b407a22144b0",
+  "stdio/vsnprintf.c": "4baccac25a02bd561816970231a793ec3ed0ed6504262c5beb5585827612a8fb",
+  "stdio/wcio.h": "80f56ccbdaadca87fff6545d4f91aca7976e05df960eefa3d9410e1bc720def1"
+}

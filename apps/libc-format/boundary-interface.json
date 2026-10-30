@@ -1,0 +1,24 @@
+{
+  "records": {
+    "FormatRecord": {
+      "header": "api.h"
+    },
+    "Options": {
+      "header": "api.h"
+    }
+  },
+  "sdk_only_imports": {
+    "sgx_tstdc.edl": {
+      "domain": "sdk",
+      "sha256": "b7cd049fa088a3f8223fb9a9e71d791107c2886019ba332d042c34402ee0554e",
+      "symbols": [
+        "sgx_oc_cpuidex",
+        "sgx_thread_set_multiple_untrusted_events_ocall",
+        "sgx_thread_set_untrusted_event_ocall",
+        "sgx_thread_setwait_untrusted_events_ocall",
+        "sgx_thread_wait_untrusted_event_ocall"
+      ],
+      "reason": "Pinned SDK services retain stock raw-pointer proxies; no application call admission. Generation enforces hash, domain and exact symbol set."
+    }
+  }
+}

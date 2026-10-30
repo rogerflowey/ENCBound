@@ -1,0 +1,4 @@
+enclave {
+    from "sgx_tstdc.edl" import *;
+    trusted { public int adapter_probe(int action); };
+};

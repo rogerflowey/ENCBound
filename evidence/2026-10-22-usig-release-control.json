@@ -1,0 +1,167 @@
+{
+  "date": "2026-10-22",
+  "mode": "SDK SIM; supplementary no-assert application build",
+  "matrix": "BASELINE/RADIX_ONLY/MAC27; -DNDEBUG application units",
+  "root": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1",
+  "rows": [
+    {
+      "profile": "BASELINE",
+      "base": "0x40000000",
+      "signed": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/BASELINE/enclave/enclave.signed.so",
+      "host": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/BASELINE/host",
+      "host_sha256": "9629a163a684c8478353c399b707eff1157631790c0d484b12aff22f57c79e36",
+      "meaning": "release BASELINE: heap OOB counter element load reaches the atomic fetch_add and the enclave crashes; no checked rejection",
+      "commands": [
+        {
+          "name": "BASELINE-normal",
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/BASELINE/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/BASELINE/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/BASELINE-normal.log",
+          "sha256": "17aa33acd71460d1f24a357b5fff97f9fbfa2e84cbd177aa1322a01f5281fcc7"
+        },
+        {
+          "name": "BASELINE-bad-counter-direct",
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/BASELINE/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/BASELINE/enclave/enclave.signed.so",
+            "bad-counter"
+          ],
+          "returncode": -11,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/BASELINE-bad-counter-direct.log",
+          "sha256": "cd4c1ae59aa3b3239286c81cf5c7260ad34a243d27511201409d2f417678f586"
+        },
+        {
+          "name": "BASELINE-bad-counter-gdb",
+          "command": [
+            "gdb",
+            "-q",
+            "-batch",
+            "-x",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/BASELINE.gdb",
+            "--args",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/BASELINE/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/BASELINE/enclave/enclave.signed.so",
+            "bad-counter"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/BASELINE-bad-counter-gdb.log",
+          "sha256": "a2ca5811a59f58d54904093ebff3dcd4f62a23250974b2cea723320edbfa068b"
+        }
+      ],
+      "script": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/BASELINE.gdb",
+      "script_sha256": "316cb0229f68b2c67caa6d22c0166dda7ebf4f3ade73b2fa1d282708e94b09db",
+      "default_assert_log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/BASELINE/controls/bad-counter-gdb.log"
+    },
+    {
+      "profile": "RADIX_ONLY",
+      "base": "0x40000000",
+      "signed": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/RADIX_ONLY/enclave/enclave.signed.so",
+      "host": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/RADIX_ONLY/host",
+      "host_sha256": "b14cc9250c74ed664f16529750d948735cbc53e80cb7c91ea3074f2ff896fdd3",
+      "meaning": "release RADIX_ONLY: range alone does not stop the rounded-slot element load; the unauthenticated pointer crashes in fetch_add",
+      "commands": [
+        {
+          "name": "RADIX_ONLY-normal",
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/RADIX_ONLY/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/RADIX_ONLY/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/RADIX_ONLY-normal.log",
+          "sha256": "4f0ee2e0e86dd079ac8a4c8bf1725bc2aa50d1b9d8e170a25905c15a30fa55ad"
+        },
+        {
+          "name": "RADIX_ONLY-bad-counter-direct",
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/RADIX_ONLY/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/RADIX_ONLY/enclave/enclave.signed.so",
+            "bad-counter"
+          ],
+          "returncode": -11,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/RADIX_ONLY-bad-counter-direct.log",
+          "sha256": "5d844e89857e43e762331ad4540482c7ef6811d6ac0a984e1cf6df491640866e"
+        },
+        {
+          "name": "RADIX_ONLY-bad-counter-gdb",
+          "command": [
+            "gdb",
+            "-q",
+            "-batch",
+            "-x",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/RADIX_ONLY.gdb",
+            "--args",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/RADIX_ONLY/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/RADIX_ONLY/enclave/enclave.signed.so",
+            "bad-counter"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/RADIX_ONLY-bad-counter-gdb.log",
+          "sha256": "1d00f400eec6937e218769245adf2d4a13d144a1d851d1a597f7b8b28def5803"
+        }
+      ],
+      "script": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/RADIX_ONLY.gdb",
+      "script_sha256": "fb7491de42526d6638aca7d156670a5838c81d7d0c8316b384372879bc3ebaeb",
+      "default_assert_log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/RADIX_ONLY/controls/bad-counter-gdb.log"
+    },
+    {
+      "profile": "MAC27",
+      "base": "0x40000000",
+      "signed": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/MAC27/enclave/enclave.signed.so",
+      "host": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/MAC27/host",
+      "host_sha256": "0f34217257d8d44b7aaaa23ca40dd4cb2e2c665cb110153f2107a21cf943ea57",
+      "meaning": "release MAC27: tagged pointer rejection (code=5) at the original counter access",
+      "commands": [
+        {
+          "name": "MAC27-normal",
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/MAC27/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/MAC27/enclave/enclave.signed.so"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/MAC27-normal.log",
+          "sha256": "4f0ee2e0e86dd079ac8a4c8bf1725bc2aa50d1b9d8e170a25905c15a30fa55ad"
+        },
+        {
+          "name": "MAC27-bad-counter-direct",
+          "command": [
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/MAC27/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/MAC27/enclave/enclave.signed.so",
+            "bad-counter"
+          ],
+          "returncode": -4,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/MAC27-bad-counter-direct.log",
+          "sha256": "5d844e89857e43e762331ad4540482c7ef6811d6ac0a984e1cf6df491640866e"
+        },
+        {
+          "name": "MAC27-bad-counter-gdb",
+          "command": [
+            "gdb",
+            "-q",
+            "-batch",
+            "-x",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/MAC27.gdb",
+            "--args",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/MAC27/host",
+            "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/MAC27/enclave/enclave.signed.so",
+            "bad-counter"
+          ],
+          "returncode": 0,
+          "log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/MAC27-bad-counter-gdb.log",
+          "sha256": "8d65d5edbb757b8bcbd8b4dcdc75b9f355734cccf758d242d7a58accf85fef00"
+        }
+      ],
+      "script": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/noassert-v1/release-control/MAC27.gdb",
+      "script_sha256": "c200bf9d152a667ce1b2f9f936085e63cf08940179dddcb09ac89887b7471231",
+      "default_assert_log": "/home/roger/project/TEE/ENCBound-restart/build/go-consensus-usig/all-compat-v1/MAC27/controls/bad-counter-gdb.log"
+    }
+  ],
+  "inputs": {
+    "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/release_control.py": "7f1792ddbd04e920ad6af25659ce734a52414ea5e45371bc5510a3e9f8d0f1cd",
+    "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/host.c": "4161e81b6a5c1f423ddb77cb563b017533acf39b11ff3d8ceb54668ac8b9272c",
+    "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/build_noassert.py": "84e2551aa94d4e68aee5e22cfca11fce970047bd2f8eb15523252fe14ef280ae",
+    "/home/roger/project/TEE/ENCBound-restart/apps/go-consensus-usig/run.py": "68b3f9c9b2b49066e764d18a285be29143f052740874a8134505a168ace037b0"
+  }
+}

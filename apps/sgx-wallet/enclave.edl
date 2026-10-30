@@ -1,0 +1,75 @@
+/*
+ * ENCBound restart - sgx-wallet original public interface
+ * (docs/legacy/steps/09-original-api-and-sessions.md).
+ *
+ * This restores the pinned application's five public ECALL signatures and four
+ * OCALL signatures, so the host makes sequential calls to the original
+ * interface on one enclave and destroys it at session end. The modified Intel
+ * generator marshals directly into protected allocations and calls the original
+ * application symbols. SDK-only imported proxies retain their raw ABI.
+ *
+ * Only the pinned `from "sgx_tstdc.edl" import *;` overlay is added to the
+ * upstream EDL so the trusted runtime keeps its pinned SDK service bridges.
+ * The ECALL/OCALL declarations and the `include "wallet.h"` line (no trailing
+ * semicolon, exactly as upstream) are the pinned application's own.
+ *
+ * The application source bytes are unchanged; see docs/legacy/steps/09 and
+ * evidence/decisions/2026-10-06-original-api-and-sessions.md.
+ */
+
+enclave {
+    from "sgx_tstdc.edl" import *;
+
+    // includes
+    include "wallet.h"
+
+
+    // define ECALLs
+    trusted {
+        public int ecall_create_wallet(
+            [in, string]const char* master_password
+        );
+
+        public int ecall_show_wallet(
+            [in, string]const char* master_password,
+            [out, size=wallet_size] wallet_t* wallet,
+            size_t wallet_size
+        );
+
+        public int ecall_change_master_password(
+            [in, string]const char* old_password,
+            [in, string]const char* new_password
+        );
+
+        public int ecall_add_item(
+            [in, string]const char* master_password,
+            [in, size=item_size]const item_t* item,
+            size_t item_size
+        );
+
+        public int ecall_remove_item(
+            [in, string]const char* master_password,
+            int index
+        );
+    };
+
+
+    // define OCALLs
+    untrusted {
+        void ocall_debug_print(
+            [in, string]const char* str
+        );
+
+        int ocall_save_wallet(
+            [in, size=sealed_size]const uint8_t* sealed_data,
+            size_t sealed_size
+        );
+
+        int ocall_load_wallet(
+            [out, size=sealed_size]uint8_t* sealed_data,
+            size_t sealed_size
+        );
+
+        int ocall_is_wallet(void);
+    };
+};

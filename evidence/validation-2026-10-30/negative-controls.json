@@ -1,0 +1,46 @@
+[
+  {
+    "app": "go-consensus-usig",
+    "control": "extra-flag",
+    "status": "rejected",
+    "returncode": 1
+  },
+  {
+    "app": "go-consensus-usig",
+    "control": "missing-errno-prefix",
+    "status": "rejected",
+    "returncode": 1
+  },
+  {
+    "app": "go-consensus-usig",
+    "control": "original-restored",
+    "status": "pass"
+  },
+  {
+    "app": "sk-sgx",
+    "control": "extra-flag",
+    "status": "rejected",
+    "returncode": 1
+  },
+  {
+    "app": "sk-sgx",
+    "control": "missing-errno-prefix",
+    "status": "rejected",
+    "returncode": 1
+  },
+  {
+    "app": "sk-sgx",
+    "control": "original-restored",
+    "status": "pass"
+  },
+  {
+    "app": "FedServing",
+    "control": "modified-source",
+    "status": "rejected"
+  },
+  {
+    "app": "FedServing",
+    "control": "original-restored",
+    "status": "pass"
+  }
+]

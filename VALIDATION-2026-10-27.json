@@ -1,0 +1,338 @@
+{
+  "date": "2026-10-27",
+  "kind": "fresh source-export validation",
+  "staging_root": "/tmp/encbound-paper-work/ENCBound-paper",
+  "final_destination": "/home/roger/project/TEE/ENCBound-paper",
+  "checks": [
+    {
+      "name": "build-tools",
+      "command": "make -j2 all",
+      "status": "pass",
+      "execution_class": "build",
+      "scope": "LLVM plugin and current Intel generator built from source",
+      "log_sha256": "57cdaea7914fd2f881ee1e9b31f83f9332d5300aa37722cc871e43f00bea0c0c",
+      "output_excerpt": [
+        "make -C pass",
+        "make[1]: Entering directory '/tmp/encbound-paper-work/ENCBound-paper/pass'",
+        "mkdir -p /tmp/encbound-paper-work/ENCBound-paper/build/pass",
+        "PASS PLUGIN => /tmp/encbound-paper-work/ENCBound-paper/build/pass/encbound_pass.so",
+        "make[1]: Leaving directory '/tmp/encbound-paper-work/ENCBound-paper/pass'"
+      ]
+    },
+    {
+      "name": "core",
+      "command": "make test",
+      "status": "pass",
+      "execution_class": "native/compiler",
+      "scope": "Runtime, allocator, adapter, session, current native bridge, compiler and SDK-pin regressions",
+      "log_sha256": "948653083e3455e62ba93eeaf67b8d387de225fd4b10a0b300ab48b21e0c10c4",
+      "output_excerpt": [
+        "OK   /tmp/encbound-paper-work/ENCBound-paper/build/pass/sample.plain.o: trusted (no marker)",
+        "make[1]: Leaving directory '/tmp/encbound-paper-work/ENCBound-paper/pass'",
+        "sdk-pins regression: pinned: PASS",
+        "sdk-pins regression: substituted: PASS",
+        "sdk-pins regression: same_name_bad_first: PASS",
+        "sdk-pins regression: same_name_bad_last: PASS",
+        "sdk-pins regression: missing: PASS",
+        "sdk-pins regression: relative: PASS"
+      ]
+    },
+    {
+      "name": "bridge",
+      "command": "make bridge-test",
+      "status": "pass",
+      "execution_class": "native/compiler",
+      "scope": "Current generator admission, shallow/flat copied buffers, imports, value records and BASELINE equality",
+      "log_sha256": "6653a1c094887caf5416e9a337dac228e8bbbacfff3d9f26d3b69399764a94cc",
+      "output_excerpt": [
+        "NATIVE EDGER8R ADMISSION PASS: 33 admission cases; 3 native execution rows, 6 terminal OCALL extent controls; nested layouts, dependency hashes and stock equivalence",
+        "APPLICATION EDL IMPORTS PASS: 41 cases; native selection, provenance, stock equality, SDK ownership and EH/record entries",
+        "SDK ECALLS PASS: 12 native O0/O2 execution rows, mixed/SDK-only/EH/selective imports and ownership negatives",
+        "EDL TRANSPORT ADMISSION PASS: 38 fixtures / 114 profile rows; stock syntax and BASELINE equality",
+        "SHALLOW EDL PASS: 6 native O0/O2 rows; flexible/opaque/shallow copies, pointer transport/results, access controls, stock equality",
+        "FLAT EDL BUFFERS PASS: 6 native rows; shared extents, aliases/arrays/composites, char/wchar strings, cleanup, protection and stock equality",
+        "IMPORTED EDL BUFFERS PASS: 6 native rows; shared extents, aliases/arrays/composites, char/wchar strings, cleanup, protection and stock equality",
+        "GENERATED EDL RECORDS PASS: 6 native rows; large/multiple/register-exhausted values, void calls, checked adapters, cleanup and stock equality"
+      ]
+    },
+    {
+      "name": "compatibility",
+      "command": "make compatibility-test",
+      "status": "pass",
+      "execution_class": "native and SDK SIM",
+      "scope": "Lifecycle, EH/RTTI with prerequisite SIM image, and serial errno checks",
+      "log_sha256": "03fe22bba332d0455d6e6340063610e63b2424fd9583e9a71b7f2df7c2ce65e3",
+      "output_excerpt": [
+        "native-RADIX_ONLY-O2 ERRNO NATIVE PASS cases=60 copy_failures=5 transport_failures=2 allocation_failures=1 controls=5",
+        "APPLICATION ERRNO PROVIDER / OWNERSHIP PASS",
+        "APPLICATION GLOBAL OWNERSHIP / ELF PERMISSIONS PASS",
+        "native-MAC27-O0 ERRNO NATIVE PASS cases=60 copy_failures=5 transport_failures=2 allocation_failures=1 controls=6",
+        "APPLICATION ERRNO PROVIDER / OWNERSHIP PASS",
+        "APPLICATION GLOBAL OWNERSHIP / ELF PERMISSIONS PASS",
+        "native-MAC27-O2 ERRNO NATIVE PASS cases=60 copy_failures=5 transport_failures=2 allocation_failures=1 controls=6",
+        "APPLICATION ERRNO ACCEPTANCE PASS: 14 recorded rows"
+      ]
+    },
+    {
+      "name": "kms-native",
+      "command": "python3 apps/sgx-kms/test_adapters.py",
+      "status": "pass",
+      "execution_class": "native SDK spies",
+      "scope": "RADIX_ONLY/MAC27 O0/O2 adapters; 22 attributed pre-service rejections per row",
+      "log_sha256": "8628f330c3a1f5ad56488d0d7c222046c4433100c87baa3122bf62184f3da5c3",
+      "output_excerpt": [
+        "RADIX_ONLY-O0 SGX-KMS ADAPTER NATIVE PASS rejections=22 service_calls=14",
+        "RADIX_ONLY-O2 SGX-KMS ADAPTER NATIVE PASS rejections=22 service_calls=14",
+        "MAC27-O0 SGX-KMS ADAPTER NATIVE PASS rejections=22 service_calls=14",
+        "MAC27-O2 SGX-KMS ADAPTER NATIVE PASS rejections=22 service_calls=14"
+      ]
+    },
+    {
+      "name": "yeez-native",
+      "command": "python3 apps/yeez/test_adapters.py",
+      "status": "pass",
+      "execution_class": "native SDK spies",
+      "scope": "RADIX_ONLY/MAC27 O0/O2 private staging and service controls",
+      "log_sha256": "a9727139c8acd81af9e0ff249cd42d5f1fed8f8b61fc93351da0c1b457aee978",
+      "output_excerpt": [
+        "RADIX_ONLY-O0 YEEZ ADAPTER NATIVE PASS rejections=28 service_calls=12 private_staging/race/exhaustion/errors=pass",
+        "RADIX_ONLY-O2 YEEZ ADAPTER NATIVE PASS rejections=28 service_calls=12 private_staging/race/exhaustion/errors=pass",
+        "MAC27-O0 YEEZ ADAPTER NATIVE PASS rejections=30 service_calls=12 private_staging/race/exhaustion/errors=pass",
+        "MAC27-O2 YEEZ ADAPTER NATIVE PASS rejections=30 service_calls=12 private_staging/race/exhaustion/errors=pass"
+      ]
+    },
+    {
+      "name": "yeez-full-native",
+      "command": "python3 apps/yeez/test_full_adapters.py",
+      "status": "pass",
+      "execution_class": "native SDK spies",
+      "scope": "Full selected service-adapter controls",
+      "log_sha256": "3de41b1e9ec040ebbb7eab3bfd25a9a571cbc3d04a02e5eea7d6fcbbd974edfd",
+      "output_excerpt": [
+        "RADIX_ONLY-O0 YEEZ ADAPTER NATIVE PASS rejections=28 service_calls=12 private_staging/race/exhaustion/errors=pass",
+        "YEEZ FULL ADAPTER NATIVE PASS extra_rejections=12 total=40",
+        "RADIX_ONLY-O2 YEEZ ADAPTER NATIVE PASS rejections=28 service_calls=12 private_staging/race/exhaustion/errors=pass",
+        "YEEZ FULL ADAPTER NATIVE PASS extra_rejections=12 total=40",
+        "MAC27-O0 YEEZ ADAPTER NATIVE PASS rejections=30 service_calls=12 private_staging/race/exhaustion/errors=pass",
+        "YEEZ FULL ADAPTER NATIVE PASS extra_rejections=12 total=42",
+        "MAC27-O2 YEEZ ADAPTER NATIVE PASS rejections=30 service_calls=12 private_staging/race/exhaustion/errors=pass",
+        "YEEZ FULL ADAPTER NATIVE PASS extra_rejections=12 total=42"
+      ]
+    },
+    {
+      "name": "conflow-normal",
+      "command": "make smoke",
+      "status": "pass",
+      "execution_class": "SDK SIM",
+      "scope": "BASELINE, RADIX_ONLY, MAC27, high-base MAC27; 384 calls per row",
+      "log_sha256": "708611e2ddaa325bdf215bcaafadc20827fea655b661b6f4ea0882256ba0abe6",
+      "output_excerpt": [
+        "make -C pass",
+        "make[1]: Entering directory '/tmp/encbound-paper-work/ENCBound-paper/pass'",
+        "make[1]: Leaving directory '/tmp/encbound-paper-work/ENCBound-paper/pass'",
+        "BASELINE 0x40000000 PASS {'result': 'PASS', 'calls': 384, 'comparisons': 2520, 'max_absolute_error': 2.980232238769531e-07, 'rounds': 3, 'fixtures': 8}",
+        "RADIX_ONLY 0x40000000 PASS {'result': 'PASS', 'calls': 384, 'comparisons': 2520, 'max_absolute_error': 4.76837158203125e-07, 'rounds': 3, 'fixtures': 8}",
+        "MAC27 0x40000000 PASS {'result': 'PASS', 'calls': 384, 'comparisons': 2520, 'max_absolute_error': 4.76837158203125e-07, 'rounds': 3, 'fixtures': 8}",
+        "MAC27 0x140000000 PASS {'result': 'PASS', 'calls': 384, 'comparisons': 2520, 'max_absolute_error': 3.5762786865234375e-07, 'rounds': 3, 'fixtures': 8}",
+        "WROTE /tmp/encbound-paper-work/ENCBound-paper/build/conflow/results.json"
+      ]
+    },
+    {
+      "name": "conflow-pointer",
+      "command": "python3 apps/conflow/confused_deputy.py --trace",
+      "status": "pass",
+      "execution_class": "SDK SIM / GDB attribution",
+      "scope": "Benign host-pointer and hostile raw enclave-pointer controls, four configurations",
+      "log_sha256": "55a3d495c142f20e93702ca16780006e95d4e246e874cb1a4d185e246a19b026",
+      "output_excerpt": []
+    },
+    {
+      "name": "conflow-shape",
+      "command": "python3 apps/conflow/vuln.py",
+      "status": "pass",
+      "execution_class": "native ASan, native checked runtime, SDK SIM / GDB",
+      "scope": "Hostile shape controls with attribution; retains RADIX_ONLY positive-shape limitation",
+      "log_sha256": "2efe587d9bb1a288a6178f1820d160d1538a31c559251edeedd614f482b562fe",
+      "output_excerpt": [
+        "WROTE /tmp/encbound-paper-work/ENCBound-paper/build/conflow/vuln/results.json"
+      ]
+    },
+    {
+      "name": "kms-normal",
+      "command": "python3 apps/sgx-kms/run.py --build build/sgx-kms/paper-validation",
+      "status": "pass",
+      "execution_class": "SDK SIM",
+      "scope": "Four configurations and independent current-session output oracles",
+      "log_sha256": "65c6a9fe625e1c74a4620ff8c7579d6c2b1a11534ad1fd8f32c9f41ffb0ef2fa",
+      "output_excerpt": [
+        "APPLICATION ERRNO PROVIDER / OWNERSHIP PASS",
+        "SDK ECALL OWNERSHIP PASS: sgx_ra_get_ga, sgx_ra_get_msg3_trusted, sgx_ra_proc_msg2_trusted",
+        "APPLICATION GLOBAL OWNERSHIP / ELF PERMISSIONS PASS",
+        "APPLICATION ERRNO PROVIDER / OWNERSHIP PASS",
+        "SDK ECALL OWNERSHIP PASS: sgx_ra_get_ga, sgx_ra_get_msg3_trusted, sgx_ra_proc_msg2_trusted",
+        "APPLICATION GLOBAL OWNERSHIP / ELF PERMISSIONS PASS",
+        "MAC27-0x140000000 PASS",
+        "SGX-KMS BENIGN SDK SIM PASS 4 configurations"
+      ]
+    },
+    {
+      "name": "kms-pointer",
+      "command": "python3 apps/sgx-kms/c16_protection.py --build build/sgx-kms/paper-validation --trace --evidence build/evidence/kms-c16.json",
+      "status": "pass",
+      "execution_class": "SDK SIM / GDB attribution",
+      "scope": "Benign, application-global and SDK-key C16 target controls, four configurations",
+      "log_sha256": "e92ea67afb9f7c412f0fe54c4333cfafea73223a3a1ab4fe64b08f4d1786a68f",
+      "output_excerpt": []
+    },
+    {
+      "name": "yeez-build",
+      "command": "python3 apps/yeez/run.py --profile MAC27",
+      "status": "pass",
+      "execution_class": "build and audits",
+      "scope": "Original selected analyzer/key-manager; explicit source inventory; no historical result dependencies",
+      "log_sha256": "b5fbbe605d1e19cd3f4dedb740987ba8b05785d9d57004432a7a0ca075669710",
+      "output_excerpt": [
+        "APPLICATION ERRNO PROVIDER / OWNERSHIP PASS",
+        "CXX EH APPLICATION / PRIVATE ABI CLOSURE PASS",
+        "APPLICATION GLOBAL OWNERSHIP / ELF PERMISSIONS PASS",
+        "SDK RTTI SOURCE / REVERSE PATCH PINS PASS",
+        "APPLICATION ERRNO PROVIDER / OWNERSHIP PASS",
+        "CXX EH APPLICATION / PRIVATE ABI CLOSURE PASS",
+        "APPLICATION GLOBAL OWNERSHIP / ELF PERMISSIONS PASS",
+        "YEEZ ORIGINAL ENCLAVE BUILD PASS MAC27"
+      ]
+    },
+    {
+      "name": "yeez-normal",
+      "command": "python3 apps/yeez/execute.py --profile MAC27",
+      "status": "pass",
+      "execution_class": "SDK SIM",
+      "scope": "MAC27 low-base raw/sealed/empty, 47 calls, 350 checks; other YeeZ rows not rerun",
+      "log_sha256": "530ccb65caabb5b0fa6c8d1773d3bd5859374a24a7ae5c68a020236682073aee",
+      "output_excerpt": [
+        "YEEZ scenario=raw pass result_bytes=28",
+        "YEEZ scenario=sealed pass result_bytes=28",
+        "YEEZ scenario=empty pass result_bytes=0",
+        "YEEZ ORIGINAL ANALYZER SDK SIM PASS calls=47 checks=350 handshakes=3 key_requests=5 batches=3"
+      ]
+    },
+    {
+      "name": "sqlite-mac",
+      "command": "tools/with-integration-defaults.sh python3 apps/sqlite-sgx/run.py --build build/sqlite-paper-validation --profile MAC27",
+      "status": "pass",
+      "execution_class": "SDK SIM / GDB attribution",
+      "scope": "MAC27 low and high bases; benign workflow and C03 bridge enforcement",
+      "log_sha256": "7576b3f92850ef434a0d1153ad301b26e4fb92a8f7f65bc56ae4d37d50c0f7a7",
+      "output_excerpt": [
+        "APPLICATION VARIADIC CALLBACK ABI / OWNERSHIP PASS",
+        "APPLICATION GLOBAL OWNERSHIP / ELF PERMISSIONS PASS",
+        "MAC27-0x40000000 PASS False",
+        "APPLICATION ERRNO PROVIDER / OWNERSHIP PASS",
+        "APPLICATION VARIADIC CALLBACK ABI / OWNERSHIP PASS",
+        "APPLICATION GLOBAL OWNERSHIP / ELF PERMISSIONS PASS",
+        "MAC27-0x140000000 PASS False",
+        "SQLITE C03 SDK SIM PASS 2 configurations"
+      ]
+    },
+    {
+      "name": "sqlite-baseline-radix",
+      "command": "tools/with-integration-defaults.sh python3 apps/sqlite-sgx/run.py --build build/sqlite-baseline-radix-validation --profile BASELINE --profile RADIX_ONLY",
+      "status": "pass",
+      "execution_class": "SDK SIM / GDB attribution",
+      "scope": "BASELINE and RADIX_ONLY; benign and C03 rows",
+      "log_sha256": "562096dc367b5fbb9d52a0b4aa967da0d48da7b09238a86e544327176b79bf0e",
+      "output_excerpt": [
+        "SQLITE C03 CLOSURE PASS",
+        "APPLICATION ERRNO PROVIDER / OWNERSHIP PASS",
+        "APPLICATION VARIADIC CALLBACK ABI / OWNERSHIP PASS",
+        "APPLICATION ERRNO PROVIDER / OWNERSHIP PASS",
+        "APPLICATION VARIADIC CALLBACK ABI / OWNERSHIP PASS",
+        "APPLICATION GLOBAL OWNERSHIP / ELF PERMISSIONS PASS",
+        "RADIX_ONLY-0x40000000 PASS False",
+        "SQLITE C03 SDK SIM PASS 2 configurations"
+      ]
+    },
+    {
+      "name": "sgxfs-normal",
+      "command": "env -u SGX_SDK -u PINNED_SRC python3 apps/sgx-fs/run.py",
+      "status": "pass",
+      "execution_class": "SDK SIM",
+      "scope": "Four configurations; repo-local pinned SDK/source/app inputs",
+      "log_sha256": "b2bf1190bc64d0c6754f9515de51718725d60158c287f8f699e57b25c3bf789b",
+      "output_excerpt": [
+        "CXX EH APPLICATION / PRIVATE ABI CLOSURE PASS",
+        "APPLICATION GLOBAL OWNERSHIP / ELF PERMISSIONS PASS",
+        "MAC27-0x40000000-O2-O2 PASS",
+        "SDK RTTI SOURCE / REVERSE PATCH PINS PASS",
+        "CXX EH APPLICATION / PRIVATE ABI CLOSURE PASS",
+        "APPLICATION GLOBAL OWNERSHIP / ELF PERMISSIONS PASS",
+        "MAC27-0x140000000-O2-O2 PASS",
+        "SGX-FS SDK SIM MATRIX PASS 4"
+      ]
+    },
+    {
+      "name": "sgxfs-f2",
+      "command": "env -u SGX_SDK -u PINNED_SRC python3 apps/sgx-fs/f2_control.py",
+      "status": "pass",
+      "execution_class": "SDK SIM / GDB attribution",
+      "scope": "BASELINE cross-file disclosure and attributed RANGE rejection in three protected rows",
+      "log_sha256": "5779aae679b8ab5cd0e522094c19931d7d1b218034e4c7e6e09593a06d4ad121",
+      "output_excerpt": []
+    },
+    {
+      "name": "bench-build",
+      "command": "make -C apps/general-bench PROFILE=MAC27",
+      "status": "pass",
+      "execution_class": "build and audits",
+      "scope": "Fresh MAC27 benchmark build and ownership/source/SDK audits",
+      "log_sha256": "9b5f7b28e26a3c8281b02e6c55ff9de6eac40d103eb4e9174e73df982bf1c83d",
+      "output_excerpt": [
+        "GENERAL BENCH INVENTORY PASS MAC27"
+      ]
+    },
+    {
+      "name": "bench-correctness",
+      "command": "Independent references plus host input 1,3,0 for each kernel",
+      "status": "pass",
+      "execution_class": "SDK SIM",
+      "scope": "MAC27 lists/heapsort/atax/gemm/jacobi full outputs; timings explicitly ignored",
+      "log_sha256": "fa8c2163b8d450c2494aaddaf88ccbfe6146f55f0da09d5cf89f0319cd7f5d2c",
+      "output_excerpt": [
+        "SDK SIM MAC27 lists full-output checks pass; timing ignored",
+        "SDK SIM MAC27 heapsort full-output checks pass; timing ignored",
+        "SDK SIM MAC27 atax full-output checks pass; timing ignored",
+        "SDK SIM MAC27 gemm full-output checks pass; timing ignored",
+        "SDK SIM MAC27 jacobi full-output checks pass; timing ignored"
+      ]
+    },
+    {
+      "name": "source-preparation",
+      "status": "pass",
+      "execution_class": "source identity checks",
+      "scope": "688 YeeZ, 143 fflib, 67 SGX-KMS and 9 SQLite files verified from pinned local caches using the exported helper; ConFlow fetched by its own verified recipe",
+      "remote_downloads_for_new_helper": "not exercised; local-cache path exercised"
+    }
+  ],
+  "static_checks": {
+    "python_syntax": "pass",
+    "shell_syntax": "pass",
+    "json_parse": "pass",
+    "selected_original_evidence_byte_equality": "pass",
+    "excluded_files_and_private_key_material": "pass"
+  },
+  "limitations": [
+    "No SGX hardware execution or hardware isolation result.",
+    "No fresh performance/memory measurement; benchmark smoke timings are ignored.",
+    "YeeZ normal SDK SIM rerun covers MAC27 at low bases only; other profiles/high bases and hostile controls retain their original dated records.",
+    "Normalized primary-58 data is included; original complete remote-source and API caches/orchestration are excluded.",
+    "Network download branch of the added source helper was not rerun; exact local-cache identity checks passed."
+  ],
+  "packaging_corrections": [
+    "Replaced historical YeeZ build-result dependencies with static source/archive pins and an exact dependency inventory.",
+    "Relocated wallet/pre-STL/negative-IR fixture inputs into tests/fixtures and removed the retired generator test graph.",
+    "Made SDK/source locations configurable with artifact-relative defaults.",
+    "Added the missing SQLite libc++ preparation and EH-test prerequisite build.",
+    "Routed newly generated evidence to build/evidence and created missing output directories."
+  ],
+  "behavior_change": "No C/C++/LLVM/OCaml implementation bodies changed; export changes are build/source-location/fixture/output preparation and packaging."
+}

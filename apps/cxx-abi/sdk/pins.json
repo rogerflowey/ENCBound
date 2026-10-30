@@ -1,0 +1,17 @@
+{
+  "origin": "Intel SGX SDK sgx_2.26, sdk/cpprt/linux (PathScale RTTI)",
+  "url": "https://github.com/intel/linux-sgx/tree/sgx_2.26/sdk/cpprt/linux",
+  "upstream": {
+    "abi_namespace.h": "8279749857373b1d10bd45089ba6745715818766a4b85a5fa7f6123524f878b0",
+    "typeinfo.h": "f9270b040c65be8f9e6fd4d1776cba78c83457d56fe9616909640f6161170d91",
+    "typeinfo.cc": "35727ee2155ec3396bc488d38789b2b4f198bca6e3a4552d9efae58d31ed8f87",
+    "dynamic_cast.cc": "391a0962a91ade0ec1f82d3fa5abc9644669097cf9f6c30ddd1573150297752d"
+  },
+  "adapted": {
+    "abi_namespace.h": "8279749857373b1d10bd45089ba6745715818766a4b85a5fa7f6123524f878b0",
+    "typeinfo.h": "0adcce775db7c3e51ccd6926ac51c06ffc2d0c347104cc9c4f19b2203d1d76ab",
+    "typeinfo.cc": "575cf7798fbba817763efdc03408f8a71e774883b97e44f59a72def666a491a8",
+    "dynamic_cast.cc": "9b23be4b37ce458ed8a43b05012d356dd747c85cca81e66cb9313b6b85ff3a29"
+  },
+  "patch_sha256": "550ea61bbbedc107dc2624e0639f52bde8254756884d1f7a67861fc5b6dd5c4a"
+}

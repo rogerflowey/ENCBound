@@ -1,0 +1,186 @@
+--- a/llvm/lib/Transforms/IPO/ExpandVariadics.cpp
++++ b/llvm/lib/Transforms/IPO/ExpandVariadics.cpp
+@@ -68,23 +68,12 @@
+
+ using namespace llvm;
+
++// ENCBound adaptation: namespaced copy, fixed Lowering entry, x86 frame hook.
++namespace encbound_variadics {
++
+ namespace {
+
+-cl::opt<ExpandVariadicsMode> ExpandVariadicsModeOption(
+-    DEBUG_TYPE "-override", cl::desc("Override the behaviour of " DEBUG_TYPE),
+-    cl::init(ExpandVariadicsMode::Unspecified),
+-    cl::values(clEnumValN(ExpandVariadicsMode::Unspecified, "unspecified",
+-                          "Use the implementation defaults"),
+-               clEnumValN(ExpandVariadicsMode::Disable, "disable",
+-                          "Disable the pass entirely"),
+-               clEnumValN(ExpandVariadicsMode::Optimize, "optimize",
+-                          "Optimise without changing ABI"),
+-               clEnumValN(ExpandVariadicsMode::Lowering, "lowering",
+-                          "Change variadic calling convention")));
+-
+-bool commandLineOverride() {
+-  return ExpandVariadicsModeOption != ExpandVariadicsMode::Unspecified;
+-}
++bool commandLineOverride() { return false; }
+
+ // Instances of this class encapsulate the target-dependant behaviour as a
+ // function of triple. Implementing a new ABI is adding a case to the switch
+@@ -129,6 +118,15 @@
+   bool vaEndIsNop() { return true; }
+   bool vaCopyIsMemcpy() { return true; }
+
++  // A call-wide hook for layouts with more than one argument area. The call
++  // and original signature are read-only input; the target emits the frame.
++  // Existing targets continue to use the original sequential frame builder.
++  virtual bool hasCustomCallFrame() const { return false; }
++  virtual Value *createCallFrame(Module &, IRBuilder<> &, const CallBase &,
++                                 const FunctionType &) {
++    llvm_unreachable("target has no custom variadic frame");
++  }
++
+   virtual ~VariadicABIInfo() = default;
+ };
+
+@@ -148,7 +146,7 @@
+
+   ExpandVariadics(ExpandVariadicsMode Mode)
+       : ModulePass(ID),
+-        Mode(commandLineOverride() ? ExpandVariadicsModeOption : Mode) {}
++        Mode(Mode) {}
+
+   StringRef getPassName() const override { return "Expand variadic functions"; }
+
+@@ -234,6 +232,10 @@
+   }
+
+   bool expansionApplicableToFunction(Module &M, Function *F) {
++    // ENCBound: these declarations are only personality references, validated
++    // by the surrounding pass. The unwinder supplies their native ABI.
++    if (F->getName()=="encbound_eh_personality" || F->getName()=="__gxx_personality_v0")
++      return false;
+     if (F->isIntrinsic() || !F->isVarArg() ||
+         F->hasFnAttribute(Attribute::Naked))
+       return false;
+@@ -264,8 +266,8 @@
+     }
+
+     if (isa<InvokeInst>(CB)) {
+-      // Invoke not implemented in initial implementation of pass
+-      return false;
++      // ENCBound step 21: fixed caller-owned storage also survives unwinding.
++      return CB->getCallingConv() == CallingConv::C;
+     }
+
+     // Other unimplemented derivative of CallBase
+@@ -630,6 +632,13 @@
+
+   auto &Ctx = CB->getContext();
+
++  const unsigned NumArgs = FuncType->getNumParams();
++  SmallVector<Value *> Args(CB->arg_begin(), CB->arg_begin() + NumArgs);
++  AllocaInst *Alloced = nullptr, *VaList = nullptr;
++  if (ABI->hasCustomCallFrame()) {
++    Args.push_back(ABI->createCallFrame(M, Builder, *CB, *FuncType));
++    Changed = true;
++  } else {
+   Align MaxFieldAlign(1);
+
+   // The strategy is to allocate a call frame containing the variadic
+@@ -738,7 +747,7 @@
+   Builder.SetCurrentDebugLocation(CB->getStableDebugLoc());
+
+   // The awkward construction here is to set the alignment on the instance
+-  AllocaInst *Alloced = Builder.Insert(
++  Alloced = Builder.Insert(
+       new AllocaInst(VarargsTy, DL.getAllocaAddrSpace(), nullptr, AllocaAlign),
+       "vararg_buffer");
+   Changed = true;
+@@ -749,12 +758,9 @@
+   Builder.CreateLifetimeStart(Alloced, sizeOfAlloca(Ctx, DL, Alloced));
+   Frame.initializeStructAlloca(DL, Builder, Alloced);
+
+-  const unsigned NumArgs = FuncType->getNumParams();
+-  SmallVector<Value *> Args(CB->arg_begin(), CB->arg_begin() + NumArgs);
+
+   // Initialize a va_list pointing to that struct and pass it as the last
+   // argument
+-  AllocaInst *VaList = nullptr;
+   {
+     if (!ABI->vaListPassedInSSARegister()) {
+       Type *VaListTy = ABI->vaListType(Ctx);
+@@ -768,6 +774,8 @@
+     Args.push_back(ABI->initializeVaList(M, Ctx, Builder, VaList, Alloced));
+   }
+
++  }
++
+   // Attributes excluding any on the vararg arguments
+   AttributeList PAL = CB->getAttributes();
+   if (!PAL.isEmpty()) {
+@@ -795,16 +803,25 @@
+     // Can't tail call a function that is being passed a pointer to an alloca
+     if (TCK == CallInst::TCK_Tail)
+       TCK = CallInst::TCK_None;
+-    CI->setTailCallKind(TCK);
+-
++    cast<CallInst>(NewCB)->setTailCallKind(TCK);
++
++  } else if (auto *II = dyn_cast<InvokeInst>(CB)) {
++    Value *Dst = NF ? NF : II->getCalledOperand();
++    FunctionType *NFTy = inlinableVariadicFunctionType(M, VarargFunctionType);
++    NewCB = InvokeInst::Create(NFTy, Dst, II->getNormalDest(), II->getUnwindDest(),
++                              Args, OpBundles, "", II->getIterator());
+   } else {
+     llvm_unreachable("Unreachable when !expansionApplicableToFunctionCall()");
+   }
+
+-  if (VaList)
++  // On invoke the function frame owns these fixed allocations on both edges.
++  // Do not insert lifetime.end before its terminator (that would end storage
++  // before the callee reads it). ENCBound removes all lifetime hints later.
++  if (VaList && !isa<InvokeInst>(CB))
+     Builder.CreateLifetimeEnd(VaList, sizeOfAlloca(Ctx, DL, VaList));
+
+-  Builder.CreateLifetimeEnd(Alloced, sizeOfAlloca(Ctx, DL, Alloced));
++  if (Alloced && !isa<InvokeInst>(CB))
++    Builder.CreateLifetimeEnd(Alloced, sizeOfAlloca(Ctx, DL, Alloced));
+
+   NewCB->setAttributes(PAL);
+   NewCB->takeName(CB);
+@@ -982,8 +999,12 @@
+   }
+ };
+
++#include "../encbound_x86_variadics.h"
++
+ std::unique_ptr<VariadicABIInfo> VariadicABIInfo::create(const Triple &T) {
+   switch (T.getArch()) {
++  case Triple::x86_64:
++    return std::make_unique<X86SysV>();
+   case Triple::r600:
+   case Triple::amdgcn: {
+     return std::make_unique<Amdgpu>();
+@@ -1007,16 +1028,9 @@
+
+ char ExpandVariadics::ID = 0;
+
+-INITIALIZE_PASS(ExpandVariadics, DEBUG_TYPE, "Expand variadic functions", false,
+-                false)
+-
+-ModulePass *llvm::createExpandVariadicsPass(ExpandVariadicsMode M) {
+-  return new ExpandVariadics(M);
++// Called only after ENCBound has validated and privatized the application ABI.
++void expand(Module &M) {
++  ExpandVariadics(ExpandVariadicsMode::Lowering).runOnModule(M);
+ }
+
+-PreservedAnalyses ExpandVariadicsPass::run(Module &M, ModuleAnalysisManager &) {
+-  return ExpandVariadics(Mode).runOnModule(M) ? PreservedAnalyses::none()
+-                                              : PreservedAnalyses::all();
+-}
+-
+-ExpandVariadicsPass::ExpandVariadicsPass(ExpandVariadicsMode M) : Mode(M) {}
++} // namespace encbound_variadics

@@ -1,0 +1,46 @@
+{
+  "mode": "SDK_SIM",
+  "candidate_cases": 286,
+  "selected": 152,
+  "matched_build_cases": 129,
+  "outcomes": {
+    "BASELINE": {
+      "good": {
+        "returned": 129
+      },
+      "bad": {
+        "unattributed_signal": 53,
+        "returned": 76
+      }
+    },
+    "RADIX_ONLY": {
+      "good": {
+        "returned": 129
+      },
+      "bad": {
+        "returned": 45,
+        "timeout": 1,
+        "attributed_check_rejection": 82,
+        "unattributed_signal": 1
+      }
+    },
+    "MAC27": {
+      "good": {
+        "returned": 129
+      },
+      "bad": {
+        "returned": 21,
+        "attributed_check_rejection": 108
+      }
+    }
+  },
+  "good_output_comparison": {
+    "RADIX_ONLY": {
+      "matched": 129
+    },
+    "MAC27": {
+      "matched": 129
+    }
+  },
+  "note": "Rough execution outcomes, not a bug-prevention rate. Bad-path reachability/slot geometry not exhaustively attributed."
+}
