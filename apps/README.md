@@ -52,8 +52,8 @@ source closure is bundled unchanged, with pins and original notices.
 
 ## Additional application commands
 
-The root README retains the five original application recipes. Run these added
-recipes from the artifact root. Use a fresh output tree for a new experiment;
+The [build guide](../BUILDING.md) contains the five original application recipes.
+Run these added recipes from the repository root. Use a fresh output tree for a new experiment;
 retain original evidence rather than overwriting it.
 
 ```sh

@@ -255,13 +255,11 @@
       "previous_export_sha256": "c631fd8347a1c6aeaaf584d42a09f34a7cae7b979f8ea29f1467c4573fc6f42f"
     },
     "README.md": {
-      "sha256": "a8536f0115d86974ee07e20599c229fb0d6424a6dffe2e632f2873afc0d36410",
-      "bytes": 8169,
+      "sha256": "af2d98b4d3f5bdc6db6c3680a94937116e267bd7c3e7d2492bfc0795ef644556",
+      "bytes": 1778,
       "mode": "0o644",
-      "source": "/home/roger/project/TEE/ENCBound-restart/README.md",
-      "source_sha256": "feb63bdaa3140ae093cdf5e969139865261168bbd8785e566886a14ac2909dba",
-      "export_adapted": true,
-      "previous_export_sha256": "742fa66f6a340bcea02d0c1edcfc7187dd24c241281182fda936d83d92697c98"
+      "origin": "Project introduction and relocated build/reproduction documentation, 2026-10-31",
+      "previous_document_sha256": "a8536f0115d86974ee07e20599c229fb0d6424a6dffe2e632f2873afc0d36410"
     },
     "VALIDATION-2026-10-27.json": {
       "sha256": "6af690544224b0f595370f065b68e26d6b4b84e2f15b1b713ae61eab159dd467",
@@ -277,10 +275,11 @@
       "previous_export_sha256": "6af690544224b0f595370f065b68e26d6b4b84e2f15b1b713ae61eab159dd467"
     },
     "apps/README.md": {
-      "sha256": "190ad0710259f53f219dd03e8171978583b0bf3a5e03f0db5911bfac44ec7342",
-      "bytes": 5784,
+      "sha256": "2e41164d3bbb98edde9b3b09e1b24950630d0fa5868bef056722a2b1206dde23",
+      "bytes": 5805,
       "mode": "0o644",
-      "origin": "artifact packaging, documentation, frozen source metadata or fresh validation"
+      "origin": "Project introduction and relocated build/reproduction documentation, 2026-10-31",
+      "previous_document_sha256": "190ad0710259f53f219dd03e8171978583b0bf3a5e03f0db5911bfac44ec7342"
     },
     "apps/conflow/Makefile": {
       "sha256": "9f79a82dac6d0371380ce05fae6257168b1888b218f0b62a34d31ae3405e0bbf",
@@ -5619,6 +5618,25 @@
       "source": "/home/roger/project/TEE/ENCBound-restart/wrappers/sgx_wallet_bridge.h",
       "source_sha256": "28fc5e6eeafed0f119165575ab1bacae27584f0cd550bb6a1270f236b43636b6",
       "export_adapted": false
+    },
+    "BUILDING.md": {
+      "sha256": "ad57ac8466ec4a5e8a03425f010b36160d65edc461171f3d0bfdfeff38b40a76",
+      "bytes": 6511,
+      "mode": "0o644",
+      "origin": "Project introduction and relocated build/reproduction documentation, 2026-10-31"
     }
-  }
+  },
+  "documentation_updates": [
+    {
+      "date": "2026-10-31",
+      "purpose": "Replace artifact bookkeeping on the front page with a short project introduction; retain setup, reproduction and complete scope in BUILDING.md.",
+      "files": [
+        "README.md",
+        "BUILDING.md",
+        "apps/README.md"
+      ],
+      "behavior_change": false,
+      "evaluation_results_changed": false
+    }
+  ]
 }

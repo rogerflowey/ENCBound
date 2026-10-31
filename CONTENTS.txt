@@ -1,4 +1,5 @@
 .gitignore
+BUILDING.md
 CONTENTS.txt
 EXPORT.json
 MANIFEST.sha256
